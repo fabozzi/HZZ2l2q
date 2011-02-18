@@ -113,7 +113,7 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
     // Get hzzjjlls collections
 
-    std::cout<<"new event "<<std::endl;
+    //    std::cout<<"new event "<<std::endl;
     Handle<CandidateView> higgsH;
     iEvent.getByLabel(higgsTag_, higgsH);
 
@@ -141,7 +141,7 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     hmassSelected = false;
     float jjdr;
 
-    std::cout<<" inizialization "<<massSelected<<std::endl;    
+    //    std::cout<<" inizialization "<<massSelected<<std::endl;    
     
     for (size_t i = 0; i < higgsH->size(); ++i) {
     
