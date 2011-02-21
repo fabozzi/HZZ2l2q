@@ -458,7 +458,10 @@ edmNtuplesOut = cms.OutputModule(
     "keep *_Higgs2mu2bEdmNtuple_*_*",
     "keep *_hzzeejj_met_*",
     "keep *_hzzeejj_metSig_*",
-    "keep *_hzzeejj_metPhi_*"
+    "keep *_hzzeejj_metPhi_*",
+    "keep *_hzzmmjj_met_*",
+    "keep *_hzzmmjj_metSig_*",
+    "keep *_hzzmmjj_metPhi_*"
     
     )
     )
