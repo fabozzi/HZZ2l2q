@@ -19,7 +19,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 # Specify the Global Tag
-process.GlobalTag.globaltag = 'START38_V14::All'
+process.GlobalTag.globaltag = 'GR_R_38X_V15::All'
 
 # Events to process
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -32,13 +32,7 @@ process.source = cms.Source("PoolSource",
     )
 )
 
-import HLTrigger.HLTfilters.hltHighLevel_cfi
-process.dimuonsHLTFilter = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.dimuonsHLTFilter.HLTPaths = ["HLT_Mu9", "HLT_Mu11"]
 
-### set to True if you wish to separate VBF and GF signal events
-
-VBFGFdiscriminator = True
 
 # Output Module : Hopefully we keep all we need
 process.out = cms.OutputModule("PoolOutputModule",
@@ -57,8 +51,19 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
         'keep *_flavorHistoryFilter_*_PAT',
+        'keep *_TriggerResults*_*_HLT',
+        'keep *_hltTriggerSummaryAOD_*_HLT',
+        'keep *_TriggerResults*_*_REDIGI*',
+        'keep *_hltTriggerSummaryAOD_*_REDIGI*'        
+
     ),
-    verbose = cms.untracked.bool(True)
+
+    inputCommands = cms.untracked.vstring(
+        'keep *',
+        'drop *_MEtoEDMConverter_*_*',
+        'drop *_lumiProducer_*_*'
+    ),
+    #verbose = cms.untracked.bool(True)
 )
 
 # Modules for the Cut-based Electron ID in the VBTF prescription
@@ -82,7 +87,7 @@ process.selectedPatMuons.cut = (
     "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
     "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
     "dB < 0.2 && "                                                                     +
-    "trackIso + caloIso < 0.15 * pt && "                                               +
+    #"trackIso + caloIso < 0.15 * pt && "                                               +
     "numberOfMatches > 1 && abs(eta) < 2.4" 
 )
 
@@ -153,13 +158,13 @@ removeMCMatching(process,['All', 'PFAll'])
 # Z Candidates and Higgs Candidates
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(True),
-    cut = cms.string('mass > 70 && mass < 110'),
+    cut = cms.string('mass >50 '),
     decay = cms.string("selectedPatElectrons@+ selectedPatElectrons@-")
 )
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(True),
-    cut = cms.string('mass > 70 && mass < 110 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
+    cut = cms.string('mass > 50 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
     decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
 )
 
@@ -181,17 +186,6 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
-## process.zee = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zeeBaseColl")
-##                              )
-
-## process.zmm = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zmmBaseColl")
-##                              )
-
-## process.zjj = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zjjBaseColl")
-##                              )
 
 process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     higgs = cms.InputTag("hzzeejjBaseColl"),
@@ -207,26 +201,9 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
 
 
 
-## process.elhiggs = cms.EDProducer("Higgs2l2bCandidateMaker",
-##     higgsTag = cms.InputTag("hzzeejj"),
-##     gensTag = cms.InputTag("genParticles"),
-##     metTag = cms.InputTag("patMETs")
-## )
-
-## process.muhiggs = cms.EDProducer("Higgs2l2bCandidateMaker",
-##     higgsTag = cms.InputTag("hzzmmjj"),
-##     gensTag = cms.InputTag("genParticles"),
-##     metTag = cms.InputTag("patMETs")
-## )
-
-
-
-
-
 # Define the relevant paths and schedule them
 process.analysisPath = cms.Path(
     process.eidSequence + 
-    #process.flavorHistoryFilter +
     process.makePatElectrons +
     process.makePatMuons +
     process.makePatJets +
@@ -234,9 +211,6 @@ process.analysisPath = cms.Path(
     process.selectedPatElectrons + 
     process.selectedPatMuons + 
     process.cleanPatJets +
-    #process.zeeBaseColl +
-    #process.zmmBaseColl + 
-    #process.zjjBaseColl + 
     process.zee +
     process.zmm + 
     process.zjj + 
@@ -244,8 +218,7 @@ process.analysisPath = cms.Path(
     process.hzzmmjjBaseColl +
     process.hzzeejj + 
     process.hzzmmjj #+ 
-    #process.elhiggs + 
-    #process.muhiggs 
+
 )
 
 # Setup for a basic filtering
@@ -264,7 +237,7 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
 )
 
 
-process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter + process.dimuonsHLTFilter)
+process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter)
 
 process.out.SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("filterPath",
