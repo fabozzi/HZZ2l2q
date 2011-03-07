@@ -8,13 +8,15 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 
 # Load some generic cffs  
 process.load('Configuration.StandardSequences.Services_cff')
-process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
-process.load('Configuration.StandardSequences.Reconstruction_cff')
-process.load('Configuration.StandardSequences.EndOfProcess_cff')
-process.load('Configuration.EventContent.EventContent_cff')
+#process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
+#process.load('Configuration.StandardSequences.Reconstruction_cff')
+#process.load('Configuration.StandardSequences.EndOfProcess_cff')
+#process.load('Configuration.EventContent.EventContent_cff')
 
-# Specify the Global Tag
-process.GlobalTag.globaltag = 'START38_V13::All'
+# global tag for MC 3_9_X
+process.GlobalTag.globaltag = 'START39_V9::All'
+# global tag for MC 3_8_X
+#process.GlobalTag.globaltag = 'START38_V13::All'
 
 # Events to process
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
@@ -22,17 +24,14 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 # Source file : To be run on a Full RECO sample
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/scratch2/users/fabozzi/higgs/h2l2b300/H300ZZ2l2b_7TeV_GEN_SIM_RECO_1.root',
-        'file:/scratch2/users/fabozzi/higgs/h2l2b300/H300ZZ2l2b_7TeV_GEN_SIM_RECO_2.root',
-        'file:/scratch2/users/fabozzi/higgs/h2l2b300/H300ZZ2l2b_7TeV_GEN_SIM_RECO_4.root',
-        'file:/scratch2/users/fabozzi/higgs/h2l2b300/H300ZZ2l2b_7TeV_GEN_SIM_RECO_6.root',
-        'file:/scratch2/users/fabozzi/higgs/h2l2b300/H300ZZ2l2b_7TeV_GEN_SIM_RECO_7.root',
+    'file:/scratch2/users/fabozzi/MCWinter10/higgs/GG_2mu2b_450/FE4940B1-7B18-E011-974C-00E081791897.root'
     )
 )
 
 
 ### set to True if you wish to separate VBF and GF signal events
-
+### set to True only if running on signal inclusive samples VBF+GF
+#VBFGFdiscriminator = True
 VBFGFdiscriminator = False
 
 # Output Module : Hopefully we keep all we need
@@ -53,7 +52,7 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_hzzmmjj_*_PAT',
         'keep *_flavorHistoryFilter_*_PAT',
     ),
-    verbose = cms.untracked.bool(True)
+#    verbose = cms.untracked.bool(True)
 )
 
 # Modules for the Cut-based Electron ID in the VBTF prescription
@@ -103,7 +102,9 @@ process.selectedPatElectrons.cut = (
 switchJetCollection(process,cms.InputTag('ak5PFJets'),
     doJTA        = True,
     doBTagging   = True,
-    jetCorrLabel = ('AK5PF', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual'])),
+#   'L2L3Residual' not to be applied on MC  
+#    jetCorrLabel = ('AK5PF', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual'])),
+    jetCorrLabel = ('AK5PF', cms.vstring(['L2Relative', 'L3Absolute'])),
     doType1MET   = True,
     genJetCollection=cms.InputTag("ak5GenJets"),
     doJetID      = True
@@ -175,18 +176,6 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
-## process.zee = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zeeBaseColl")
-##                              )
-
-## process.zmm = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zmmBaseColl")
-##                              )
-
-## process.zjj = cms.EDProducer("zffUserData",
-##                              zffTag = cms.InputTag("zjjBaseColl")
-##                              )
-
 process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
     higgs = cms.InputTag("hzzeejjBaseColl"),
     gensTag = cms.InputTag("genParticles"),
@@ -198,24 +187,6 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
     gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
     )
-
-
-
-## process.elhiggs = cms.EDProducer("Higgs2l2bCandidateMaker",
-##     higgsTag = cms.InputTag("hzzeejj"),
-##     gensTag = cms.InputTag("genParticles"),
-##     metTag = cms.InputTag("patMETs")
-## )
-
-## process.muhiggs = cms.EDProducer("Higgs2l2bCandidateMaker",
-##     higgsTag = cms.InputTag("hzzmmjj"),
-##     gensTag = cms.InputTag("genParticles"),
-##     metTag = cms.InputTag("patMETs")
-## )
-
-
-
-
 
 # Define the relevant paths and schedule them
 process.analysisPath = cms.Path(
@@ -230,18 +201,13 @@ process.analysisPath = cms.Path(
     process.selectedPatElectrons + 
     process.selectedPatMuons + 
     process.cleanPatJets +
-    #process.zeeBaseColl +
-    #process.zmmBaseColl + 
-    #process.zjjBaseColl + 
     process.zee +
     process.zmm + 
     process.zjj + 
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
     process.hzzeejj + 
-    process.hzzmmjj #+ 
-    #process.elhiggs + 
-    #process.muhiggs 
+    process.hzzmmjj
 )
 
 # Setup for a basic filtering
