@@ -76,7 +76,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
 
   float phi;
-  float met, metSig, metPhi; 
+  float met, metSig, metPhi;
+  float met2, Px, Py; 
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta,jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
@@ -218,6 +219,9 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     cout<<"met: "<<met<<endl;
     metSig = met_h.front().mEtSig();
     metPhi = met_h.front().phi();
+    Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();
+    Py = zDauRefl0->py() + zDauRefl1->py() + zDauRefj0->py() + zDauRefj1->py();
+    met2 = sqrt(pow(Px,2)+pow(Py,2));
 
     h.addUserFloat("azimuthalAngle", phi);
     h.addUserFloat("zzdPhi", zzdPhi);
@@ -238,7 +242,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("met",met);
     h.addUserFloat("metSig",metSig);
     h.addUserFloat("metPhi",metPhi);
-    
+    h.addUserFloat("met2",met2);
+
     higgsColl->push_back(h);
   }
 
