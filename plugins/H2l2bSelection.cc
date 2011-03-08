@@ -13,6 +13,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
 #include "PhysicsTools/CandUtils/interface/Booster.h"
@@ -114,7 +115,7 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     // Get hzzjjlls collections
 
     //    std::cout<<"new event "<<std::endl;
-    Handle<CandidateView> higgsH;
+    Handle<pat::CompositeCandidateCollection > higgsH;
     iEvent.getByLabel(higgsTag_, higgsH);
 
  //    Handle<pat::METCollection> metH;
@@ -122,13 +123,6 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 //     pat::METCollection met_h = *metH;
 //     met = met_h.front().et();
 
-    Handle<float> met_elH;
-    //iEvent.getByLabel(metTag,metH);
-    iEvent.getByLabel("hzzeejj","met",met_elH);
-
-    Handle<float> met_muH;
-    iEvent.getByLabel("hzzmmjj","met",met_muH);
- 
 
     skimEvents++;
 
@@ -145,18 +139,13 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     
     for (size_t i = 0; i < higgsH->size(); ++i) {
     
-      const Candidate &  h = (*higgsH)[i];
-      const float &  metEl = (*met_elH);
-      const float &  metMu = (*met_muH);
+      const pat::CompositeCandidate &  h = (*higgsH)[i];
       const Candidate * zll = h.daughter(0);    
       const Candidate * zjj = h.daughter(1);
       const Candidate * zDauRefl0 = h.daughter(0)->daughter(0);
       const Candidate * zDauRefl1 = h.daughter(0)->daughter(1);
       const Candidate * zDauRefj0 = h.daughter(1)->daughter(0);
       const Candidate * zDauRefj1 = h.daughter(1)->daughter(1);  
-
-
-
 
       const pat::Electron * lept0el = dynamic_cast<const pat::Electron *>(zDauRefl0->masterClone().get());
       const pat::Electron * lept1el = dynamic_cast<const pat::Electron *>(zDauRefl1->masterClone().get());
@@ -192,6 +181,10 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       const pat::Jet & j1 = dynamic_cast<const pat::Jet &>(*zDauRefj1->masterClone());
 
       jjdr = deltaR(zDauRefj0->eta(), zDauRefj0->phi(), zDauRefj1->eta(), zDauRefj1->phi() );
+      
+
+      met =h.userFloat("met");
+      
 
       /* base selection and progressive cuts -> put selection on VBTFCombID for electrons */ 
       
@@ -207,7 +200,7 @@ void H2l2bSelection::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	    if( zll->pt()>zllPtCut_ ) {
 	      zllptSelected=true ;
 	      
-	      if( (channel == "Electron" && metEl < metCut_) || (channel == "Muon" && metMu < metCut_) ) {
+	      if( met < metCut_) {
 		metSelected=true ;
 		
 		if( jjdr < jjdrCut_ ){ 
