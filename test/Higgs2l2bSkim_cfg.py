@@ -50,6 +50,7 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
         'keep *_flavorHistoryFilter_*_PAT',
+        'keep *_offlinePrimaryVertices_*_*',
     ),
 #    verbose = cms.untracked.bool(True)
 )

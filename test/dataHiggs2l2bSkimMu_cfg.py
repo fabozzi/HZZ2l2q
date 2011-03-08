@@ -51,11 +51,11 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
         'keep *_flavorHistoryFilter_*_PAT',
+        'keep *_offlinePrimaryVertices_*_*',
         'keep *_TriggerResults*_*_HLT',
         'keep *_hltTriggerSummaryAOD_*_HLT',
         'keep *_TriggerResults*_*_REDIGI*',
-        'keep *_hltTriggerSummaryAOD_*_REDIGI*'        
-
+        'keep *_hltTriggerSummaryAOD_*_REDIGI*'  
     ),
 
     inputCommands = cms.untracked.vstring(
