@@ -33,6 +33,18 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("phi")
     ),
     cms.PSet(
+    tag = cms.untracked.string("met"),
+    quantity = cms.untracked.string("userFloat('met')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("metSig"),
+    quantity = cms.untracked.string("userFloat('metSig')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("metPhi"),
+    quantity = cms.untracked.string("userFloat('metPhi')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("AzimuthalAngle"),
     quantity = cms.untracked.string("userFloat('azimuthalAngle')")
     ),
