@@ -57,9 +57,6 @@ Higgs2l2bUserData::Higgs2l2bUserData( const ParameterSet & cfg ):
   metTag( cfg.getParameter<edm::InputTag>("metTag"))
 {
   produces<vector<pat::CompositeCandidate> >("h").setBranchAlias( "h" );
-  produces<float>( "met" ).setBranchAlias( "met" );  
-  produces<float>( "metPhi" ).setBranchAlias( "metPhi" );  
-  produces<float>( "metSig" ).setBranchAlias( "metSig" );  
 
 }
 
@@ -76,15 +73,10 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   evt.getByLabel(metTag, metH);
   pat::METCollection met_h = *metH;
 
-  
-
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
-  auto_ptr<float> met( new float );
-  auto_ptr<float> metPhi( new float );
-  auto_ptr<float> metSig( new float );
 
-
-  float phi; 
+  float phi;
+  float met, metSig, metPhi; 
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta,jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
@@ -222,12 +214,13 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
        
     if (phi>M_PI/2) phi = M_PI -phi;
 
-    *met = met_h.front().et();
-    *metSig = met_h.front().mEtSig();
-    *metPhi = met_h.front().phi();
+    met = met_h.front().et();
+    cout<<"met: "<<met<<endl;
+    metSig = met_h.front().mEtSig();
+    metPhi = met_h.front().phi();
 
     h.addUserFloat("azimuthalAngle", phi);
-     h.addUserFloat("zzdPhi", zzdPhi);
+    h.addUserFloat("zzdPhi", zzdPhi);
     h.addUserFloat("zzdEta", zzdEta);
     h.addUserFloat("zzdr", zzdr);
     h.addUserFloat("lldPhi", lldPhi);
@@ -242,16 +235,16 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jmaxcmatch",jmaxcmatch );
     h.addUserFloat("jminid",jminid);
     h.addUserFloat("jmaxid",jmaxid);
-
+    h.addUserFloat("met",met);
+    h.addUserFloat("metSig",metSig);
+    h.addUserFloat("metPhi",metPhi);
     
     higgsColl->push_back(h);
-    
   }
+
   
   evt.put( higgsColl, "h");
-  evt.put( met, "met");
-  evt.put( metSig, "metSig");
-  evt.put( metPhi, "metPhi");
+
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"
