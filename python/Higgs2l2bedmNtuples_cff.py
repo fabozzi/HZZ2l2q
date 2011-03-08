@@ -33,15 +33,15 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("phi")
     ),
     cms.PSet(
-    tag = cms.untracked.string("met"),
+    tag = cms.untracked.string("Met"),
     quantity = cms.untracked.string("userFloat('met')")
     ),
     cms.PSet(
-    tag = cms.untracked.string("metSig"),
+    tag = cms.untracked.string("MetSig"),
     quantity = cms.untracked.string("userFloat('metSig')")
     ),
     cms.PSet(
-    tag = cms.untracked.string("metPhi"),
+    tag = cms.untracked.string("MetPhi"),
     quantity = cms.untracked.string("userFloat('metPhi')")
     ),
     cms.PSet(
@@ -137,7 +137,31 @@ zll = (
     tag = cms.untracked.string("LeptDau2Pt"),
     quantity = cms.untracked.string("daughter(0).daughter(1).pt")
     ),
-    ## eta
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1Px"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).px ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Px"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).px")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1Py"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).py ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Py"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).py")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1Pz"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).pz ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Pz"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).pz")
+    ),
+## eta
     cms.PSet(
     tag = cms.untracked.string("LeptDau1Eta"),
     quantity = cms.untracked.string("daughter(0).daughter(0).eta ")
@@ -294,23 +318,47 @@ zjj = (
     tag = cms.untracked.string("zjjY"),
     quantity = cms.untracked.string("daughter(1).y")
     ),
-cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("zjjPhi"),
     quantity = cms.untracked.string("daughter(1).phi")
     ),
-cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("JetDau1Pt"),
     quantity = cms.untracked.string("daughter(1).daughter(0).pt ")
     ),
-cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("JetDau2Pt"),
     quantity = cms.untracked.string("daughter(1).daughter(1).pt")
     ),
-cms.PSet(
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1Px"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).px ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2Px"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).px")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1Py"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).py ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2Py"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).py")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1Pz"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).pz ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2Pz"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).pz")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1Eta"),
     quantity = cms.untracked.string("daughter(1).daughter(0).eta ")
     ),
-cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("JetDau2Eta"),
     quantity = cms.untracked.string("daughter(1).daughter(1).eta ")
     ),cms.PSet(
@@ -467,13 +515,7 @@ edmNtuplesOut = cms.OutputModule(
     outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_Higgs2e2bEdmNtuple_*_*",
-    "keep *_Higgs2mu2bEdmNtuple_*_*",
-    "keep *_hzzeejj_met_*",
-    "keep *_hzzeejj_metSig_*",
-    "keep *_hzzeejj_metPhi_*",
-    "keep *_hzzmmjj_met_*",
-    "keep *_hzzmmjj_metSig_*",
-    "keep *_hzzmmjj_metPhi_*"
+    "keep *_Higgs2mu2bEdmNtuple_*_*"
     
     )
     )
