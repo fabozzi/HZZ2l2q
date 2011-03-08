@@ -19,7 +19,7 @@ process.GlobalTag.globaltag = 'START39_V9::All'
 #process.GlobalTag.globaltag = 'START38_V13::All'
 
 # Events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # Source file
 process.source = cms.Source("PoolSource",
@@ -78,7 +78,7 @@ process.selectedPatMuons.cut = (
     "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
     "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
     "dB < 0.2 && "                                                                     +
-    "trackIso + caloIso < 0.15 * pt && "                                               +
+    #"trackIso + caloIso < 0.15 * pt && "                                               +
     "numberOfMatches > 1 && abs(eta) < 2.4" 
 )
 
@@ -147,13 +147,15 @@ process.cleanPatJets = cms.EDProducer("PATJetCleaner",
 # Z Candidates and Higgs Candidates
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(True),
-    cut = cms.string('mass > 70 && mass < 110'),
+    cut = cms.string('mass > 50'),
+    #cut = cms.string('mass > 70 && mass < 110'),
     decay = cms.string("selectedPatElectrons@+ selectedPatElectrons@-")
 )
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(True),
-    cut = cms.string('mass > 70 && mass < 110 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
+    cut = cms.string('mass > 50  && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
+    #cut = cms.string('mass > 70 && mass < 110 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
     decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
 )
 
