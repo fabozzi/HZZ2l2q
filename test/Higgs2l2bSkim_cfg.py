@@ -19,7 +19,7 @@ process.GlobalTag.globaltag = 'START39_V9::All'
 #process.GlobalTag.globaltag = 'START38_V13::All'
 
 # Events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Source file
 process.source = cms.Source("PoolSource",
@@ -49,9 +49,13 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_zjj_*_PAT',
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
-        'keep *_flavorHistoryFilter_*_PAT',
         'keep *_offlinePrimaryVertices_*_*',
+        'keep *_TriggerResults*_*_HLT',
+        'keep *_hltTriggerSummaryAOD_*_HLT',
+        'keep *_TriggerResults*_*_REDIGI*',
+        'keep *_hltTriggerSummaryAOD_*_REDIGI*'     
     ),
+ 
 #    verbose = cms.untracked.bool(True)
 )
 
@@ -69,8 +73,6 @@ process.eidSequence = cms.Sequence(
     process.eidVBTFCom80 
 )
 
-process.load("PhysicsTools.HepMCCandAlgos.flavorHistoryProducer_cfi")
-process.load("PhysicsTools.HepMCCandAlgos.flavorHistoryFilter_cfi")
 
 # Muon Selection
 process.selectedPatMuons.cut = ( 
@@ -193,9 +195,6 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
 # Define the relevant paths and schedule them
 process.analysisPath = cms.Path(
     process.eidSequence + 
-    process.cFlavorHistoryProducer +
-    process.bFlavorHistoryProducer +
-    #process.flavorHistoryFilter +
     process.makePatElectrons +
     process.makePatMuons +
     process.makePatJets +
@@ -231,7 +230,7 @@ process.VBFFilter = cms.EDFilter("VBFFilter",
     src = cms.InputTag("genParticles")
 )
 
-process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter + process.bFlavorHistoryProducer + process.cFlavorHistoryProducer + process.flavorHistoryFilter)
+process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter)
 
 process.out.SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("filterPath",
@@ -245,8 +244,8 @@ process.out.SelectEvents = cms.untracked.PSet(
 
 if(VBFGFdiscriminator == True):
 
-    process.VBFfilterPath = cms.Path(process.VBFFilter + process.zll+process.zllFilter+process.jetFilter + process.bFlavorHistoryProducer + process.cFlavorHistoryProducer)
-    process.GFfilterPath = cms.Path(~process.VBFFilter + process.zll+process.zllFilter+process.jetFilter + process.bFlavorHistoryProducer + process.cFlavorHistoryProducer)
+    process.VBFfilterPath = cms.Path(process.VBFFilter + process.zll+process.zllFilter+process.jetFilter)
+    process.GFfilterPath = cms.Path(~process.VBFFilter + process.zll+process.zllFilter+process.jetFilter)
 
     process.VBFout = copy.deepcopy(process.out)
     process.VBFout.fileName = cms.untracked.string("h2l2b450VBF.root")
