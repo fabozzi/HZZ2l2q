@@ -216,7 +216,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     if (phi>M_PI/2) phi = M_PI -phi;
 
     met = met_h.front().et();
-    cout<<"met: "<<met<<endl;
+    //    cout<<"met: "<<met<<endl;
     metSig = met_h.front().mEtSig();
     metPhi = met_h.front().phi();
     Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();

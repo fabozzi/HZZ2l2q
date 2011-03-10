@@ -237,8 +237,35 @@ process.out.SelectEvents = cms.untracked.PSet(
                                    )
         )
 
+# switch on PAT trigger
+from PhysicsTools.PatAlgos.tools.trigTools import *
+switchOnTrigger( process, sequence = 'analysisPath', hltProcess = '*' )
 
+# PAT trigger matching for muons
+# NOTE: from 3_10_X use matchedCuts and remove andOr,filterIdsEnum, etc.
+process.muonTriggerMatchHLTMu11 = cms.EDProducer( "PATTriggerMatcherDRLessByR",
+                                                      src     = cms.InputTag( "selectedPatMuons" ),
+                                                      matched = cms.InputTag( "patTrigger" ),
+                                                      andOr          = cms.bool( False ),
+                                                      filterIdsEnum  = cms.vstring( 'TriggerMuon' ), # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
+                                                      filterIds      = cms.vint32( 0 ),
+                                                      filterLabels   = cms.vstring( '*' ),
+                                                      pathNames      = cms.vstring( 'HLT_Mu11' ),
+                                                      collectionTags = cms.vstring( '*' ),
+                                                  #    matchedCuts = cms.string( 'path( "HLT_Mu11" )' ),
+                                                      maxDPtRel = cms.double( 1000.0 ),
+                                                      maxDeltaR = cms.double( 0.2 ),
+                                                      resolveAmbiguities    = cms.bool( True ),
+                                                      resolveByMatchQuality = cms.bool( True )
+                                                  )
 
+# PAT trigger matching for electrons
+from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import cleanElectronTriggerMatchHLTEle20SWL1R
+process.electronTriggerMatchHLTEle20SWL1R = cleanElectronTriggerMatchHLTEle20SWL1R.clone()
+process.electronTriggerMatchHLTEle20SWL1R.src =  cms.InputTag( "selectedPatElectrons" )
+process.electronTriggerMatchHLTEle20SWL1R.maxDeltaR = cms.double( 0.2 )
+
+switchOnTriggerMatching( process, [ 'muonTriggerMatchHLTMu11','electronTriggerMatchHLTEle20SWL1R' ], sequence = 'analysisPath', hltProcess = '*' )
 
 ### VBF - GF discrimination
 
