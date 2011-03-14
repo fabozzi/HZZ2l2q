@@ -19,7 +19,7 @@ process.GlobalTag.globaltag = 'START39_V9::All'
 #process.GlobalTag.globaltag = 'START38_V13::All'
 
 # Events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # Source file
 process.source = cms.Source("PoolSource",
@@ -27,6 +27,7 @@ process.source = cms.Source("PoolSource",
     'file:/scratch2/users/fabozzi/MCWinter10/higgs/GG_2mu2b_450/FE4940B1-7B18-E011-974C-00E081791897.root'
     )
 )
+
 
 
 # Output Module : Hopefully we keep all we need
@@ -49,7 +50,9 @@ process.out = cms.OutputModule("PoolOutputModule",
         #'keep *_TriggerResults*_*_HLT',
         #'keep *_hltTriggerSummaryAOD_*_HLT',
         #'keep *_TriggerResults*_*_REDIGI*',
-        #'keep *_hltTriggerSummaryAOD_*_REDIGI*'     
+        #'keep *_hltTriggerSummaryAOD_*_REDIGI*',     
+        'keep *_*_flavorflag_*'
+        
     ),
  
 #    verbose = cms.untracked.bool(True)
@@ -158,6 +161,13 @@ process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
 )
 
+process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
+    checkCharge = cms.bool(True),
+    cut = cms.string('mass > 50'),
+    #cut = cms.string('mass > 70 && mass < 110 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
+    decay = cms.string("selectedPatElectrons@+ selectedPatMuons@-")
+)
+
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
@@ -176,6 +186,12 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
+process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
+    checkCharge = cms.bool(False),
+    cut = cms.string(''),
+    decay = cms.string("zem zjj")
+)   
+
 process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
     higgs = cms.InputTag("hzzeejjBaseColl"),
     gensTag = cms.InputTag("genParticles"),
@@ -187,6 +203,14 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
     gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
     )
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
+    higgs = cms.InputTag("hzzemjjBaseColl"),
+    gensTag = cms.InputTag("genParticles"),
+    metTag = cms.InputTag("patMETs")
+    )
+
+
+process.hfmatch = cms.EDProducer("AlpgenLightSamplesFlag")
 
 # Define the relevant paths and schedule them
 process.analysisPath = cms.Path(
@@ -204,27 +228,28 @@ process.analysisPath = cms.Path(
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
     process.hzzeejj + 
-    process.hzzmmjj
+    process.hzzmmjj +
+    process.hfmatch
 )
 
 # Setup for a basic filtering
+
 process.zll = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("zee", "zmm")
-) 
+)
 
 process.zllFilter = cms.EDFilter("CandViewCountFilter",
     src = cms.InputTag("zll"),
     minNumber = cms.uint32(1),
 )
 
+
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
     src = cms.InputTag("cleanPatJets"),
     minNumber = cms.uint32(2),
 )
 
-process.VBFFilter = cms.EDFilter("VBFFilter",
-    src = cms.InputTag("genParticles")
-)
+
 
 process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter)
 
@@ -246,7 +271,7 @@ process.muonTriggerMatchHLTMu11 = cms.EDProducer( "PATTriggerMatcherDRLessByR",
                                                       filterIdsEnum  = cms.vstring( 'TriggerMuon' ), # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
                                                       filterIds      = cms.vint32( 0 ),
                                                       filterLabels   = cms.vstring( '*' ),
-                                                      pathNames      = cms.vstring( 'HLT_Mu11' ),
+                                                      pathNames      = cms.vstring( '*' ),
                                                       collectionTags = cms.vstring( '*' ),
                                                   #    matchedCuts = cms.string( 'path( "HLT_Mu11" )' ),
                                                       maxDPtRel = cms.double( 1000.0 ),
