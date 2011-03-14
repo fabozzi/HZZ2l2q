@@ -43,9 +43,11 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_cleanPatJets_*_PAT',
         'keep *_zee_*_PAT',
         'keep *_zmm_*_PAT',
+        'keep *_zem_*_PAT',
         'keep *_zjj_*_PAT',
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
+        'keep *_hzzemjj_*_PAT',
         'keep *_offlinePrimaryVertices_*_*',
         #'keep *_TriggerResults*_*_HLT',
         #'keep *_hltTriggerSummaryAOD_*_HLT',
@@ -223,12 +225,15 @@ process.analysisPath = cms.Path(
     process.selectedPatMuons + 
     process.cleanPatJets +
     process.zee +
-    process.zmm + 
+    process.zmm +
+    process.zem + 
     process.zjj + 
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
+    process.hzzemjjBaseColl +
     process.hzzeejj + 
     process.hzzmmjj +
+    process.hzzemjj +
     process.hfmatch
 )
 

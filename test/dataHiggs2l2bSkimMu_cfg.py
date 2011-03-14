@@ -22,7 +22,7 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.GlobalTag.globaltag = 'GR_R_38X_V15::All'
 
 # Events to process
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # Source file : To be run on a Full RECO sample
 process.source = cms.Source("PoolSource",
@@ -50,11 +50,10 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_zjj_*_PAT',
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
-        'keep *_flavorHistoryFilter_*_PAT',
-        'keep *_TriggerResults*_*_HLT',
-        'keep *_hltTriggerSummaryAOD_*_HLT',
-        'keep *_TriggerResults*_*_REDIGI*',
-        'keep *_hltTriggerSummaryAOD_*_REDIGI*',        
+        #'keep *_TriggerResults*_*_HLT',
+        #'keep *_hltTriggerSummaryAOD_*_HLT',
+        #'keep *_TriggerResults*_*_REDIGI*',
+        #'keep *_hltTriggerSummaryAOD_*_REDIGI*',        
         'keep *_offlinePrimaryVertices_*_*'
     ),
 
@@ -163,6 +162,12 @@ process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
 )
 
+process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
+    checkCharge = cms.bool(True),
+    cut = cms.string('mass > 50 '),
+    decay = cms.string("selectedPatElectrons@+ selectedPatMuons@-")
+)
+
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
@@ -181,6 +186,12 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
+process.hzzmejjBaseColl = cms.EDProducer("CandViewCombiner",
+    checkCharge = cms.bool(False),
+    cut = cms.string(''),
+    decay = cms.string("zem zjj")
+)   
+
 
 process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     higgs = cms.InputTag("hzzeejjBaseColl"),
@@ -190,6 +201,12 @@ process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
 
 process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     higgs = cms.InputTag("hzzmmjjBaseColl"),
+    #gensTag = cms.InputTag("genParticles"),
+    metTag = cms.InputTag("patMETs")
+    )
+
+process.hzzmejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+    higgs = cms.InputTag("hzzmejjBaseColl"),
     #gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
     )
@@ -207,12 +224,15 @@ process.analysisPath = cms.Path(
     process.selectedPatMuons + 
     process.cleanPatJets +
     process.zee +
-    process.zmm + 
-    process.zjj + 
+    process.zmm +
+    process.zme + 
+    Process.zjj + 
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
+    process.hzzmejjBaseColl +
     process.hzzeejj + 
-    process.hzzmmjj #+ 
+    process.hzzmmjj +
+    Process.hzzmejj #+ 
 
 )
 
