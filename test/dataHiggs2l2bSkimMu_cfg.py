@@ -208,7 +208,7 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     )
 
 process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
-    higgs = cms.InputTag("hzzmejjBaseColl"),
+    higgs = cms.InputTag("hzzemjjBaseColl"),
     #gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
     )
