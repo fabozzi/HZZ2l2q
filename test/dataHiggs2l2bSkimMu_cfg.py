@@ -19,7 +19,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 # Specify the Global Tag
-process.GlobalTag.globaltag = 'GR_R_38X_V15::All'
+process.GlobalTag.globaltag = 'GR_R_39X_V6::All'
 
 # Events to process
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
@@ -47,9 +47,11 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_cleanPatJets_*_PAT',
         'keep *_zee_*_PAT',
         'keep *_zmm_*_PAT',
+        'keep *_zem_*_PAT',
         'keep *_zjj_*_PAT',
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
+        'keep *_hzzemjj_*_PAT',
         #'keep *_TriggerResults*_*_HLT',
         #'keep *_hltTriggerSummaryAOD_*_HLT',
         #'keep *_TriggerResults*_*_REDIGI*',
@@ -186,7 +188,7 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
-process.hzzmejjBaseColl = cms.EDProducer("CandViewCombiner",
+process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
     decay = cms.string("zem zjj")
@@ -205,7 +207,7 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     metTag = cms.InputTag("patMETs")
     )
 
-process.hzzmejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
     higgs = cms.InputTag("hzzmejjBaseColl"),
     #gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
@@ -225,14 +227,14 @@ process.analysisPath = cms.Path(
     process.cleanPatJets +
     process.zee +
     process.zmm +
-    process.zme + 
-    Process.zjj + 
+    process.zem + 
+    process.zjj + 
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
-    process.hzzmejjBaseColl +
+    process.hzzemjjBaseColl +
     process.hzzeejj + 
     process.hzzmmjj +
-    Process.hzzmejj #+ 
+    process.hzzemjj #+ 
 
 )
 
@@ -258,6 +260,47 @@ process.out.SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring("filterPath",
                                    )
         )
+
+# switch on PAT trigger
+from PhysicsTools.PatAlgos.tools.trigTools import *
+switchOnTrigger( process, sequence = 'analysisPath', hltProcess = '*' )
+
+# PAT trigger matching for muons
+# NOTE: from 3_10_X use matchedCuts and remove andOr,filterIdsEnum, etc.
+process.muonTriggerMatchHLTMuon = cms.EDProducer( "PATTriggerMatcherDRLessByR",
+                                                      src     = cms.InputTag( "selectedPatMuons" ),
+                                                      matched = cms.InputTag( "patTrigger" ),
+                                                      andOr          = cms.bool( False ),
+                                                      filterIdsEnum  = cms.vstring( 'TriggerMuon' ), # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
+                                                      filterIds      = cms.vint32( 0 ),
+                                                      filterLabels   = cms.vstring( '*' ),
+                                                      pathNames      = cms.vstring( '*' ),
+                                                      collectionTags = cms.vstring( '*' ),
+                                                  #    matchedCuts = cms.string( 'path( "HLT_Mu11" )' ),
+                                                      maxDPtRel = cms.double( 1000.0 ),
+                                                      maxDeltaR = cms.double( 0.2 ),
+                                                      resolveAmbiguities    = cms.bool( True ),
+                                                      resolveByMatchQuality = cms.bool( True )
+                                                  )
+
+# PAT trigger matching for electrons
+process.electronTriggerMatchHLTElectron = cms.EDProducer( "PATTriggerMatcherDRLessByR",
+                                                      src     = cms.InputTag( "selectedPatElectrons" ),
+                                                      matched = cms.InputTag( "patTrigger" ),
+                                                      andOr          = cms.bool( False ),
+                                                      filterIdsEnum  = cms.vstring( 'TriggerElectron' ),
+                                                      filterIds      = cms.vint32( 0 ),
+                                                      filterLabels   = cms.vstring( '*' ),
+                                                      pathNames      = cms.vstring( '*' ),
+                                                      collectionTags = cms.vstring( '*' ),
+                                                  #    matchedCuts = cms.string( 'path( "HLT_Mu11" )' ),
+                                                      maxDPtRel = cms.double( 1000.0 ),
+                                                      maxDeltaR = cms.double( 0.2 ),
+                                                      resolveAmbiguities    = cms.bool( True ),
+                                                      resolveByMatchQuality = cms.bool( True )
+                                                  )
+
+switchOnTriggerMatching( process, [ 'muonTriggerMatchHLTMuon','electronTriggerMatchHLTElectron' ], sequence = 'analysisPath', hltProcess = '*' )
 
 
 process.outPath = cms.EndPath(process.out)

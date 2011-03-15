@@ -42,9 +42,11 @@ process.out = cms.OutputModule("PoolOutputModule",
         'keep *_cleanPatJets_*_PAT',
         'keep *_zee_*_PAT',
         'keep *_zmm_*_PAT',
+        'keep *_zem_*_PAT',
         'keep *_zjj_*_PAT',
         'keep *_hzzeejj_*_PAT',
         'keep *_hzzmmjj_*_PAT',
+        'keep *_hzzemjj_*_PAT',
         'keep *_offlinePrimaryVertices_*_*',
         #'keep *_TriggerResults*_*_HLT',
         #'keep *_hltTriggerSummaryAOD_*_HLT',
@@ -158,6 +160,12 @@ process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
     decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
 )
 
+process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
+    checkCharge = cms.bool(True),
+    cut = cms.string('mass > 50'),
+    decay = cms.string("selectedPatElectrons@+ selectedPatMuons@-")
+)
+
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
@@ -176,6 +184,12 @@ process.hzzmmjjBaseColl = cms.EDProducer("CandViewCombiner",
     decay = cms.string("zmm zjj")
 )   
 
+process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
+    checkCharge = cms.bool(False),
+    cut = cms.string(''),
+    decay = cms.string("zem zjj")
+)   
+
 process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
     higgs = cms.InputTag("hzzeejjBaseColl"),
     gensTag = cms.InputTag("genParticles"),
@@ -184,6 +198,13 @@ process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
 
 process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
     higgs = cms.InputTag("hzzmmjjBaseColl"),
+    gensTag = cms.InputTag("genParticles"),
+    metTag = cms.InputTag("patMETs")
+    )
+
+
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
+    higgs = cms.InputTag("hzzemjjBaseColl"),
     gensTag = cms.InputTag("genParticles"),
     metTag = cms.InputTag("patMETs")
     )
@@ -199,12 +220,15 @@ process.analysisPath = cms.Path(
     process.selectedPatMuons + 
     process.cleanPatJets +
     process.zee +
-    process.zmm + 
+    process.zmm +
+    process.zem + 
     process.zjj + 
     process.hzzeejjBaseColl + 
     process.hzzmmjjBaseColl +
+    process.hzzemjjBaseColl +
     process.hzzeejj + 
-    process.hzzmmjj
+    process.hzzmmjj +
+    process.hzzemjj
 )
 
 # Setup for a basic filtering
