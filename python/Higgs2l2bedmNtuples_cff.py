@@ -302,6 +302,18 @@ zee =(
     )
     )
 
+zem =(
+
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1VBTF80CombID"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"eidVBTFCom80\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2VBTF80CombID"),
+    quantity = cms.untracked.string("-1")
+    )    
+    )
+
 ###  zjj standard and bDiscriminator variables
 
 zjj = (
@@ -512,6 +524,11 @@ Higgs2e2bEdmNtuple.variables += zee
 Higgs2e2bEdmNtuple.src = cms.InputTag("hzzeejj:h")
 Higgs2e2bEdmNtuple.prefix = cms.untracked.string("elHiggs")
 
+Higgsemu2bEdmNtuple = copy.deepcopy(Higgs2mu2bEdmNtuple)
+Higgsemu2bEdmNtuple.variables += zem
+Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
+Higgsemu2bEdmNtuple.prefix = cms.untracked.string("elmuHiggs")
+
 
 edmNtuplesOut = cms.OutputModule(
     "PoolOutputModule",
@@ -519,7 +536,8 @@ edmNtuplesOut = cms.OutputModule(
     outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_Higgs2e2bEdmNtuple_*_*",
-    "keep *_Higgs2mu2bEdmNtuple_*_*"
+    "keep *_Higgs2mu2bEdmNtuple_*_*",
+    "keep *_Higgsemu2bEdmNtuple_*_*"
     
     )
     )
