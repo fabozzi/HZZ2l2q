@@ -17,7 +17,7 @@ process.source = cms.Source("PoolSource")
 
 #process.source.fileNames=cms.untracked.vstring('rfio:/castor/cern.ch/user/d/decosa/Higgs/h350/skim/h2l2b300GF_1_1_Ukh.root')
 process.source.fileNames=cms.untracked.vstring(
-    'file:h2l2b450GF.root',
+    'file:h2l2b450.root',
 )
 
 ####
@@ -69,7 +69,8 @@ process.analysisPath = cms.Path(
     process.muChannelAnalysis+
     process.muChannelSelection+
     process.Higgs2e2bEdmNtuple+
-    process.Higgs2mu2bEdmNtuple
+    process.Higgs2mu2bEdmNtuple+
+    process.Higgsemu2bEdmNtuple
     )
 
 process.endPath = cms.EndPath(process.edmNtuplesOut)
