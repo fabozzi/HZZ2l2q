@@ -233,7 +233,7 @@ process.analysisPath = cms.Path(
 
 # Setup for a basic filtering
 process.zll = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag("zee", "zmm")
+    src = cms.VInputTag("zee", "zmm", "zem")
 ) 
 
 process.zllFilter = cms.EDFilter("CandViewCountFilter",
@@ -246,9 +246,9 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
     minNumber = cms.uint32(2),
 )
 
-process.VBFFilter = cms.EDFilter("VBFFilter",
-    src = cms.InputTag("genParticles")
-)
+#process.VBFFilter = cms.EDFilter("VBFFilter",
+#    src = cms.InputTag("genParticles")
+#)
 
 process.filterPath = cms.Path(process.zll+process.zllFilter+process.jetFilter)
 
