@@ -20,9 +20,6 @@
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
-
 
 #include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
 #include "PhysicsTools/CandUtils/interface/Booster.h"
@@ -53,9 +50,9 @@ Higgs2l2bUserDataNoMC::Higgs2l2bUserDataNoMC( const ParameterSet & cfg ):
   metTag( cfg.getParameter<edm::InputTag>("metTag"))
 {
   produces<vector<pat::CompositeCandidate> >("h").setBranchAlias( "h" );
-  produces<float>( "met" ).setBranchAlias( "met" );  
-  produces<float>( "metPhi" ).setBranchAlias( "metPhi" );  
-  produces<float>( "metSig" ).setBranchAlias( "metSig" );  
+  //  produces<float>( "met" ).setBranchAlias( "met" );  
+  //  produces<float>( "metPhi" ).setBranchAlias( "metPhi" );  
+  //  produces<float>( "metSig" ).setBranchAlias( "metSig" );  
 
 }
 
@@ -71,12 +68,14 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
   
 
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
-  auto_ptr<float> met( new float );
-  auto_ptr<float> metPhi( new float );
-  auto_ptr<float> metSig( new float );
+  //  auto_ptr<float> met( new float );
+  //  auto_ptr<float> metPhi( new float );
+  //  auto_ptr<float> metSig( new float );
 
 
   float phi; 
+  float met, metSig, metPhi;
+  float met2, Px, Py; 
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta,jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
@@ -202,12 +201,20 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
        
     if (phi>M_PI/2) phi = M_PI -phi;
 
-    *met = met_h.front().et();
-    *metSig = met_h.front().mEtSig();
-    *metPhi = met_h.front().phi();
+    met = met_h.front().et();
+    //    cout<<"met: "<<met<<endl;
+    metSig = met_h.front().mEtSig();
+    metPhi = met_h.front().phi();
+    Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();
+    Py = zDauRefl0->py() + zDauRefl1->py() + zDauRefj0->py() + zDauRefj1->py();
+    met2 = sqrt(pow(Px,2)+pow(Py,2));
+
+    //    *met = met_h.front().et();
+    //    *metSig = met_h.front().mEtSig();
+    //    *metPhi = met_h.front().phi();
 
     h.addUserFloat("azimuthalAngle", phi);
-     h.addUserFloat("zzdPhi", zzdPhi);
+    h.addUserFloat("zzdPhi", zzdPhi);
     h.addUserFloat("zzdEta", zzdEta);
     h.addUserFloat("zzdr", zzdr);
     h.addUserFloat("lldPhi", lldPhi);
@@ -218,16 +225,19 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jjdr", jjdr);
     h.addUserFloat("jminid",jminid);
     h.addUserFloat("jmaxid",jmaxid);
-
+    h.addUserFloat("met",met);
+    h.addUserFloat("metSig",metSig);
+    h.addUserFloat("metPhi",metPhi);
+    h.addUserFloat("met2",met2);
     
     higgsColl->push_back(h);
     
   }
   
   evt.put( higgsColl, "h");
-  evt.put( met, "met");
-  evt.put( metSig, "metSig");
-  evt.put( metPhi, "metPhi");
+  //  evt.put( met, "met");
+  //  evt.put( metSig, "metSig");
+  //  evt.put( metPhi, "metPhi");
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"
