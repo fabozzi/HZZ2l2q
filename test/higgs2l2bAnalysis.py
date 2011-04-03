@@ -68,6 +68,7 @@ process.analysisPath = cms.Path(
     process.elChannelSelection+
     process.muChannelAnalysis+
     process.muChannelSelection+
+    process.eventVtxInfoNtuple+
     process.Higgs2e2bEdmNtuple+
     process.Higgs2mu2bEdmNtuple+
     process.Higgsemu2bEdmNtuple
