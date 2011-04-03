@@ -284,7 +284,7 @@ zll = (
     quantity = cms.untracked.string("(daughter(0).daughter(0).masterClone.hcalIso + daughter(0).daughter(0).masterClone.ecalIso + daughter(0).daughter(0).masterClone.trackIso )/ daughter(0).daughter(0).pt")
     ),
     cms.PSet(
-    tag = cms.untracked.string("LeptDau2CombrelIso"),
+    tag = cms.untracked.string("LeptDau2CombRelIso"),
     quantity = cms.untracked.string("(daughter(0).daughter(1).masterClone.hcalIso + daughter(0).daughter(1).masterClone.ecalIso + daughter(0).daughter(1).masterClone.trackIso )/ daughter(0).daughter(1).pt")
     ),
 
@@ -529,12 +529,18 @@ Higgsemu2bEdmNtuple.variables += zem
 Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
 Higgsemu2bEdmNtuple.prefix = cms.untracked.string("elmuHiggs")
 
+eventVtxInfoNtuple = cms.EDProducer(
+    "EventVtxInfoNtupleDumper",
+    primaryVertices=cms.InputTag("offlinePrimaryVertices")
+)
+
 
 edmNtuplesOut = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('Higgs2l2bEdmNtuples.root'),
     outputCommands = cms.untracked.vstring(
     "drop *",
+    "keep *_eventVtxInfoNtuple_*_*",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
     "keep *_Higgsemu2bEdmNtuple_*_*"
