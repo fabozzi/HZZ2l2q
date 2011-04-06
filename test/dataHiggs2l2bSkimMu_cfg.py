@@ -240,7 +240,7 @@ process.analysisPath = cms.Path(
 
 # Setup for a basic filtering
 process.zll = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag("zee", "zmm")
+    src = cms.VInputTag("zee", "zmm", "zem")
 ) 
 
 process.zllFilter = cms.EDFilter("CandViewCountFilter",
