@@ -1,7 +1,3 @@
-
-# jet flavor = "bb", "cc", "light"
-jetFlavorMC = "light"
-
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -187,19 +183,11 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      metTag = cms.InputTag("patMETs")
                                      )
 
-if jetFlavorMC == "light":
-    process.hfmatch = cms.EDProducer("AlpgenLightSamplesFlag")
-    print 'using light flag'
-if jetFlavorMC == "bb" :
-    process.hfmatch = cms.EDProducer("AlpgenBBSamplesFlag")
-    print 'using bb flag'
-if jetFlavorMC == "cc" :
-    process.hfmatch = cms.EDProducer("AlpgenCCSamplesFlag")
-    print 'using cc flag'
+process.hfmatch = cms.EDProducer("AlpgenMatching")
 
 readFiles.extend( [
 '/store/relval/CMSSW_4_1_3/RelValZMM/GEN-SIM-RECO/START311_V2-v1/0037/EEB7C520-C751-E011-94C9-0030486790BE.root'
- ] )
+] )
 
 process.source.fileNames = readFiles
 
@@ -271,8 +259,10 @@ process.out = cms.OutputModule("PoolOutputModule",
                 #'keep *_TriggerResults*_*_REDIGI*',
                 #'keep *_hltTriggerSummaryAOD_*_REDIGI*',
                   'keep *_offlinePrimaryVertices_*_*',
-                  'keep *_*_flavorflag_*',
-                ),
+                  'keep *_*_alpgenflavorflag_*',
+                  'keep *_*_alpgendrcc_*',
+                  'keep *_*_alpgendrbb_*',
+                  ),
 )
 
 process.out.SelectEvents = cms.untracked.PSet(
