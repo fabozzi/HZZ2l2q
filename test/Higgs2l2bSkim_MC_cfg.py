@@ -254,7 +254,8 @@ process.out = cms.OutputModule("PoolOutputModule",
                 #'keep *_TriggerResults*_*_REDIGI*',
                 #'keep *_hltTriggerSummaryAOD_*_REDIGI*',
                   'keep *_offlinePrimaryVertices_*_*',
-                ),
+                  'keep PileupSummaryInfos_*_*_*',
+                  ),
 )
 
 process.out.SelectEvents = cms.untracked.PSet(

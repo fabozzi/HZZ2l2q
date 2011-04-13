@@ -183,6 +183,9 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      metTag = cms.InputTag("patMETs")
                                      )
 
+
+process.LeptonTypeCounting = cms.EDFilter('LeptonTypeCounting')
+
 process.hfmatch = cms.EDProducer("AlpgenMatching")
 
 readFiles.extend( [
@@ -196,6 +199,7 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 # let it run
 
 process.p = cms.Path(
+    process.LeptonTypeCounting +
     process.eidSequence +
     process.patDefaultSequence +
     process.cleanPatJets +
@@ -259,6 +263,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                 #'keep *_TriggerResults*_*_REDIGI*',
                 #'keep *_hltTriggerSummaryAOD_*_REDIGI*',
                   'keep *_offlinePrimaryVertices_*_*',
+                  'keep PileupSummaryInfos_*_*_*',
                   'keep *_*_alpgenflavorflag_*',
                   'keep *_*_alpgendrcc_*',
                   'keep *_*_alpgendrbb_*',
