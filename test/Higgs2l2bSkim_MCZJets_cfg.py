@@ -242,7 +242,7 @@ process.filterPath = cms.Path(
 
 # Output Module : Hopefully we keep all we need
 process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('file:/tmp/fabozzi/h2l2bData.root'),
+                 fileName = cms.untracked.string('h2l2bData.root'),
                  SelectEvents = cms.untracked.PSet(
                     SelectEvents = cms.vstring("filterPath")
                  ),
