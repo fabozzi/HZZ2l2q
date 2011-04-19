@@ -7,8 +7,9 @@ process.GlobalTag.globaltag = 'START311_V2::All'
 
 
 # Jet energy corrections to use: 
-inputJetCorrLabel = ('AK5PF', ['L2Relative', 'L3Absolute'])
-#inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute'])
+# 'L2L3Residual' not to be applied on MC  
+# inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 
 # Switch to using PFMET 
 from PhysicsTools.PatAlgos.tools.pfTools import *
@@ -20,6 +21,31 @@ switchToPFMET(
 
 # Add PF jets
 from PhysicsTools.PatAlgos.tools.jetTools import *
+
+process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
+process.load('RecoJets.Configuration.RecoPFJets_cff')
+
+process.kt6PFJets.doRhoFastjet = True
+process.kt6PFJets.Rho_EtaMax = cms.double(5.0)
+process.kt6PFJets.Ghost_EtaMax = cms.double(5.0)
+process.ak5PFJets.doAreaFastjet = True
+process.ak5PFJets.Rho_EtaMax = cms.double(2.5)
+
+process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets','rho')
+
+addJetCollection(process,cms.InputTag('ak5PFJets'),
+                 'AK5','PFOffset',
+                 doJTA        = True,
+                 doBTagging   = True,
+                 jetCorrLabel = ('AK5PF', cms.vstring(['L1Offset', 'L2Relative', 'L3Absolute'])),
+                 doType1MET   = False,
+                 doL1Cleaning   = False,
+                 doL1Counters   = True,
+                 genJetCollection=cms.InputTag("ak5GenJets"),
+                 doJetID      = True,
+                 jetIdLabel   = "ak5"
+                 )
+
 switchJetCollection(process,cms.InputTag('ak5PFJets'),
                  doJTA        = True,
                  doBTagging   = True,
@@ -120,6 +146,32 @@ process.cleanPatJets = cms.EDProducer("PATJetCleaner",
                            finalCut = cms.string('')
 )
 
+process.cleanPatJetsAK5PFOffset = cms.EDProducer("PATJetCleaner",
+                           src = cms.InputTag("patJetsAK5PFOffset"),
+                           preselection = cms.string('pt > 30.0 && abs(eta) < 2.4'),
+                           checkOverlaps = cms.PSet(
+                              muons = cms.PSet(
+                                          src = cms.InputTag("selectedPatMuons"),
+                                          algorithm = cms.string("byDeltaR"),
+                                          preselection = cms.string(""),
+                                          deltaR = cms.double(0.5),
+                                          checkRecoComponents = cms.bool(False),
+                                          pairCut = cms.string(""),
+                                          requireNoOverlaps = cms.bool(True),
+                              ),
+                              electrons = cms.PSet(
+                                              src = cms.InputTag("selectedPatElectrons"),
+                                              algorithm = cms.string("byDeltaR"),
+                                              preselection = cms.string(""),
+                                              deltaR = cms.double(0.5),
+                                              checkRecoComponents = cms.bool(False),
+                                              pairCut = cms.string(""),
+                                              requireNoOverlaps = cms.bool(True),
+                             )
+                           ),
+                           finalCut = cms.string('')
+)
+
 
 # Z Candidates and Higgs Candidates
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
@@ -165,19 +217,19 @@ process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
                                          )
 
 
-process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzeejjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      metTag = cms.InputTag("patMETs")
                                      )
 
-process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzmmjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      metTag = cms.InputTag("patMETs")
                                      )
 
-process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzemjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      metTag = cms.InputTag("patMETs")
@@ -189,7 +241,8 @@ process.LeptonTypeCounting = cms.EDFilter('LeptonTypeCounting')
 process.hfmatch = cms.EDProducer("AlpgenMatching")
 
 readFiles.extend( [
-'/store/relval/CMSSW_4_1_3/RelValZMM/GEN-SIM-RECO/START311_V2-v1/0037/EEB7C520-C751-E011-94C9-0030486790BE.root'
+#'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
+'file:/data3/scratch/cms/mc/Spring11/Z2Jets_ptZ-100to300/F68E44F1-225E-E011-A50B-001A4BA551B8.root'
 ] )
 
 process.source.fileNames = readFiles
@@ -200,9 +253,11 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 
 process.p = cms.Path(
     process.LeptonTypeCounting +
-    process.eidSequence +
-    process.patDefaultSequence +
-    process.cleanPatJets +
+    process.recoPFJets *
+    process.eidSequence *
+    process.patDefaultSequence *
+    process.cleanPatJets *
+    process.cleanPatJetsAK5PFOffset *
     process.zee +
     process.zmm +
     process.zem +
@@ -214,8 +269,7 @@ process.p = cms.Path(
     process.hzzmmjj +
     process.hzzemjj +
     process.hfmatch
-#    process.goodPatJets
-    )
+)
 
 
 # Setup for a basic filtering
@@ -251,6 +305,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_selectedPatElectrons_*_PAT',
                   'keep *_selectedPatMuons_*_PAT',
                   'keep *_cleanPatJets_*_PAT',
+                  'keep *_cleanPatJetsAK5PFOffset_*_PAT',
                   'keep *_zee_*_PAT',
                   'keep *_zmm_*_PAT',
                   'keep *_zem_*_PAT',
@@ -312,6 +367,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 500
+process.maxEvents.input = 1000
 process.options.wantSummary = True
 

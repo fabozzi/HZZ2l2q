@@ -28,7 +28,7 @@ process.GlobalTag.globaltag = 'GR_R_311_V2::All'
 ##   'HLT_Jet370_v1',
 ##   'HLT_Jet60_v1',
 ##   'HLT_Jet80_v1' ),
-mytrigs = ['*']
+# mytrigs = ['*']
 
 # Jet energy corrections to use: 
 #inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
@@ -116,32 +116,33 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
 #process.patDefaultSequence.remove( process.patTaus )
 
 # require physics declared
-process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
-process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
+#process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
+#process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
 
 # require scraping filter
-process.scrapingVeto = cms.EDFilter("FilterOutScraping",
-                                    applyfilter = cms.untracked.bool(True),
-                                    debugOn = cms.untracked.bool(False),
-                                    numtrack = cms.untracked.uint32(10),
-                                    thresh = cms.untracked.double(0.2)
-                                    )
+#process.scrapingVeto = cms.EDFilter("FilterOutScraping",
+#                                    applyfilter = cms.untracked.bool(True),
+#                                    debugOn = cms.untracked.bool(False),
+#                                    numtrack = cms.untracked.uint32(10),
+#                                    thresh = cms.untracked.double(0.2)
+#                                    )
 # HB + HE noise filtering
-process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
-
-
-from HLTrigger.HLTfilters.hltHighLevel_cfi import *
-if mytrigs is not None :
-    process.hltSelection = hltHighLevel.clone(TriggerResultsTag = 'TriggerResults::HLT', HLTPaths = mytrigs)
-    process.hltSelection.throw = False
-
-
-process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
-                                           vertexCollection = cms.InputTag('offlinePrimaryVertices'),
-                                           minimumNDOF = cms.uint32(4) ,
-                                           maxAbsZ = cms.double(24), 
-                                           maxd0 = cms.double(2) 
-                                           )
+#process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
+#
+#
+#
+#from HLTrigger.HLTfilters.hltHighLevel_cfi import *
+#if mytrigs is not None :
+#    process.hltSelection = hltHighLevel.clone(TriggerResultsTag = 'TriggerResults::HLT', HLTPaths = mytrigs)
+#    process.hltSelection.throw = False
+#
+#
+#process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+#                                           vertexCollection = cms.InputTag('offlinePrimaryVertices'),
+#                                           minimumNDOF = cms.uint32(4) ,
+#                                           maxAbsZ = cms.double(24), 
+#                                           maxd0 = cms.double(2) 
+#                                           )
 
 
 # Select jets
@@ -334,10 +335,10 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 # let it run
 
 process.p = cms.Path(
-    process.hltSelection*
-    process.scrapingVeto*
-    process.primaryVertexFilter*
-    process.HBHENoiseFilter*
+#    process.hltSelection*
+#    process.scrapingVeto*
+#    process.primaryVertexFilter*
+#    process.HBHENoiseFilter*
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence*
@@ -374,10 +375,10 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
 
 
 process.filterPath = cms.Path(
-    process.hltSelection *
-    process.scrapingVeto *
-    process.primaryVertexFilter *
-    process.HBHENoiseFilter *
+#    process.hltSelection *
+#    process.scrapingVeto *
+#    process.primaryVertexFilter *
+#    process.HBHENoiseFilter *
     process.zll *
     process.zllFilter *
     process.jetFilter

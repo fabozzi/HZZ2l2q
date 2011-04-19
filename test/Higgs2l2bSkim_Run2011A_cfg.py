@@ -1,6 +1,3 @@
-# This is an example PAT configuration showing the usage of PAT on minbias data
-
-# Starting with a skeleton process which gets imported with the following line
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 from PhysicsTools.PatAlgos.tools.coreTools import *
