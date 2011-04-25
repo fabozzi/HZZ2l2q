@@ -6,8 +6,8 @@
 /// Written by O. Gonzalez (5/IV/2011)
 /// </PRE>
 
-#ifndef __ALPGENMATCHING__H_
-#define __ALPGENMATCHING__H_
+#ifndef ___ALPGENMATCHING__H_
+#define ___ALPGENMATCHING__H_
 
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -42,6 +42,8 @@ class AlpgenMatching : public edm::EDProducer {
   // Configuration variables through Python
 
   bool doPlots_;  ///< To fill the histograms.
+  float plotWeight_;  ///< Weight to be used to fill the histograms.
+
 
   float singleCPtCut_;  ///< Matching value for the single-C samples.
   float deltaRCut_;  ///< Matching value for Delta-R for the CC and BB pairs.
@@ -70,6 +72,12 @@ class AlpgenMatching : public edm::EDProducer {
     TH1D *pt_singlec;
     TH1D *dr_cc;
     TH1D *dr_bb;
+    
+    TH1D *ptmin_prodc;
+    TH1D *ymax_prodc;
+
+    TH1D *ptmin_prodb;
+    TH1D *ymax_prodb;
   } _control;
 
 
