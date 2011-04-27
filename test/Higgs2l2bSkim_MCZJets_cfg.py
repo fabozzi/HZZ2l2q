@@ -54,10 +54,10 @@ switchJetCollection(process,cms.InputTag('ak5PFJets'),
                  genJetCollection=cms.InputTag("ak5GenJets"),
                  doJetID      = True
                  )
-#process.patJets.addTagInfos = True
-#process.patJets.tagInfoSources  = cms.VInputTag(
-#    cms.InputTag("secondaryVertexTagInfosAOD"),
-#    )
+process.patJets.addTagInfos = True
+process.patJets.tagInfoSources  = cms.VInputTag(
+    cms.InputTag("secondaryVertexTagInfosAOD"),
+)
 
 # Apply loose PF jet ID
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
@@ -241,8 +241,8 @@ process.LeptonTypeCounting = cms.EDFilter('LeptonTypeCounting')
 process.hfmatch = cms.EDProducer("AlpgenMatching")
 
 readFiles.extend( [
-#'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
-'file:/data3/scratch/cms/mc/Spring11/Z2Jets_ptZ-100to300/F68E44F1-225E-E011-A50B-001A4BA551B8.root'
+'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
+#'file:/data3/scratch/cms/mc/Spring11/Z2Jets_ptZ-100to300/F68E44F1-225E-E011-A50B-001A4BA551B8.root'
 ] )
 
 process.source.fileNames = readFiles
@@ -318,6 +318,9 @@ process.out = cms.OutputModule("PoolOutputModule",
                 #'keep *_TriggerResults*_*_REDIGI*',
                 #'keep *_hltTriggerSummaryAOD_*_REDIGI*',
                   'keep *_offlinePrimaryVertices_*_*',
+                  'keep *_secondaryVertexTagInfos*_*_*',
+                  'keep *_*_*tagInfo*_*',
+                  'keep *_generalTracks_*_*',
                   'keep PileupSummaryInfos_*_*_*',
                   'keep *_*_alpgenflavorflag_*',
                   'keep *_*_alpgendrcc_*',
