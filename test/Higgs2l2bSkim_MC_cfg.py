@@ -54,10 +54,10 @@ switchJetCollection(process,cms.InputTag('ak5PFJets'),
                  genJetCollection=cms.InputTag("ak5GenJets"),
                  doJetID      = True
                  )
-#process.patJets.addTagInfos = True
-#process.patJets.tagInfoSources  = cms.VInputTag(
-#    cms.InputTag("secondaryVertexTagInfosAOD"),
-#    )
+process.patJets.addTagInfos = True
+process.patJets.tagInfoSources  = cms.VInputTag(
+    cms.InputTag("secondaryVertexTagInfosAOD"),
+    )
 
 # Apply loose PF jet ID
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
@@ -307,6 +307,9 @@ process.out = cms.OutputModule("PoolOutputModule",
                 #'keep *_TriggerResults*_*_REDIGI*',
                 #'keep *_hltTriggerSummaryAOD_*_REDIGI*',
                   'keep *_offlinePrimaryVertices_*_*',
+                  'keep *_secondaryVertexTagInfos*_*_*',
+                  'keep *_*_*tagInfo*_*',
+                  'keep *_generalTracks_*_*',
                   'keep PileupSummaryInfos_*_*_*',
                   ),
 )
