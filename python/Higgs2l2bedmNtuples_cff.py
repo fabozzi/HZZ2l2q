@@ -543,7 +543,7 @@ edmNtuplesOut = cms.OutputModule(
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
-    "keep *_Higgsemu2bEdmNtuple_*_*"
+#    "keep *_Higgsemu2bEdmNtuple_*_*"
     
     )
     )
