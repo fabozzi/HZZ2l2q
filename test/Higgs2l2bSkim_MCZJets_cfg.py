@@ -2,8 +2,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 from PhysicsTools.PatAlgos.tools.coreTools import *
 
-## global tag for data
-process.GlobalTag.globaltag = 'START311_V2::All'
+## global tag for MC
+process.GlobalTag.globaltag = 'START42_V12::All'
 
 
 # Jet energy corrections to use: 
@@ -67,10 +67,6 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
                                    filter = cms.bool(True)
                                    )
 
-
-# Taus are currently broken in 4.1.x
-#removeSpecificPATObjects( process, ['Taus'] )
-#process.patDefaultSequence.remove( process.patTaus )
 
 # Select jets
 process.selectedPatJets.cut = cms.string('pt > 25')
@@ -241,8 +237,9 @@ process.LeptonTypeCounting = cms.EDFilter('LeptonTypeCounting')
 process.hfmatch = cms.EDProducer("AlpgenMatching")
 
 readFiles.extend( [
-'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
+#'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
 #'file:/data3/scratch/cms/mc/Spring11/Z2Jets_ptZ-100to300/F68E44F1-225E-E011-A50B-001A4BA551B8.root'
+'/store/relval/CMSSW_4_2_2/RelValZmumuJets_Pt_20_300_GEN/GEN-SIM-RECO/MC_42_V11_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1/0043/1C271127-FA70-E011-B2E7-001A92810ADE.root'
 ] )
 
 process.source.fileNames = readFiles

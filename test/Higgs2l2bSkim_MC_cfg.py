@@ -3,7 +3,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 
 ## global tag for data
-process.GlobalTag.globaltag = 'START311_V2::All'
+process.GlobalTag.globaltag = 'START42_V12::All'
 
 
 # Jet energy corrections to use: 
@@ -66,10 +66,6 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
                                    src = cms.InputTag("selectedPatJets"),
                                    filter = cms.bool(True)
                                    )
-
-# Taus are currently broken in 4.1.x
-#removeSpecificPATObjects( process, ['Taus'] )
-#process.patDefaultSequence.remove( process.patTaus )
 
 # Select jets
 process.selectedPatJets.cut = cms.string('pt > 25')
@@ -234,7 +230,7 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      )
 
 readFiles.extend( [
-'file:/data3/scratch/cms/mc/Spring11/SMHiggsToZZTo2L2Q_M-350/2EEBD929-0655-E011-AA5C-002481E150FC.root'
+'/store/relval/CMSSW_4_2_2/RelValTTbar_Tauola/GEN-SIM-RECO/START42_V11_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1/0043/5E8620EE-FA70-E011-A6BD-001A928116CC.root'
  ] )
 
 process.source.fileNames = readFiles
@@ -356,6 +352,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 500
+process.maxEvents.input = 1000
 process.options.wantSummary = True
 

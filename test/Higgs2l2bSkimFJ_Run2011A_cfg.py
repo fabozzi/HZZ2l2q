@@ -5,7 +5,7 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 
 
 ## global tag for data
-process.GlobalTag.globaltag = 'GR_R_311_V2::All'
+process.GlobalTag.globaltag = 'GR_R_42_V12::All'
 
 
 # Triggers for the /Jet PD are from:
@@ -32,8 +32,9 @@ process.GlobalTag.globaltag = 'GR_R_311_V2::All'
 
 # Jet energy corrections to use: 
 #inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
-inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
-#inputJetCorrLabel_Off = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+#inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+# no residual correction in 4_2_X: 
+inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 # add pf met
 #from PhysicsTools.PatAlgos.tools.metTools import *
@@ -109,11 +110,6 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
                                    src = cms.InputTag("selectedPatJets"),
                                    filter = cms.bool(True)
                                    )
-
-
-# Taus are currently broken in 4.1.x
-#removeSpecificPATObjects( process, ['Taus'] )
-#process.patDefaultSequence.remove( process.patTaus )
 
 # require physics declared
 #process.load('HLTrigger.special.hltPhysicsDeclared_cfi')
@@ -311,14 +307,6 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
 
 readFiles.extend( [
 'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/38A1F398-C457-E011-A667-001D09F25208.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/58332B2F-D657-E011-9903-001D09F2915A.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/684D45C3-C157-E011-AF2F-001D09F28F1B.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/828B7A9A-D057-E011-974B-001D09F24E39.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/844F6339-5A58-E011-85EF-0030487CD14E.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/982EC5DC-BC57-E011-9C26-001617C3B6DE.root',
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/EAB04FCF-CF57-E011-BBC3-003048F117B4.root'
-#'/store/data/Run2011A/DoubleMu/AOD/PromptReco-v1/000/160/547/1440E855-B850-E011-9D36-0030487C7392.root',
-#'/store/data/Run2011A/DoubleMu/AOD/PromptReco-v1/000/160/498/8202B064-8450-E011-AEFA-0030487CD840.root'
  ] )
 
 process.source.fileNames = readFiles
