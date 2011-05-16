@@ -28,6 +28,7 @@
 #include "PhysicsTools/CandUtils/interface/Booster.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 
 #include <Math/VectorUtil.h>
 #include <vector>
@@ -44,8 +45,8 @@ private:
   void produce( edm::Event &, const edm::EventSetup & );
   
   InputTag higgsTag, gensTag, metTag;
- 
-   
+  PFJetIDSelectionFunctor jetIDLoose;
+  pat::strbitset ret; 
 
 };
 
@@ -54,8 +55,12 @@ private:
 Higgs2l2bUserData::Higgs2l2bUserData( const ParameterSet & cfg ):
   higgsTag( cfg.getParameter<InputTag>( "higgs" ) ),
   gensTag( cfg.getParameter<edm::InputTag>("gensTag")),
-  metTag( cfg.getParameter<edm::InputTag>("metTag"))
+  metTag( cfg.getParameter<edm::InputTag>("metTag")),
+  jetIDLoose( PFJetIDSelectionFunctor::FIRSTDATA,
+	      PFJetIDSelectionFunctor::LOOSE )
 {
+  ret = jetIDLoose.getBitTemplate();
+
   produces<vector<pat::CompositeCandidate> >("h").setBranchAlias( "h" );
 
 }
@@ -81,6 +86,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta,jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
+  float j0LooseID, j1LooseID;
   bool  jminbmatch, jmincmatch, jmaxbmatch, jmaxcmatch;
   float  lminpt, lmineta, lminphi, lmaxpt, lmaxeta, lmaxphi, jminpt, jmineta, jminphi, jmaxpt,  jmaxeta,  jmaxphi;
   
@@ -119,6 +125,9 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     jjdEta = fabs(zDauRefj0->eta() - zDauRefj1->eta());
     jjdr = deltaR(zDauRefj0->eta(), zDauRefj0->phi(), zDauRefj1->eta(), zDauRefj1->phi() );
 
+    // store jetID for Z->jj daughters
+    j0LooseID = (float) jetIDLoose( j0, ret );
+    j1LooseID = (float) jetIDLoose( j1, ret );
    
     if(j0.pt() < j1.pt() ){      
       neutralEmEnergy = j0.neutralEmEnergy();
@@ -243,6 +252,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("metSig",metSig);
     h.addUserFloat("metPhi",metPhi);
     h.addUserFloat("met2",met2);
+    h.addUserFloat("jet1LooseID",j0LooseID);
+    h.addUserFloat("jet2LooseID",j1LooseID);
 
     higgsColl->push_back(h);
   }

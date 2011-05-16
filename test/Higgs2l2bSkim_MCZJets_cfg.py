@@ -117,7 +117,7 @@ process.selectedPatElectrons.cut = (
 
 # Clean the Jets from the seleted leptons
 process.cleanPatJets = cms.EDProducer("PATJetCleaner",
-                           src = cms.InputTag("patJets"),
+                           src = cms.InputTag("selectedPatJets"),
                            preselection = cms.string('pt > 30.0 && abs(eta) < 2.4'),
                            checkOverlaps = cms.PSet(
                               muons = cms.PSet(

@@ -104,6 +104,14 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("jjdr"),
     quantity = cms.untracked.string("userFloat('jjdr')")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1LooseID"),
+    quantity = cms.untracked.string("userFloat('jet1LooseID')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2LooseID"),
+    quantity = cms.untracked.string("userFloat('jet2LooseID')")
+    ),
 
     )
     )
@@ -541,6 +549,7 @@ edmNtuplesOut = cms.OutputModule(
     outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_eventVtxInfoNtuple_*_*",
+    'keep *_kt6PFJets_rho_PAT',
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
 #    "keep *_Higgsemu2bEdmNtuple_*_*"
