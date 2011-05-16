@@ -116,7 +116,7 @@ process.selectedPatElectrons.cut = (
 
 # Clean the Jets from the seleted leptons
 process.cleanPatJets = cms.EDProducer("PATJetCleaner",
-                           src = cms.InputTag("patJets"),
+                           src = cms.InputTag("selectedPatJets"),
                            preselection = cms.string('pt > 30.0 && abs(eta) < 2.4'),
                            checkOverlaps = cms.PSet(
                               muons = cms.PSet(
@@ -281,7 +281,7 @@ process.filterPath = cms.Path(
 
 # Output Module : Hopefully we keep all we need
 process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('/tmp/fabozzi/h2l2bData.root'),
+                 fileName = cms.untracked.string('h2l2bData.root'),
                  SelectEvents = cms.untracked.PSet(
                     SelectEvents = cms.vstring("filterPath")
                  ),

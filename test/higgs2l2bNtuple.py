@@ -16,10 +16,10 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('h2l2b4
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-    'file:/data3/scratch/users/decosa/Higgs/Z0Jets/skim/h2l2bData_10_1_RX7.root'
+    'file:/tmp/fabozzi/h2l2bData.root'
 )
 
-process.edmNtuplesOut.fileName = cms.untracked.string('ntupleMu/h2l2b_ntuple_old_withemu.root')
+process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
 
