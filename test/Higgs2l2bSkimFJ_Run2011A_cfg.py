@@ -56,10 +56,10 @@ process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 process.load('RecoJets.Configuration.RecoPFJets_cff')
 
 process.kt6PFJets.doRhoFastjet = True
-process.kt6PFJets.Rho_EtaMax = cms.double(5.0)
-process.kt6PFJets.Ghost_EtaMax = cms.double(5.0)
+#process.kt6PFJets.Rho_EtaMax = cms.double(5.0)
+#process.kt6PFJets.Ghost_EtaMax = cms.double(5.0)
 process.ak5PFJets.doAreaFastjet = True
-process.ak5PFJets.Rho_EtaMax = cms.double(2.5)
+#process.ak5PFJets.Rho_EtaMax = cms.double(2.5)
 
 process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets','rho')
 
@@ -330,7 +330,7 @@ process.p = cms.Path(
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence*
-    process.cleanPatJets *
+#    process.cleanPatJets *
     process.cleanPatJetsAK5PFOffset *
     process.zee +
     process.zmm +
