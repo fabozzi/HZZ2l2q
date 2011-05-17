@@ -112,7 +112,42 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("JetDau2LooseID"),
     quantity = cms.untracked.string("userFloat('jet2LooseID')")
     ),
-
+    cms.PSet(
+    tag = cms.untracked.string("costhetaNT1"),
+    quantity = cms.untracked.string("userFloat('costhetaNT1')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("costhetaNT2"),
+    quantity = cms.untracked.string("userFloat('costhetaNT2')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phistarNT1"),
+    quantity = cms.untracked.string("userFloat('phistarNT1')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phistarNT2"),
+    quantity = cms.untracked.string("userFloat('phistarNT2')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phistarNT12"),
+    quantity = cms.untracked.string("userFloat('phistarNT12')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phiNT"),
+    quantity = cms.untracked.string("userFloat('phiNT')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phiNT1"),
+    quantity = cms.untracked.string("userFloat('phiNT1')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phiNT2"),
+    quantity = cms.untracked.string("userFloat('phiNT2')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("costhetastarNT"),
+    quantity = cms.untracked.string("userFloat('costhetastarNT')")
+    ),
     )
     )
 
