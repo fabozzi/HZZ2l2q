@@ -29,6 +29,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+#include "HiggsAnalysis/Higgs2l2b/interface/Helicity.h"
 
 #include <Math/VectorUtil.h>
 #include <vector>
@@ -43,11 +44,13 @@ public:
 
 private:
   void produce( edm::Event &, const edm::EventSetup & );
-  
+  void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
+
   InputTag higgsTag, gensTag, metTag;
   PFJetIDSelectionFunctor jetIDLoose;
   pat::strbitset ret; 
-
+  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
+    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
 };
 
 
@@ -109,8 +112,12 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     const Candidate * zDauRefj1 = H.daughter(1)->daughter(1);  
     const pat::Jet & j1 = dynamic_cast<const pat::Jet &>(*(zDauRefj1->masterClone()));
     Candidate * boostedJ1_HFrame = zDauRefj1->clone();
-
     
+    const reco::Candidate * Zll = h.daughter(0);
+    const reco::Candidate * Zjj = h.daughter(1);
+    
+    helicityAngles(h, Zll, Zjj);
+
     // dPhi, dEta, dr between H and Zs daughters
     
     zzdPhi = fabs(deltaPhi(H.daughter(0)->phi(),H.daughter(1)->phi() ) ) ;
@@ -254,6 +261,16 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("met2",met2);
     h.addUserFloat("jet1LooseID",j0LooseID);
     h.addUserFloat("jet2LooseID",j1LooseID);
+    h.addUserFloat("costhetaNT1",costhetaNT1);
+    h.addUserFloat("costhetaNT2",costhetaNT2);
+    h.addUserFloat("phistarNT1", phistarNT1);
+    h.addUserFloat("phistarNT2", phistarNT2);
+    h.addUserFloat("phistarNT12", phistarNT12);  
+    h.addUserFloat("phiNT",phiNT);
+    h.addUserFloat("phiNT1",phiNT1);
+    h.addUserFloat("phiNT2",phiNT2);
+    h.addUserFloat("costhetastarNT",costhetastarNT);
+
 
     higgsColl->push_back(h);
   }
@@ -263,7 +280,97 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
 
 }
 
+
+void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const reco::Candidate *Z1, const reco::Candidate *Z2) {
+
+   TLorentzVector myp4H(X.p4().x(),X.p4().y(),X.p4().z(),X.p4().e() );
+   TLorentzVector myp4Z1(Z1->p4().x(),Z1->p4().y(),Z1->p4().z(),Z1->p4().e());
+   TLorentzVector myp4Z2(Z2->p4().x(),Z2->p4().y(),Z2->p4().z(),Z2->p4().e());
+
+   TLorentzVector myp4M11(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M12(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M21(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M22(0.0,0.0,0.0,0.0);
+
+   //output
+   costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
+   phistarNT1  = -8.80; phistarNT2  = -8.80; phistarNT12    = -8.80;
+   phiNT       = -8.80; phiNT1      = -8.80; phiNT2         = -8.80;
+
+   // Zll is always Z1 (in our case)
+   bool Zllis1=true;
+
+   // pick the jet with pos azim angle in the Zjj rest frame
+   reco::Candidate * Zjjb = Z2->clone();
+   CenterOfMassBooster boostZjj(*Zjjb);
+   boostZjj.set(*Zjjb);
+
+   int posphiZjjdau=-1;
+   for(size_t dau=0;dau<2;dau++){    //Zjjb->numberOfDaughters();dau++){ //careful! there 4 daughters!
+     if(Zjjb->daughter(dau)->phi()>0) posphiZjjdau = dau;
+   }
+   // std::cout << " ### posphiZjjdau " << posphiZjjdau << " ###" << std::endl;
+
+   if(Zllis1){
+     //set as lepton #1 the negative one
+     if(Z1->daughter(0)->charge()<0.0){
+        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+     }
+     else{
+        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+     }
+     //set as jet #1 the pos phi one
+     if( posphiZjjdau==0){
+        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+     }
+     else{
+        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+     }
+   }//end if Z1 == Z->ll
+   else{
+     //set as lepton #1 the negative one
+     if(Z2->daughter(0)->charge()<0.0){
+        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+     }
+     else{
+        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+     }
+     //set as jet #1 the pos phi one
+     if( posphiZjjdau==0 ){
+        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+     }
+     else{
+        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+     }
+   }
+
+   bool swapped=false;
+
+   Helicity myAngles;
+
+   myAngles.calculateAngles(myp4H, myp4Z1, myp4M11, myp4M12, myp4Z2, myp4M21, myp4M22,
+                            costhetaNT1, costhetaNT2, phiNT, costhetastarNT,
+                            phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2,swapped);
+
+// std::cout << "Helicity angles: "<<
+//              costhetaNT1 <<" , "<< costhetaNT2 <<" , "<< costhetastarNT <<" , "<<
+//              phistarNT1  <<" , "<< phistarNT2  <<" , "<< phistarNT12    <<" , "<<
+//              phiNT       <<" , "<< phiNT1      <<" , "<< phiNT2         << std::endl;
+
+}
+
+
+
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 DEFINE_FWK_MODULE( Higgs2l2bUserData );
+
 
