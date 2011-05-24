@@ -123,9 +123,11 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
 #                                    thresh = cms.untracked.double(0.2)
 #                                    )
 # HB + HE noise filtering
-#process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
-#
-#
+process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
+
+# ECAL noise filtering
+process.load('JetMETAnalysis.ecalDeadCellTools.EcalDeadCellEventFilter_cfi')
+
 #
 #from HLTrigger.HLTfilters.hltHighLevel_cfi import *
 #if mytrigs is not None :
@@ -326,7 +328,8 @@ process.p = cms.Path(
 #    process.hltSelection*
 #    process.scrapingVeto*
 #    process.primaryVertexFilter*
-#    process.HBHENoiseFilter*
+    process.HBHENoiseFilter*
+    process.EcalDeadCellEventFilter*
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence*
@@ -366,7 +369,8 @@ process.filterPath = cms.Path(
 #    process.hltSelection *
 #    process.scrapingVeto *
 #    process.primaryVertexFilter *
-#    process.HBHENoiseFilter *
+    process.HBHENoiseFilter *
+    process.EcalDeadCellEventFilter *
     process.zll *
     process.zllFilter *
     process.jetFilter

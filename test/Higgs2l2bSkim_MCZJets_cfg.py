@@ -67,6 +67,11 @@ process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
                                    filter = cms.bool(True)
                                    )
 
+# HB + HE noise filtering
+process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
+
+# ECAL noise filtering
+process.load('JetMETAnalysis.ecalDeadCellTools.EcalDeadCellEventFilter_cfi')
 
 # Select jets
 process.selectedPatJets.cut = cms.string('pt > 25')
@@ -250,6 +255,8 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 
 process.p = cms.Path(
     process.LeptonTypeCounting +
+    process.HBHENoiseFilter*
+    process.EcalDeadCellEventFilter*
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence *
@@ -286,6 +293,8 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
 
 
 process.filterPath = cms.Path(
+    process.HBHENoiseFilter *
+    process.EcalDeadCellEventFilter *
     process.zll *
     process.zllFilter *
     process.jetFilter
