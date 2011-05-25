@@ -41,8 +41,16 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("userFloat('met2')")
     ),
     cms.PSet(
+    tag = cms.untracked.string("MetSumEt"),
+    quantity = cms.untracked.string("userFloat('metSumEt')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("MetSig"),
     quantity = cms.untracked.string("userFloat('metSig')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MetSignificance"),
+    quantity = cms.untracked.string("userFloat('metSignificance')")
     ),
     cms.PSet(
     tag = cms.untracked.string("MetPhi"),
