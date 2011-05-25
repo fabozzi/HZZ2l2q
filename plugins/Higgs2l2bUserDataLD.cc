@@ -51,8 +51,8 @@ void Higgs2l2bUserDataLD::produce( Event & evt, const EventSetup & ) {
   float j1RefitPt, j2RefitPt;
   float j1RefitEta, j2RefitEta;
   float j1RefitPhi, j2RefitPhi;
-  //  float j1RefitE, j2RefitE;
-  //  float ZjjRefitMass;
+  float j1RefitE, j2RefitE;
+  float ZjjRefitMass;
   float HZZRefitMass;
   float KFchiSquare, KFchiSquareProb;
 
@@ -92,9 +92,9 @@ void Higgs2l2bUserDataLD::produce( Event & evt, const EventSetup & ) {
       j2RefitEta = j2corr.Eta();
       j1RefitPhi = j1corr.Phi(); 
       j2RefitPhi = j2corr.Phi();
-      //     j1RefitE = j1corr.E(); 
-      //     j2RefitE = j1corr.E();
-      //      ZjjRefitMass = Zjj4mom.M();
+      j1RefitE = j1corr.E(); 
+      j2RefitE = j1corr.E();
+      ZjjRefitMass = Zjj4mom.M();
       HZZRefitMass = HZZKinFit4mom.M();
       //      cout << "### Jet Kine After KinFit: " <<endl
       //	   << "J1 ("<<j1corr.Pt()<<" , "<<j1corr.Eta()<<" , "<<j1corr.Phi()<<" , "<<j1corr.E()<<" )" <<endl
@@ -111,9 +111,9 @@ void Higgs2l2bUserDataLD::produce( Event & evt, const EventSetup & ) {
       j2RefitEta = 0;
       j1RefitPhi = 0; 
       j2RefitPhi = 0;
-      //     j1RefitE = 0; 
-      //     j2RefitE = 0;
-      //      ZjjRefitMass = 0;
+      j1RefitE = 0; 
+      j2RefitE = 0;
+      ZjjRefitMass = 0;
       HZZRefitMass = 0;
       KFchiSquare = -1. ; 
       KFchiSquareProb = -1.;
@@ -151,7 +151,9 @@ void Higgs2l2bUserDataLD::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("j2RefitEta", j2RefitEta);
     h.addUserFloat("j1RefitPhi", j1RefitPhi);
     h.addUserFloat("j2RefitPhi", j2RefitPhi);
-    //    h.addUserFloat("ZjjRefitMass", ZjjRefitMass);
+    h.addUserFloat("j1RefitE", j1RefitE);
+    h.addUserFloat("j2RefitE", j2RefitE);
+    h.addUserFloat("ZjjRefitMass", ZjjRefitMass);
     h.addUserFloat("HZZRefitMass", HZZRefitMass);
     h.addUserFloat("KFchiSquare", KFchiSquare);
     h.addUserFloat("KFchiSquareProb", KFchiSquareProb);

@@ -22,7 +22,7 @@ process.source.fileNames=cms.untracked.vstring(
 
 )
 
-process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple_testLD.root')
+process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
 # select lumis interactively from a json
