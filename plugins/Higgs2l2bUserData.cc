@@ -3,26 +3,12 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-//#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "FWCore/Utilities/interface/EDMException.h"
-//#include "CommonTools/UtilAlgos/interface/TFileService.h"
-
-// #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
-// #include "DataFormats/RecoCandidate/interface/IsoDepositFwd.h"
-// #include "DataFormats/PatCandidates/interface/Isolation.h"
-// #include "DataFormats/RecoCandidate/interface/IsoDepositVetos.h"
-// #include "DataFormats/RecoCandidate/interface/IsoDepositDirection.h"
-
-// #include "DataFormats/BeamSpot/interface/BeamSpot.h"
-// #include "DataFormats/VertexReco/interface/VertexFwd.h"
-// #include "DataFormats/VertexReco/interface/Vertex.h"
-
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
-
 
 #include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
 #include "PhysicsTools/CandUtils/interface/Booster.h"
