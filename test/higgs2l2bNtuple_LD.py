@@ -17,8 +17,7 @@ process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
 
-    'file:/data3/scratch/users/fabozzi/Higgs/400/skim/h2l2bData_1_1_5SF.root',
-    'file:/data3/scratch/users/fabozzi/Higgs/400/skim/h2l2bData_2_1_42j.root',
+    'file:h2l2bData.root',
 
 )
 

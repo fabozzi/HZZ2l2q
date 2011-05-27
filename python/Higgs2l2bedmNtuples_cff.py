@@ -592,7 +592,8 @@ edmNtuplesOut = cms.OutputModule(
     outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_eventVtxInfoNtuple_*_*",
-    'keep *_kt6PFJets_rho_PAT',
+    "keep *_metInfoProducer_*_*",
+    "keep *_kt6PFJets_rho_PAT",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
 #    "keep *_Higgsemu2bEdmNtuple_*_*"

@@ -235,8 +235,13 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      metTag = cms.InputTag("patMETs")
                                      )
 
+# Met variables producer
+process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
+                                    metTag = cms.InputTag("patMETs")
+                                    )
+
 readFiles.extend( [
-'/store/relval/CMSSW_4_2_2/RelValTTbar_Tauola/GEN-SIM-RECO/START42_V11_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1/0043/5E8620EE-FA70-E011-A6BD-001A928116CC.root'
+'file:/data3/scratch/users/fabozzi/MC/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
  ] )
 
 process.source.fileNames = readFiles
@@ -262,7 +267,8 @@ process.p = cms.Path(
     process.hzzemjjBaseColl +
     process.hzzeejj +
     process.hzzmmjj +
-    process.hzzemjj
+    process.hzzemjj +
+    process.metInfoProducer
 )
 
 # Setup for a basic filtering
@@ -318,6 +324,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_*_*tagInfo*_*',
                   'keep *_generalTracks_*_*',
                   'keep PileupSummaryInfos_*_*_*',
+                  "keep *_metInfoProducer_*_*",
                   ),
 )
 
@@ -363,6 +370,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 1000
+process.maxEvents.input = 3000
 process.options.wantSummary = True
 
