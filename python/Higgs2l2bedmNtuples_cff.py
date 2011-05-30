@@ -56,10 +56,10 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("MetPhi"),
     quantity = cms.untracked.string("userFloat('metPhi')")
     ),
-    cms.PSet(
-    tag = cms.untracked.string("AzimuthalAngle"),
-    quantity = cms.untracked.string("userFloat('azimuthalAngle')")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("AzimuthalAngle"),
+#    quantity = cms.untracked.string("userFloat('azimuthalAngle')")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("jminbmatch"),
     quantity = cms.untracked.string("userFloat('jminbmatch')")
@@ -155,6 +155,54 @@ higgs =  cms.EDProducer(
     cms.PSet(
     tag = cms.untracked.string("costhetastarNT"),
     quantity = cms.untracked.string("userFloat('costhetastarNT')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("RefitMass"),
+    quantity = cms.untracked.string("userFloat('HZZRefitMass')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("zjjRefitMass"),
+    quantity = cms.untracked.string("userFloat('ZjjRefitMass')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("RefitChi2"),
+    quantity = cms.untracked.string("userFloat('KFchiSquare')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("RefitChi2Prob"),
+    quantity = cms.untracked.string("userFloat('KFchiSquareProb')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1RefitPt"),
+    quantity = cms.untracked.string("userFloat('j1RefitPt')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2RefitPt"),
+    quantity = cms.untracked.string("userFloat('j2RefitPt')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1RefitEta"),
+    quantity = cms.untracked.string("userFloat('j1RefitEta')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2RefitEta"),
+    quantity = cms.untracked.string("userFloat('j2RefitEta')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1RefitPhi"),
+    quantity = cms.untracked.string("userFloat('j1RefitPhi')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2RefitPhi"),
+    quantity = cms.untracked.string("userFloat('j2RefitPhi')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1RefitE"),
+    quantity = cms.untracked.string("userFloat('j1RefitE')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2RefitE"),
+    quantity = cms.untracked.string("userFloat('j2RefitE')")
     ),
     )
     )
