@@ -5,15 +5,24 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "FWCore/Utilities/interface/EDMException.h"
+
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+
 #include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
 #include "PhysicsTools/CandUtils/interface/Booster.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
+// Helicity angles 
+#include "HiggsAnalysis/Higgs2l2b/interface/Helicity.h"
+// Likelihood discriminant
+#include "HiggsAnalysis/Higgs2l2b/interface/HelicityLikelihoodDiscriminant.h"
+// KinFit
+#include "HiggsAnalysis/Higgs2l2b/interface/JetKinFitter.h"
 
 #include <Math/VectorUtil.h>
 #include <vector>
@@ -28,22 +37,32 @@ public:
 
 private:
   void produce( edm::Event &, const edm::EventSetup & );
+  void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
+  //  int runJetKinFit(TLorentzVector &, TLorentzVector &, 
+  //		   const TLorentzVector &, TLorentzVector &, TLorentzVector &,
+  //		   float &, float &);
   
   InputTag higgsTag, gensTag, metTag;
- 
-   
-
+  PFJetIDSelectionFunctor jetIDLoose;
+  pat::strbitset ret; 
+  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
+    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
+  //  HelicityLikelihoodDiscriminant LD_;
+  //  double zNominalMass_;
+  //  JetKinFitter kinFitter_;
 };
-
-
 
 Higgs2l2bUserData::Higgs2l2bUserData( const ParameterSet & cfg ):
   higgsTag( cfg.getParameter<InputTag>( "higgs" ) ),
   gensTag( cfg.getParameter<edm::InputTag>("gensTag")),
-  metTag( cfg.getParameter<edm::InputTag>("metTag"))
+  metTag( cfg.getParameter<edm::InputTag>("metTag")),
+  jetIDLoose( PFJetIDSelectionFunctor::FIRSTDATA,
+	      PFJetIDSelectionFunctor::LOOSE )
+				    //  zNominalMass_( 91.1876 ),
+				    //  kinFitter_( zNominalMass_, 0.0 )
 {
+  ret = jetIDLoose.getBitTemplate();
   produces<vector<pat::CompositeCandidate> >("h").setBranchAlias( "h" );
-
 }
 
 void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
@@ -62,40 +81,47 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
 
   float phi;
-  float met, metSumEt, metSig, metSignificance, metPhi;
+  //  float met, metSig, metPhi;
   float met2, Px, Py; 
-  float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta,jjdr; 
+  float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta, jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
+  float j0LooseID, j1LooseID;
   bool  jminbmatch, jmincmatch, jmaxbmatch, jmaxcmatch;
   float  lminpt, lmineta, lminphi, lmaxpt, lmaxeta, lmaxphi, jminpt, jmineta, jminphi, jmaxpt,  jmaxeta,  jmaxphi;
-  
+  //  float helyLD;
+  //  float j1RefitPt, j2RefitPt;
+  //  float j1RefitEta, j2RefitEta;
+  //  float j1RefitPhi, j2RefitPhi;
+  //  float j1RefitE, j2RefitE;
+  //  float ZjjRefitMass;
+  //  float HZZRefitMass;
+  //  float KFchiSquare, KFchiSquareProb;
+  //  TLorentzVector j1corr;
+  //  TLorentzVector j2corr;
+  //  TLorentzVector HZZKinFit4mom, ZLL4mom, Zjj4mom; //initialized to (0, 0, 0 ,0)
 
   for (unsigned int i = 0; i< higgsH->size();++i){
     const reco::CompositeCandidate & H = (*higgsH)[i];
     edm::Ref<std::vector<reco::CompositeCandidate> > hRef(higgsH, i);
     pat::CompositeCandidate h(H);
 
-    //Boost in Higgs rest Frame
-
-    Booster hFrameBoost( H.boostToCM() );
     const Candidate * zDauRefl0 = H.daughter(0)->daughter(0);
-    Candidate * boostedL0_HFrame = zDauRefl0->clone();
     const Candidate * zDauRefl1 = H.daughter(0)->daughter(1);
-    Candidate * boostedL1_HFrame = zDauRefl1->clone();
     const Candidate * zDauRefj0 = H.daughter(1)->daughter(0);
-    Candidate * boostedJ0_HFrame = zDauRefj0->clone();
-    const pat::Jet & j0 = dynamic_cast<const pat::Jet &>(*(zDauRefj0->masterClone()));
     const Candidate * zDauRefj1 = H.daughter(1)->daughter(1);  
+    const pat::Jet & j0 = dynamic_cast<const pat::Jet &>(*(zDauRefj0->masterClone()));
     const pat::Jet & j1 = dynamic_cast<const pat::Jet &>(*(zDauRefj1->masterClone()));
-    Candidate * boostedJ1_HFrame = zDauRefj1->clone();
 
+    const reco::Candidate * Zll = h.daughter(0);
+    const reco::Candidate * Zjj = h.daughter(1);
     
+    helicityAngles(h, Zll, Zjj);
+
     // dPhi, dEta, dr between H and Zs daughters
-    
-    zzdPhi = fabs(deltaPhi(H.daughter(0)->phi(),H.daughter(1)->phi() ) ) ;
-    zzdEta = fabs( (H.daughter(0)->eta() - H.daughter(1)->eta()) );
-    zzdr = deltaR(H.daughter(0)->eta(), H.daughter(0)->phi(), H.daughter(1)->eta(), H.daughter(1)->phi() );
+    zzdPhi = fabs( deltaPhi(Zll->phi(), Zjj->phi()) ) ;
+    zzdEta = fabs( (Zll->eta() - Zjj->eta()) );
+    zzdr = deltaR(Zll->eta(), Zll->phi(), Zjj->eta(), Zjj->phi() );
     
     lldPhi = fabs(deltaPhi(zDauRefl0->phi(),zDauRefl1->phi() ) ) ;
     lldEta = fabs(zDauRefl0->eta() - zDauRefl1->eta());
@@ -105,6 +131,9 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     jjdEta = fabs(zDauRefj0->eta() - zDauRefj1->eta());
     jjdr = deltaR(zDauRefj0->eta(), zDauRefj0->phi(), zDauRefj1->eta(), zDauRefj1->phi() );
 
+    // store jetID for Z->jj daughters
+    j0LooseID = (float) jetIDLoose( j0, ret );
+    j1LooseID = (float) jetIDLoose( j1, ret );
    
     if(j0.pt() < j1.pt() ){      
       neutralEmEnergy = j0.neutralEmEnergy();
@@ -137,9 +166,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
       else jmaxid = false;
     }
 
-    
-    // gen info
-    
+    // gen info    
     if (zDauRefl0->pt() < zDauRefl1->pt()) {
       lminpt  = zDauRefl0->pt();
       lmineta = zDauRefl0->eta();
@@ -188,27 +215,78 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
       if (abs(gens[k].pdgId()) == 4 && gens[k].status() != 3 && deltaR(jmaxeta, jmaxphi, gens[k].eta(), gens[k].phi()) < 0.3) jmaxcmatch = true; 
     }
     
+
+    // prepare input for KinFit
+    //    double j1en = j1.energy(); 
+    //    double j1pt = j1.pt();
+    //    double j1eta = j1.eta(); 
+    //    double j1phi = j1.phi();
+    //    double j2en = j2.energy(); 
+    //    double j2pt = j2.pt(); 
+    //    double j2eta = j2.eta(); 
+    //    double j2phi = j2.phi();
+    //    j1corr.SetPtEtaPhiE(j1pt,j1eta,j1phi,j1en);
+    //    j2corr.SetPtEtaPhiE(j2pt,j2eta,j2phi,j2en);
+    //    ZLL4mom.SetPtEtaPhiM(Zll->pt(), Zll->eta(), Zll->phi(), Zll->mass());
+
+    // run KinFit
+    //    int kinfitstatus = runJetKinFit(j1corr, j2corr, ZLL4mom, Zjj4mom, HZZKinFit4mom, KFchiSquare, KFchiSquareProb);
+
+    //    if (kinfitstatus==0) {
+    //      j1RefitPt = j1corr.Pt();
+    //      j2RefitPt = j2corr.Pt();
+    //      j1RefitEta = j1corr.Eta();
+    //      j2RefitEta = j2corr.Eta();
+    //      j1RefitPhi = j1corr.Phi(); 
+    //      j2RefitPhi = j2corr.Phi();
+    //      j1RefitE = j1corr.E(); 
+    //      j2RefitE = j1corr.E();
+    //      ZjjRefitMass = Zjj4mom.M();
+    //      HZZRefitMass = HZZKinFit4mom.M();
+    //    } else {
+    //      //kinematic fit failed
+    //      j1RefitPt = 0;
+    //      j2RefitPt = 0;
+    //      j1RefitEta = 0;
+    //      j2RefitEta = 0;
+    //      j1RefitPhi = 0; 
+    //      j2RefitPhi = 0;
+    //      j1RefitE = 0; 
+    //      j2RefitE = 0;
+    //      ZjjRefitMass = 0;
+    //      HZZRefitMass = 0;
+    //      KFchiSquare = -1. ; 
+    //      KFchiSquareProb = -1.;
+    //    }
+
+    // Get Helicity angles (to check!!!!)
+    //    HelicityLikelihoodDiscriminant::HelicityAngles myha;
+    //    myha.helCosTheta1    = H.userFloat("costhetaNT1");
+    //    myha.helCosTheta2    = H.userFloat("costhetaNT2");
+    //    myha.helCosThetaStar = H.userFloat("costhetastarNT");
+    //    myha.helPhi          = H.userFloat("phiNT");
+    //    myha.helPhi1         = H.userFloat("phiNT1");
+    //    myha.mzz             = H.mass();
+    //    if (kinfitstatus==0)
+    //      myha.mzz = HZZRefitMass;
+    //    LD_.setMeasurables(myha);
+    //    float signProb = LD_.getSignalProbability();
+    //    float bkgdProb = LD_.getBkgdProbability();
+    //    helyLD = signProb / (signProb + bkgdProb);
+
+
    
    // Phi in H rest frame
-    
-    hFrameBoost.set( *boostedL0_HFrame );
-    hFrameBoost.set( *boostedL1_HFrame);
-    hFrameBoost.set( *boostedJ0_HFrame );
-    hFrameBoost.set( *boostedJ1_HFrame );
+    //    hFrameBoost.set( *boostedL0_HFrame );
+    //    hFrameBoost.set( *boostedL1_HFrame);
+    //    hFrameBoost.set( *boostedJ0_HFrame );
+    //    hFrameBoost.set( *boostedJ1_HFrame );
+    //    phi =  ROOT::Math::VectorUtil::Angle( (boostedL0_HFrame->momentum()).Cross(boostedL1_HFrame->momentum()), (boostedJ0_HFrame->momentum()).Cross(boostedJ1_HFrame->momentum()) );
+    //    if (phi>M_PI/2) phi = M_PI -phi;
 
-
-    phi =  ROOT::Math::VectorUtil::Angle( (boostedL0_HFrame->momentum()).Cross(boostedL1_HFrame->momentum()), (boostedJ0_HFrame->momentum()).Cross(boostedJ1_HFrame->momentum()) );
-       
-    if (phi>M_PI/2) phi = M_PI -phi;
-
-    met = met_h.front().et();
-    //    cout<<"met: "<<met<<endl;
-    metSumEt = met_h.front().sumEt();
-    // rough met significance: met/sqrt(sumEt)
-    metSig = met_h.front().mEtSig();
-    // met significance
-    metSignificance = met_h.front().significance();
-    metPhi = met_h.front().phi();
+    //    met = met_h.front().et();
+    //    metSig = met_h.front().mEtSig();
+    //    metPhi = met_h.front().phi();
     Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();
     Py = zDauRefl0->py() + zDauRefl1->py() + zDauRefj0->py() + zDauRefj1->py();
     met2 = sqrt(pow(Px,2)+pow(Py,2));
@@ -229,12 +307,22 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jmaxcmatch",jmaxcmatch );
     h.addUserFloat("jminid",jminid);
     h.addUserFloat("jmaxid",jmaxid);
-    h.addUserFloat("met",met);
-    h.addUserFloat("metSumEt",metSumEt);
-    h.addUserFloat("metSig",metSig);
-    h.addUserFloat("metSignificance",metSignificance);
-    h.addUserFloat("metPhi",metPhi);
+    //    h.addUserFloat("met",met);
+    //    h.addUserFloat("metSig",metSig);
+    //    h.addUserFloat("metPhi",metPhi);
     h.addUserFloat("met2",met2);
+    h.addUserFloat("jet1LooseID",j0LooseID);
+    h.addUserFloat("jet2LooseID",j1LooseID);
+    h.addUserFloat("costhetaNT1",costhetaNT1);
+    h.addUserFloat("costhetaNT2",costhetaNT2);
+    h.addUserFloat("phistarNT1", phistarNT1);
+    h.addUserFloat("phistarNT2", phistarNT2);
+    h.addUserFloat("phistarNT12", phistarNT12);  
+    h.addUserFloat("phiNT",phiNT);
+    h.addUserFloat("phiNT1",phiNT1);
+    h.addUserFloat("phiNT2",phiNT2);
+    h.addUserFloat("costhetastarNT",costhetastarNT);
+
 
     higgsColl->push_back(h);
   }
@@ -244,7 +332,97 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
 
 }
 
+
+void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const reco::Candidate *Z1, const reco::Candidate *Z2) {
+
+   TLorentzVector myp4H(X.p4().x(),X.p4().y(),X.p4().z(),X.p4().e() );
+   TLorentzVector myp4Z1(Z1->p4().x(),Z1->p4().y(),Z1->p4().z(),Z1->p4().e());
+   TLorentzVector myp4Z2(Z2->p4().x(),Z2->p4().y(),Z2->p4().z(),Z2->p4().e());
+
+   TLorentzVector myp4M11(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M12(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M21(0.0,0.0,0.0,0.0);
+   TLorentzVector myp4M22(0.0,0.0,0.0,0.0);
+
+   //output
+   costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
+   phistarNT1  = -8.80; phistarNT2  = -8.80; phistarNT12    = -8.80;
+   phiNT       = -8.80; phiNT1      = -8.80; phiNT2         = -8.80;
+
+   // Zll is always Z1 (in our case)
+   bool Zllis1=true;
+
+   // pick the jet with pos azim angle in the Zjj rest frame
+   reco::Candidate * Zjjb = Z2->clone();
+   CenterOfMassBooster boostZjj(*Zjjb);
+   boostZjj.set(*Zjjb);
+
+   int posphiZjjdau=-1;
+   for(size_t dau=0;dau<2;dau++){    //Zjjb->numberOfDaughters();dau++){ //careful! there 4 daughters!
+     if(Zjjb->daughter(dau)->phi()>0) posphiZjjdau = dau;
+   }
+   // std::cout << " ### posphiZjjdau " << posphiZjjdau << " ###" << std::endl;
+
+   if(Zllis1){
+     //set as lepton #1 the negative one
+     if(Z1->daughter(0)->charge()<0.0){
+        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+     }
+     else{
+        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+     }
+     //set as jet #1 the pos phi one
+     if( posphiZjjdau==0){
+        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+     }
+     else{
+        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+     }
+   }//end if Z1 == Z->ll
+   else{
+     //set as lepton #1 the negative one
+     if(Z2->daughter(0)->charge()<0.0){
+        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+     }
+     else{
+        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
+        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
+     }
+     //set as jet #1 the pos phi one
+     if( posphiZjjdau==0 ){
+        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+     }
+     else{
+        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
+        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
+     }
+   }
+
+   bool swapped=false;
+
+   Helicity myAngles;
+
+   myAngles.calculateAngles(myp4H, myp4Z1, myp4M11, myp4M12, myp4Z2, myp4M21, myp4M22,
+                            costhetaNT1, costhetaNT2, phiNT, costhetastarNT,
+                            phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2,swapped);
+
+// std::cout << "Helicity angles: "<<
+//              costhetaNT1 <<" , "<< costhetaNT2 <<" , "<< costhetastarNT <<" , "<<
+//              phistarNT1  <<" , "<< phistarNT2  <<" , "<< phistarNT12    <<" , "<<
+//              phiNT       <<" , "<< phiNT1      <<" , "<< phiNT2         << std::endl;
+
+}
+
+
+
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 DEFINE_FWK_MODULE( Higgs2l2bUserData );
+
 
