@@ -204,6 +204,10 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("JetDau2RefitE"),
     quantity = cms.untracked.string("userFloat('j2RefitE')")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("HelyLD"),
+    quantity = cms.untracked.string("userFloat('helyLD')")
+    ),
     )
     )
 

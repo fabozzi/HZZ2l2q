@@ -49,7 +49,7 @@ private:
     phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
   double zNominalMass_;
   JetKinFitter kinFitter_;
-  //  HelicityLikelihoodDiscriminant LD_;
+  HelicityLikelihoodDiscriminant LD_;
 };
 
 Higgs2l2bUserData::Higgs2l2bUserData( const ParameterSet & cfg ):
@@ -99,7 +99,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   TLorentzVector j1corr;
   TLorentzVector j2corr;
   TLorentzVector HZZKinFit4mom, ZLL4mom, Zjj4mom; //initialized to (0, 0, 0 ,0)
-  //  float helyLD;
+  float helyLD;
 
   for (unsigned int i = 0; i< higgsH->size();++i){
     const reco::CompositeCandidate & H = (*higgsH)[i];
@@ -259,23 +259,21 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
       KFchiSquareProb = -1.;
     }
 
-    // Get Helicity angles (to check!!!!)
-    // HelicityLikelihoodDiscriminant::HelicityAngles myha;
-    //    myha.helCosTheta1    = H.userFloat("costhetaNT1");
-    //    myha.helCosTheta2    = H.userFloat("costhetaNT2");
-    //    myha.helCosThetaStar = H.userFloat("costhetastarNT");
-    //    myha.helPhi          = H.userFloat("phiNT");
-    //    myha.helPhi1         = H.userFloat("phiNT1");
-    //    myha.mzz             = H.mass();
-    // if (kinfitstatus==0)
-    //      myha.mzz = HZZRefitMass;
-    //    LD_.setMeasurables(myha);
-    //    float signProb = LD_.getSignalProbability();
-    //    float bkgdProb = LD_.getBkgdProbability();
-    //    helyLD = signProb / (signProb + bkgdProb);
+    // Get Helicity angles
+    HelicityLikelihoodDiscriminant::HelicityAngles myha;
+    myha.helCosTheta1    = costhetaNT1;
+    myha.helCosTheta2    = costhetaNT2;
+    myha.helCosThetaStar = costhetastarNT;
+    myha.helPhi          = phiNT;
+    myha.helPhi1         = phiNT1;
+    myha.mzz             = H.mass();
+    if (kinfitstatus==0)
+      myha.mzz = HZZRefitMass;
+    LD_.setMeasurables(myha);
+    float signProb = LD_.getSignalProbability();
+    float bkgdProb = LD_.getBkgdProbability();
+    helyLD = signProb / (signProb + bkgdProb);
 
-
-   
    // Phi in H rest frame
     //    hFrameBoost.set( *boostedL0_HFrame );
     //    hFrameBoost.set( *boostedL1_HFrame);
@@ -340,7 +338,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("HZZRefitMass", HZZRefitMass);
     h.addUserFloat("KFchiSquare", KFchiSquare);
     h.addUserFloat("KFchiSquareProb", KFchiSquareProb);
-    //    h.addUserFloat("helyLD", helyLD);
+    h.addUserFloat("helyLD", helyLD);
 
 
     higgsColl->push_back(h);
