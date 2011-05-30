@@ -93,7 +93,7 @@ void Higgs2l2bUserDataLD::produce( Event & evt, const EventSetup & ) {
       j1RefitPhi = j1corr.Phi(); 
       j2RefitPhi = j2corr.Phi();
       j1RefitE = j1corr.E(); 
-      j2RefitE = j1corr.E();
+      j2RefitE = j2corr.E();
       ZjjRefitMass = Zjj4mom.M();
       HZZRefitMass = HZZKinFit4mom.M();
       //      cout << "### Jet Kine After KinFit: " <<endl
