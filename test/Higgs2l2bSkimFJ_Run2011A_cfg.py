@@ -139,7 +139,10 @@ secFiles = cms.untracked.vstring()
 
 
 # Modules for the Cut-based Electron ID in the VBTF prescription
-import ElectroWeakAnalysis.WENu.simpleCutBasedElectronIDSpring10_cfi as vbtfid
+#import ElectroWeakAnalysis.WENu.simpleCutBasedElectronIDSpring10_cfi as vbtfid
+# Switch to the official Electron VBTF Selection for 2011 Data (relax H/E cut in the Endcap):
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/VbtfEleID2011
+import HiggsAnalysis.Higgs2l2b.simpleCutBasedElectronIDSummer11_cfi as vbtfid
 process.eidVBTFRel95 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '95relIso' )
 process.eidVBTFRel80 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '80relIso' )
 process.eidVBTFCom95 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '95cIso'   )
