@@ -7,7 +7,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2bedmNtuples_cff")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.MessageLogger.cerr.threshold = ''
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
@@ -16,7 +16,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('h2l2b4
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-    'file:/tmp/fabozzi/h2l2bData.root'
+    'file:h2l2bData.root'
 )
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')

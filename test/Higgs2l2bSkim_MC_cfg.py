@@ -324,7 +324,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_*_*tagInfo*_*',
                   'keep *_generalTracks_*_*',
                   'keep PileupSummaryInfos_*_*_*',
-                  "keep *_metInfoProducer_*_*",
+                  'keep *_metInfoProducer_*_*',
                   ),
 )
 
