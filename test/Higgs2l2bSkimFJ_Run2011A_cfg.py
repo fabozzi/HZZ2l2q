@@ -5,7 +5,7 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 
 
 ## global tag for data
-process.GlobalTag.globaltag = 'GR_R_42_V12::All'
+process.GlobalTag.globaltag = 'GR_R_42_V13::All'
 
 
 # Triggers for the /Jet PD are from:
@@ -62,20 +62,6 @@ process.ak5PFJets.doAreaFastjet = True
 #process.ak5PFJets.Rho_EtaMax = cms.double(2.5)
 
 process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets','rho')
-
-
-#addJetCollection(process,cms.InputTag('ak5PFJets'),
-#                 'AK5','PFFastJet',
-#                 doJTA        = True,
-#                 doBTagging   = True,
-#                 jetCorrLabel = ('AK5PF', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'])),
-#                 doType1MET   = False,
-#                 doL1Cleaning   = False,
-#                 doL1Counters   = True,
-#                 genJetCollection=cms.InputTag(""),
-#                 doJetID      = True,
-#                 jetIdLabel   = "ak5"
-#                 )
 
 addJetCollection(process,cms.InputTag('ak5PFJets'),
                  'AK5','PFOffset',
@@ -307,8 +293,13 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      )
 
 
+# Met variables producer
+process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
+                                    metTag = cms.InputTag("patMETs")
+                                    )
+
 readFiles.extend( [
-'file:/scratch1/cms/data/Run2011A/161311/DoubleMu/38A1F398-C457-E011-A667-001D09F25208.root',
+'file:/data3/scratch/cms/data/Run2011A/DoubleMu/May10ReReco-v1/161311/FC8C48F7-CE7B-E011-954A-001A92810AA4.root',
  ] )
 
 process.source.fileNames = readFiles
@@ -318,7 +309,7 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 # select lumis interactively from a json
 #import PhysicsTools.PythonAnalysis.LumiList as LumiList
 #import FWCore.ParameterSet.Types as CfgTypes
-#myLumis = LumiList.LumiList(filename = 'json_DCSONLY_sel.txt').getCMSSWString().split(',')
+#myLumis = LumiList.LumiList(filename = 'Cert_160404-163869_7TeV_May10ReReco_Collisions11_JSON.txt').getCMSSWString().split(',')
 #process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
 #process.source.lumisToProcess.extend(myLumis)
 
@@ -344,7 +335,8 @@ process.p = cms.Path(
     process.hzzemjjBaseColl +
     process.hzzeejj +
     process.hzzmmjj +
-    process.hzzemjj
+    process.hzzemjj +
+    process.metInfoProducer
     )
 
 
@@ -361,7 +353,6 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
                                  src = cms.InputTag("cleanPatJets"),
                                  minNumber = cms.uint32(1),
-#                                 minNumber = cms.uint32(2),
 )
 
 
@@ -403,7 +394,8 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_offlinePrimaryVertices_*_*',
                   'keep *_secondaryVertexTagInfos*_*_*',
                   'keep *_*_*tagInfo*_*',
-                  'keep *_generalTracks_*_*'
+                  'keep *_generalTracks_*_*',
+                  'keep *_metInfoProducer_*_*',
                   ),
 )
 
@@ -449,6 +441,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 
 # process all the events
-process.maxEvents.input = -1
+process.maxEvents.input = 2000
 process.options.wantSummary = True
 
