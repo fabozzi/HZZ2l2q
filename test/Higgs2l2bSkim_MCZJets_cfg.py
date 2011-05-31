@@ -241,10 +241,13 @@ process.LeptonTypeCounting = cms.EDFilter('LeptonTypeCounting')
 
 process.hfmatch = cms.EDProducer("AlpgenMatching")
 
+# Met variables producer
+process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
+                                    metTag = cms.InputTag("patMETs")
+                                    )
+
 readFiles.extend( [
-#'file:/data3/scratch/cms/mc/Spring11/ZBB0JetsToLNu/06B7B5AD-4855-E011-A8BA-0017A4770C34.root'
-#'file:/data3/scratch/cms/mc/Spring11/Z2Jets_ptZ-100to300/F68E44F1-225E-E011-A50B-001A4BA551B8.root'
-'/store/relval/CMSSW_4_2_2/RelValZmumuJets_Pt_20_300_GEN/GEN-SIM-RECO/MC_42_V11_PU_E7TeV_FlatDist10_2011EarlyData_inTimeOnly-v1/0043/1C271127-FA70-E011-B2E7-001A92810ADE.root'
+'file:/data3/scratch/users/fabozzi/MC/Summer11/RelVal422/RelValZmumuJets_Pt_20_300/1C271127-FA70-E011-B2E7-001A92810ADE.root'
 ] )
 
 process.source.fileNames = readFiles
@@ -272,6 +275,7 @@ process.p = cms.Path(
     process.hzzeejj +
     process.hzzmmjj +
     process.hzzemjj +
+    process.metInfoProducer +
     process.hfmatch
 )
 
@@ -329,6 +333,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_*_*tagInfo*_*',
                   'keep *_generalTracks_*_*',
                   'keep PileupSummaryInfos_*_*_*',
+                  'keep *_metInfoProducer_*_*',
                   'keep *_*_alpgenflavorflag_*',
                   'keep *_*_alpgendrcc_*',
                   'keep *_*_alpgendrbb_*',
