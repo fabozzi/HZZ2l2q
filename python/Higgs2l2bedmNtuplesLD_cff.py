@@ -32,34 +32,34 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("Phi"),
     quantity = cms.untracked.string("phi")
     ),
-    cms.PSet(
-    tag = cms.untracked.string("Met"),
-    quantity = cms.untracked.string("userFloat('met')")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("Met"),
+#    quantity = cms.untracked.string("userFloat('met')")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("Met2"),
     quantity = cms.untracked.string("userFloat('met2')")
     ),
-    cms.PSet(
-    tag = cms.untracked.string("MetSumEt"),
-    quantity = cms.untracked.string("userFloat('metSumEt')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("MetSig"),
-    quantity = cms.untracked.string("userFloat('metSig')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("MetSignificance"),
-    quantity = cms.untracked.string("userFloat('metSignificance')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("MetPhi"),
-    quantity = cms.untracked.string("userFloat('metPhi')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("AzimuthalAngle"),
-    quantity = cms.untracked.string("userFloat('azimuthalAngle')")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("MetSumEt"),
+#    quantity = cms.untracked.string("userFloat('metSumEt')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("MetSig"),
+#    quantity = cms.untracked.string("userFloat('metSig')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("MetSignificance"),
+#    quantity = cms.untracked.string("userFloat('metSignificance')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("MetPhi"),
+#    quantity = cms.untracked.string("userFloat('metPhi')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("AzimuthalAngle"),
+#    quantity = cms.untracked.string("userFloat('azimuthalAngle')")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("jminbmatch"),
     quantity = cms.untracked.string("userFloat('jminbmatch')")
