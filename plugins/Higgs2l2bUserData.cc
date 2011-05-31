@@ -81,7 +81,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
 
   //  float phi;
-  float met, metSumEt, metSig, metSignificance, metPhi;
+  //  float met, metSumEt, metSig, metSignificance, metPhi;
   float met2, Px, Py; 
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta, jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
@@ -282,13 +282,13 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     //    phi =  ROOT::Math::VectorUtil::Angle( (boostedL0_HFrame->momentum()).Cross(boostedL1_HFrame->momentum()), (boostedJ0_HFrame->momentum()).Cross(boostedJ1_HFrame->momentum()) );
     //    if (phi>M_PI/2) phi = M_PI -phi;
 
-    met = met_h.front().et();
-    metSumEt = met_h.front().sumEt();
+    //    met = met_h.front().et();
+    //    metSumEt = met_h.front().sumEt();
     // rough met significance: met/sqrt(sumEt)
-    metSig = met_h.front().mEtSig();
+    //    metSig = met_h.front().mEtSig();
     // met significance
-    metSignificance = met_h.front().significance();
-    metPhi = met_h.front().phi();
+    //    metSignificance = met_h.front().significance();
+    //    metPhi = met_h.front().phi();
     Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();
     Py = zDauRefl0->py() + zDauRefl1->py() + zDauRefj0->py() + zDauRefj1->py();
     met2 = sqrt(pow(Px,2)+pow(Py,2));
@@ -309,11 +309,11 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jmaxcmatch",jmaxcmatch );
     h.addUserFloat("jminid",jminid);
     h.addUserFloat("jmaxid",jmaxid);
-    h.addUserFloat("met",met);
-    h.addUserFloat("metSumEt",metSumEt);
-    h.addUserFloat("metSig",metSig);
-    h.addUserFloat("metSignificance",metSignificance);
-    h.addUserFloat("metPhi",metPhi);
+    //    h.addUserFloat("met",met);
+    //    h.addUserFloat("metSumEt",metSumEt);
+    //    h.addUserFloat("metSig",metSig);
+    //    h.addUserFloat("metSignificance",metSignificance);
+    //    h.addUserFloat("metPhi",metPhi);
     h.addUserFloat("met2",met2);
     h.addUserFloat("jet1LooseID",j0LooseID);
     h.addUserFloat("jet2LooseID",j1LooseID);
