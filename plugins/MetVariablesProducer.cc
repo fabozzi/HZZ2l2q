@@ -45,12 +45,27 @@ void MetVariablesProducer::produce( Event & evt, const EventSetup & ) {
   auto_ptr<float> metSignificance_( new float );
   auto_ptr<float> metPhi_( new float );
 
+  *met_ = -100.;
+  *metSumEt_ = -100.;
+  *metSig_ = -100.;
+  *metSignificance_ = -100.;
+  *metPhi_ = -100.;
+
   *met_ = met_h.front().et();
   *metSumEt_ = met_h.front().sumEt();
   // rough met significance: met/sqrt(sumEt)
   *metSig_ = met_h.front().mEtSig();
   // met significance
-  *metSignificance_ = met_h.front().significance();
+  TMatrixD metmat = met_h.front().getSignificanceMatrix();
+  //  metmat.Print();
+  if( (metmat < 1.0e10) && (metmat > -1.0e10) ) {
+    //    float determ_mat = metmat.Determinant();
+    //    cout << "determinant = " << determ_mat << endl;
+    *metSignificance_ = met_h.front().significance();
+  } 
+ 
+  //  cout << "metSignificance = " << *metSignificance_ << endl;
+
   *metPhi_ = met_h.front().phi();
 
   evt.put( met_, "met" );
