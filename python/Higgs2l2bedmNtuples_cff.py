@@ -480,13 +480,23 @@ zjj = (
     cms.PSet(
     tag = cms.untracked.string("JetDau2Eta"),
     quantity = cms.untracked.string("daughter(1).daughter(1).eta ")
-    ),cms.PSet(
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1Phi"),
     quantity = cms.untracked.string("daughter(1).daughter(0).phi ")
     ),
-cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("JetDau2Phi"),
     quantity = cms.untracked.string("daughter(1).daughter(1).phi ")
+    ),
+    ### MC parton flavour ###
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1PartonFlavour"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.partonFlavour")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2PartonFlavour"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.partonFlavour")
     ),
 
     ### b tagging ###
