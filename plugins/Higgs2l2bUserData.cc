@@ -434,6 +434,8 @@ void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const 
 //              phistarNT1  <<" , "<< phistarNT2  <<" , "<< phistarNT12    <<" , "<<
 //              phiNT       <<" , "<< phiNT1      <<" , "<< phiNT2         << std::endl;
 
+   costhetaNT2 = fabs(costhetaNT2);
+
 }
 
 int Higgs2l2bUserData::runJetKinFit(TLorentzVector &j1,TLorentzVector &j2,
