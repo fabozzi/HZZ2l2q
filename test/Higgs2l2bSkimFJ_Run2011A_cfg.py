@@ -327,7 +327,6 @@ process.p = cms.Path(
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence*
-#    process.cleanPatJets *
     process.cleanPatJetsAK5PFOffset *
     process.zee +
     process.zmm +
@@ -355,7 +354,7 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
                                  src = cms.InputTag("cleanPatJets"),
-                                 minNumber = cms.uint32(1),
+                                 minNumber = cms.uint32(2),
 )
 
 

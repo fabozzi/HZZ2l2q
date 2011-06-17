@@ -244,7 +244,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     )
 
 readFiles.extend( [
-'file:/data3/scratch/users/fabozzi/MC/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
+'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
  ] )
 
 process.source.fileNames = readFiles
@@ -259,7 +259,6 @@ process.p = cms.Path(
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence *
-#    process.cleanPatJets *
     process.cleanPatJetsAK5PFOffset *
     process.zee +
     process.zmm +
@@ -286,7 +285,7 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
                                  src = cms.InputTag("cleanPatJets"),
-                                 minNumber = cms.uint32(1),
+                                 minNumber = cms.uint32(2),
 )
 
 
@@ -306,6 +305,7 @@ process.out = cms.OutputModule("PoolOutputModule",
                  ),
                  outputCommands =  cms.untracked.vstring(
                   'drop *_*_*_*',
+                  'keep *_genParticles_*_*',
                   'keep *_selectedPatElectrons_*_PAT',
                   'keep *_selectedPatMuons_*_PAT',
                   'keep *_cleanPatJets_*_PAT',
