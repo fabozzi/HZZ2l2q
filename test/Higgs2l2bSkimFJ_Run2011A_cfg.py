@@ -242,7 +242,7 @@ process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(True),
-                                 cut = cms.string('mass > 50 && min(abs(daughter(0).eta), abs(daughter(1).eta)) < 2.1'),
+                                 cut = cms.string('mass > 50 '),
                                  decay = cms.string("selectedPatMuons@+ selectedPatMuons@-")
                              )
 
