@@ -216,6 +216,18 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("ldBkg"),
     quantity = cms.untracked.string("userFloat('ldBkg')")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("HelyLDRefit"),
+    quantity = cms.untracked.string("userFloat('helyLDRefit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("ldSigRefit"),
+    quantity = cms.untracked.string("userFloat('ldSigRefit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("ldBkgRefit"),
+    quantity = cms.untracked.string("userFloat('ldBkgRefit')")
+    ),
     )
     )
 
