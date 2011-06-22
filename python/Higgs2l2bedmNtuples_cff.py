@@ -128,18 +128,18 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("costhetaNT2"),
     quantity = cms.untracked.string("userFloat('costhetaNT2')")
     ),
-    cms.PSet(
-    tag = cms.untracked.string("phistarNT1"),
-    quantity = cms.untracked.string("userFloat('phistarNT1')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("phistarNT2"),
-    quantity = cms.untracked.string("userFloat('phistarNT2')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("phistarNT12"),
-    quantity = cms.untracked.string("userFloat('phistarNT12')")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("phistarNT1"),
+#    quantity = cms.untracked.string("userFloat('phistarNT1')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("phistarNT2"),
+#    quantity = cms.untracked.string("userFloat('phistarNT2')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("phistarNT12"),
+#    quantity = cms.untracked.string("userFloat('phistarNT12')")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("phiNT"),
     quantity = cms.untracked.string("userFloat('phiNT')")
@@ -148,10 +148,10 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("phiNT1"),
     quantity = cms.untracked.string("userFloat('phiNT1')")
     ),
-    cms.PSet(
-    tag = cms.untracked.string("phiNT2"),
-    quantity = cms.untracked.string("userFloat('phiNT2')")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("phiNT2"),
+#    quantity = cms.untracked.string("userFloat('phiNT2')")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("costhetastarNT"),
     quantity = cms.untracked.string("userFloat('costhetastarNT')")
@@ -207,6 +207,14 @@ higgs =  cms.EDProducer(
     cms.PSet(
     tag = cms.untracked.string("HelyLD"),
     quantity = cms.untracked.string("userFloat('helyLD')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("ldSig"),
+    quantity = cms.untracked.string("userFloat('ldSig')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("ldBkg"),
+    quantity = cms.untracked.string("userFloat('ldBkg')")
     ),
     )
     )
