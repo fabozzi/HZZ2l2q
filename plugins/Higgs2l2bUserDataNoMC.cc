@@ -41,7 +41,9 @@ private:
   int runJetKinFit(TLorentzVector &, TLorentzVector &, 
   		   const TLorentzVector &, TLorentzVector &, TLorentzVector &,
   		   float &, float &);
-  
+  void getLDVariables(float, float, float, float, float, float, 
+		      float &, float &, float &);  
+ 
   InputTag higgsTag, metTag;
   PFJetIDSelectionFunctor jetIDLoose;
   pat::strbitset ret; 
@@ -50,7 +52,6 @@ private:
   double costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1;
   double zNominalMass_;
   JetKinFitter kinFitter_;
-  HelicityLikelihoodDiscriminant LD_;
 };
 
 Higgs2l2bUserDataNoMC::Higgs2l2bUserDataNoMC( const ParameterSet & cfg ):
@@ -96,6 +97,8 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
   TLorentzVector HZZKinFit4mom, ZLL4mom, Zjj4mom; //initialized to (0, 0, 0 ,0)
   float helyLD;
   float ldSig, ldBkg;
+  float helyLDRefit;
+  float ldSigRefit, ldBkgRefit;
 
   for (unsigned int i = 0; i< higgsH->size();++i){
     const reco::CompositeCandidate & H = (*higgsH)[i];
@@ -242,20 +245,20 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
       KFchiSquareProb = -1.;
     }
 
-    // Get Helicity angles
-    HelicityLikelihoodDiscriminant::HelicityAngles myha;
-    myha.helCosTheta1    = costhetaNT1;
-    myha.helCosTheta2    = costhetaNT2;
-    myha.helCosThetaStar = costhetastarNT;
-    myha.helPhi          = phiNT;
-    myha.helPhi1         = phiNT1;
-    myha.mzz             = H.mass();
+    // Get LD variable
+    getLDVariables( costhetaNT1, costhetaNT2, costhetastarNT,
+		    phiNT, phiNT1, H.mass(), 
+		    ldSig, ldBkg, helyLD );
+    
     if (kinfitstatus==0)
-      myha.mzz = HZZRefitMass;
-    LD_.setMeasurables(myha);
-    ldSig = LD_.getSignalProbability();
-    ldBkg = LD_.getBkgdProbability();
-    helyLD = ldSig / (ldSig + ldBkg);
+      getLDVariables( costhetaNT1, costhetaNT2, costhetastarNT,
+		      phiNT, phiNT1, HZZRefitMass, 
+		      ldSigRefit, ldBkgRefit, helyLDRefit );
+    else{
+      ldSigRefit = -100.0;
+      ldBkgRefit = -100.0;
+      helyLDRefit = -100.0;
+    }
 
    // Phi in H rest frame
     //    hFrameBoost.set( *boostedL0_HFrame );
@@ -320,6 +323,9 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("helyLD", helyLD);
     h.addUserFloat("ldSig", ldSig);
     h.addUserFloat("ldBkg", ldBkg);
+    h.addUserFloat("helyLDRefit", helyLDRefit);
+    h.addUserFloat("ldSigRefit", ldSigRefit);
+    h.addUserFloat("ldBkgRefit", ldBkgRefit);
 
 
     higgsColl->push_back(h);
@@ -331,6 +337,23 @@ void Higgs2l2bUserDataNoMC::produce( Event & evt, const EventSetup & ) {
 }
 
 
+void Higgs2l2bUserDataNoMC::getLDVariables( float costhetaNT1, float costhetaNT2, float costhetastarNT,
+					float phiNT, float phiNT1, float Hmass, 
+					float & ldSig, float & ldBkg, float & helyLD ){
+  HelicityLikelihoodDiscriminant LD_;
+  HelicityLikelihoodDiscriminant::HelicityAngles myha;
+  ldSig = -100.0; ldBkg=-100.0; helyLD=-100.0;
+  myha.helCosTheta1    = costhetaNT1;
+  myha.helCosTheta2    = costhetaNT2;
+  myha.helCosThetaStar = costhetastarNT;
+  myha.helPhi          = phiNT;
+  myha.helPhi1         = phiNT1;
+  myha.mzz             = Hmass;
+  LD_.setMeasurables(myha);
+  ldSig = LD_.getSignalProbability();
+  ldBkg = LD_.getBkgdProbability();
+  helyLD = ldSig / (ldSig + ldBkg);
+}
 
 void Higgs2l2bUserDataNoMC::helicityAngles (const reco::Candidate *Zll, const reco::Candidate *Zjj) {
 
