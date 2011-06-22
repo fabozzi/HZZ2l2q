@@ -37,7 +37,9 @@ public:
 
 private:
   void produce( edm::Event &, const edm::EventSetup & );
-  void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
+  // void calculateAngles(TLorentzVector leptMinus, TLorentzVector leptPlus, TLorentzVector jet1, TLorentzVector jet2 );
+  // void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
+  void helicityAngles(const reco::Candidate *, const reco::Candidate *);
   int runJetKinFit(TLorentzVector &, TLorentzVector &, 
   		   const TLorentzVector &, TLorentzVector &, TLorentzVector &,
   		   float &, float &);
@@ -45,8 +47,9 @@ private:
   InputTag higgsTag, gensTag, metTag;
   PFJetIDSelectionFunctor jetIDLoose;
   pat::strbitset ret; 
-  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
-    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
+  //  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
+  //    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
+  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1;
   double zNominalMass_;
   JetKinFitter kinFitter_;
   HelicityLikelihoodDiscriminant LD_;
@@ -100,6 +103,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   TLorentzVector j2corr;
   TLorentzVector HZZKinFit4mom, ZLL4mom, Zjj4mom; //initialized to (0, 0, 0 ,0)
   float helyLD;
+  float ldSig, ldBkg;
 
   for (unsigned int i = 0; i< higgsH->size();++i){
     const reco::CompositeCandidate & H = (*higgsH)[i];
@@ -116,7 +120,11 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     const reco::Candidate * Zll = h.daughter(0);
     const reco::Candidate * Zjj = h.daughter(1);
     
-    helicityAngles(h, Zll, Zjj);
+    helicityAngles( Zll, Zjj );
+
+    //    std::cout << "Helicity angles: "<<
+    //      costhetaNT1 <<" , "<< costhetaNT2 <<" , "<< costhetastarNT <<" , "<<
+    //      phiNT       <<" , "<< phiNT1      << std::endl;
 
     // dPhi, dEta, dr between H and Zs daughters
     zzdPhi = fabs( deltaPhi(Zll->phi(), Zjj->phi()) ) ;
@@ -270,9 +278,12 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     if (kinfitstatus==0)
       myha.mzz = HZZRefitMass;
     LD_.setMeasurables(myha);
-    float signProb = LD_.getSignalProbability();
-    float bkgdProb = LD_.getBkgdProbability();
-    helyLD = signProb / (signProb + bkgdProb);
+    ldSig = LD_.getSignalProbability();
+    ldBkg = LD_.getBkgdProbability();
+    helyLD = ldSig / (ldSig + ldBkg);
+
+    //    cout << "LD_sign, LD_bkg, HelyLD" << endl;
+    //    cout << ldSig << "," << ldBkg << "," << helyLD << endl;
 
    // Phi in H rest frame
     //    hFrameBoost.set( *boostedL0_HFrame );
@@ -319,12 +330,12 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jet2LooseID",j1LooseID);
     h.addUserFloat("costhetaNT1",costhetaNT1);
     h.addUserFloat("costhetaNT2",costhetaNT2);
-    h.addUserFloat("phistarNT1", phistarNT1);
-    h.addUserFloat("phistarNT2", phistarNT2);
-    h.addUserFloat("phistarNT12", phistarNT12);  
+    //    h.addUserFloat("phistarNT1", phistarNT1);
+    //    h.addUserFloat("phistarNT2", phistarNT2);
+    //    h.addUserFloat("phistarNT12", phistarNT12);  
     h.addUserFloat("phiNT",phiNT);
     h.addUserFloat("phiNT1",phiNT1);
-    h.addUserFloat("phiNT2",phiNT2);
+    //    h.addUserFloat("phiNT2",phiNT2);
     h.addUserFloat("costhetastarNT",costhetastarNT);
     h.addUserFloat("j1RefitPt", j1RefitPt);
     h.addUserFloat("j2RefitPt", j2RefitPt);
@@ -339,6 +350,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("KFchiSquare", KFchiSquare);
     h.addUserFloat("KFchiSquareProb", KFchiSquareProb);
     h.addUserFloat("helyLD", helyLD);
+    h.addUserFloat("ldSig", ldSig);
+    h.addUserFloat("ldBkg", ldBkg);
 
 
     higgsColl->push_back(h);
@@ -349,6 +362,36 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
 
 }
 
+
+void Higgs2l2bUserData::helicityAngles (const reco::Candidate *Zll, const reco::Candidate *Zjj) {
+
+    // prepare for helicity angles computation
+    costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
+    phiNT       = -8.80; phiNT1      = -8.80;
+    TLorentzVector p4lept1(0.0,0.0,0.0,0.0);
+    TLorentzVector p4lept2(0.0,0.0,0.0,0.0);
+    TLorentzVector p4jet1(0.0,0.0,0.0,0.0);
+    TLorentzVector p4jet2(0.0,0.0,0.0,0.0);
+    //set as lepton #1 the negative one
+    int lM, lP;
+    if(Zll->daughter(0)->charge()<0.0) 
+      lM = 0;
+    else   
+      lM = 1;
+    lP = 1-lM;
+
+    p4lept1.SetPxPyPzE(Zll->daughter(lM)->p4().x(),Zll->daughter(lM)->p4().y(),Zll->daughter(lM)->p4().z(),Zll->daughter(lM)->p4().e());
+    p4lept2.SetPxPyPzE(Zll->daughter(lP)->p4().x(),Zll->daughter(lP)->p4().y(),Zll->daughter(lP)->p4().z(),Zll->daughter(lP)->p4().e());
+
+    p4jet1.SetPxPyPzE(Zjj->daughter(0)->p4().x(),Zjj->daughter(0)->p4().y(),Zjj->daughter(0)->p4().z(),Zjj->daughter(0)->p4().e());
+    p4jet2.SetPxPyPzE(Zjj->daughter(1)->p4().x(),Zjj->daughter(1)->p4().y(),Zjj->daughter(1)->p4().z(),Zjj->daughter(1)->p4().e());
+    //compute helicity angles
+   Helicity myAngles;
+   myAngles.calculateAngles(p4lept1, p4lept2, p4jet1, p4jet2, costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1);
+
+}
+
+/*
 
 void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const reco::Candidate *Z1, const reco::Candidate *Z2) {
 
@@ -437,6 +480,9 @@ void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const 
    costhetaNT2 = fabs(costhetaNT2);
 
 }
+
+
+*/
 
 int Higgs2l2bUserData::runJetKinFit(TLorentzVector &j1,TLorentzVector &j2,
 				    const TLorentzVector &ZLL, TLorentzVector & Zjj, 
