@@ -422,6 +422,14 @@ zee =(
     cms.PSet(
     tag = cms.untracked.string("EleDau2VBTF80CombID"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"eidVBTFCom80\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1VBTF95CombID"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"eidVBTFCom95\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2VBTF95CombID"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"eidVBTFCom95\")")
     )
     )
 
@@ -434,7 +442,15 @@ zem =(
     cms.PSet(
     tag = cms.untracked.string("EleDau2VBTF80CombID"),
     quantity = cms.untracked.string("-1")
-    )    
+    ),    
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1VBTF95CombID"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"eidVBTFCom95\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2VBTF95CombID"),
+    quantity = cms.untracked.string("-1")
+    ),    
     )
 
 ###  zjj standard and bDiscriminator variables
