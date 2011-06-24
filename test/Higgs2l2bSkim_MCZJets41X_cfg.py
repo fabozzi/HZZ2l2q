@@ -73,7 +73,7 @@ process.load('CommonTools/RecoAlgos/HBHENoiseFilter_cfi')
 #process.load('JetMETAnalysis.ecalDeadCellTools.EcalDeadCellEventFilter_cfi')
 
 # Select jets
-process.selectedPatJets.cut = cms.string('pt > 25')
+process.selectedPatJets.cut = cms.string('pt > 30.0 && abs(eta) < 2.4')
 
 # Add the files
 readFiles = cms.untracked.vstring()
@@ -107,12 +107,12 @@ process.patElectrons.electronIDSources = cms.PSet(
 
 # Muon Selection
 process.selectedPatMuons.cut = (
-        "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
+            "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
             "innerTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
             "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
             "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
             "dB < 0.2 && "                                                                     +
-            #"trackIso + caloIso < 0.15 * pt && "                                               +
+            "trackIso + caloIso < 0.15 * pt && "                                               +
             "numberOfMatches > 1 && abs(eta) < 2.4"
         )
 
@@ -384,6 +384,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 1000
+process.maxEvents.input = 500
 process.options.wantSummary = True
 
