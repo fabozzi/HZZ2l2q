@@ -157,6 +157,26 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("userFloat('costhetastarNT')")
     ),
     cms.PSet(
+    tag = cms.untracked.string("costhetaNT1Refit"),
+    quantity = cms.untracked.string("userFloat('costhetaNT1Refit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("costhetaNT2Refit"),
+    quantity = cms.untracked.string("userFloat('costhetaNT2Refit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phiNTRefit"),
+    quantity = cms.untracked.string("userFloat('phiNTRefit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("phiNT1Refit"),
+    quantity = cms.untracked.string("userFloat('phiNT1Refit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("costhetastarNTRefit"),
+    quantity = cms.untracked.string("userFloat('costhetastarNTRefit')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("RefitMass"),
     quantity = cms.untracked.string("userFloat('HZZRefitMass')")
     ),

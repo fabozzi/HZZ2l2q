@@ -40,6 +40,7 @@ private:
   // void calculateAngles(TLorentzVector leptMinus, TLorentzVector leptPlus, TLorentzVector jet1, TLorentzVector jet2 );
   // void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
   void helicityAngles(const reco::Candidate *, const reco::Candidate *);
+  void helicityAnglesRefit(const reco::Candidate *, TLorentzVector, TLorentzVector);
   int runJetKinFit(TLorentzVector &, TLorentzVector &, 
   		   const TLorentzVector &, TLorentzVector &, TLorentzVector &,
   		   float &, float &);
@@ -51,7 +52,10 @@ private:
   pat::strbitset ret; 
   //  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
   //    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
+  // angular variables with unrefitted jet quantities
   double costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1;
+  // angular variables with refitted jet quantities
+  double costhetaNT1Refit, costhetaNT2Refit, costhetastarNTRefit, phiNTRefit, phiNT1Refit;
   double zNominalMass_;
   JetKinFitter kinFitter_;
 };
@@ -123,6 +127,7 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     const reco::Candidate * Zll = h.daughter(0);
     const reco::Candidate * Zjj = h.daughter(1);
     
+    // compute helicity angles with unrefitted jet quantities
     helicityAngles( Zll, Zjj );
 
     //    std::cout << "Helicity angles: "<<
@@ -270,14 +275,18 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
       KFchiSquareProb = -1.;
     }
 
+    // compute helicity angles with refitted jet quantities
+    helicityAnglesRefit( Zll, j1corr, j2corr);
+
+
     // Get LD variable
     getLDVariables( costhetaNT1, costhetaNT2, costhetastarNT,
 		    phiNT, phiNT1, H.mass(), 
 		    ldSig, ldBkg, helyLD );
     
     if (kinfitstatus==0)
-      getLDVariables( costhetaNT1, costhetaNT2, costhetastarNT,
-		      phiNT, phiNT1, HZZRefitMass, 
+      getLDVariables( costhetaNT1Refit, costhetaNT2Refit, costhetastarNTRefit,
+		      phiNTRefit, phiNT1Refit, HZZRefitMass, 
 		      ldSigRefit, ldBkgRefit, helyLDRefit );
     else{
       ldSigRefit = -100.0;
@@ -337,6 +346,11 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("phiNT1",phiNT1);
     //    h.addUserFloat("phiNT2",phiNT2);
     h.addUserFloat("costhetastarNT",costhetastarNT);
+    h.addUserFloat("costhetaNT1Refit",costhetaNT1Refit);
+    h.addUserFloat("costhetaNT2Refit",costhetaNT2Refit);
+    h.addUserFloat("phiNTRefit",phiNTRefit);
+    h.addUserFloat("phiNT1Refit",phiNT1Refit);
+    h.addUserFloat("costhetastarNTRefit",costhetastarNTRefit);
     h.addUserFloat("j1RefitPt", j1RefitPt);
     h.addUserFloat("j2RefitPt", j2RefitPt);
     h.addUserFloat("j1RefitEta", j1RefitEta);
@@ -385,32 +399,58 @@ void Higgs2l2bUserData::getLDVariables( float costhetaNT1, float costhetaNT2, fl
 }
 
 void Higgs2l2bUserData::helicityAngles (const reco::Candidate *Zll, const reco::Candidate *Zjj) {
-
-    // prepare for helicity angles computation
-    costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
-    phiNT       = -8.80; phiNT1      = -8.80;
-    TLorentzVector p4lept1(0.0,0.0,0.0,0.0);
-    TLorentzVector p4lept2(0.0,0.0,0.0,0.0);
-    TLorentzVector p4jet1(0.0,0.0,0.0,0.0);
-    TLorentzVector p4jet2(0.0,0.0,0.0,0.0);
-    //set as lepton #1 the negative one
-    int lM, lP;
-    if(Zll->daughter(0)->charge()<0.0) 
-      lM = 0;
-    else   
-      lM = 1;
-    lP = 1-lM;
-
-    p4lept1.SetPxPyPzE(Zll->daughter(lM)->p4().x(),Zll->daughter(lM)->p4().y(),Zll->daughter(lM)->p4().z(),Zll->daughter(lM)->p4().e());
-    p4lept2.SetPxPyPzE(Zll->daughter(lP)->p4().x(),Zll->daughter(lP)->p4().y(),Zll->daughter(lP)->p4().z(),Zll->daughter(lP)->p4().e());
-
-    p4jet1.SetPxPyPzE(Zjj->daughter(0)->p4().x(),Zjj->daughter(0)->p4().y(),Zjj->daughter(0)->p4().z(),Zjj->daughter(0)->p4().e());
-    p4jet2.SetPxPyPzE(Zjj->daughter(1)->p4().x(),Zjj->daughter(1)->p4().y(),Zjj->daughter(1)->p4().z(),Zjj->daughter(1)->p4().e());
-    //compute helicity angles
-   Helicity myAngles;
-   myAngles.calculateAngles(p4lept1, p4lept2, p4jet1, p4jet2, costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1);
-
+  // prepare for helicity angles computation
+  costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
+  phiNT       = -8.80; phiNT1      = -8.80;
+  TLorentzVector p4lept1(0.0,0.0,0.0,0.0);
+  TLorentzVector p4lept2(0.0,0.0,0.0,0.0);
+  TLorentzVector p4jet1(0.0,0.0,0.0,0.0);
+  TLorentzVector p4jet2(0.0,0.0,0.0,0.0);
+  //set as lepton #1 the negative one
+  int lM, lP;
+  if(Zll->daughter(0)->charge()<0.0) 
+    lM = 0;
+  else   
+    lM = 1;
+  lP = 1-lM;
+  
+  p4lept1.SetPxPyPzE(Zll->daughter(lM)->p4().x(),Zll->daughter(lM)->p4().y(),Zll->daughter(lM)->p4().z(),Zll->daughter(lM)->p4().e());
+  p4lept2.SetPxPyPzE(Zll->daughter(lP)->p4().x(),Zll->daughter(lP)->p4().y(),Zll->daughter(lP)->p4().z(),Zll->daughter(lP)->p4().e());
+  
+  p4jet1.SetPxPyPzE(Zjj->daughter(0)->p4().x(),Zjj->daughter(0)->p4().y(),Zjj->daughter(0)->p4().z(),Zjj->daughter(0)->p4().e());
+  p4jet2.SetPxPyPzE(Zjj->daughter(1)->p4().x(),Zjj->daughter(1)->p4().y(),Zjj->daughter(1)->p4().z(),Zjj->daughter(1)->p4().e());
+  //compute helicity angles
+  Helicity myAngles;
+  myAngles.calculateAngles(p4lept1, p4lept2, p4jet1, p4jet2, costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1);
 }
+
+
+void Higgs2l2bUserData::helicityAnglesRefit(const reco::Candidate *Zll, TLorentzVector p4jet1, TLorentzVector p4jet2) 
+{  
+  // prepare for helicity angles computation
+  costhetaNT1Refit = -8.80; costhetaNT2Refit = -8.80; costhetastarNTRefit = -8.80;
+  phiNTRefit       = -8.80; phiNT1Refit      = -8.80;
+  TLorentzVector p4lept1(0.0,0.0,0.0,0.0);
+  TLorentzVector p4lept2(0.0,0.0,0.0,0.0);
+  //set as lepton #1 the negative one
+  int lM, lP;
+  if(Zll->daughter(0)->charge()<0.0) 
+    lM = 0;
+  else   
+    lM = 1;
+  lP = 1-lM;
+  
+  p4lept1.SetPxPyPzE(Zll->daughter(lM)->p4().x(),Zll->daughter(lM)->p4().y(),Zll->daughter(lM)->p4().z(),Zll->daughter(lM)->p4().e());
+  p4lept2.SetPxPyPzE(Zll->daughter(lP)->p4().x(),Zll->daughter(lP)->p4().y(),Zll->daughter(lP)->p4().z(),Zll->daughter(lP)->p4().e());
+  
+  //compute helicity angles
+  Helicity myAngles;
+  myAngles.calculateAngles(p4lept1, p4lept2, p4jet1, p4jet2, costhetaNT1Refit, costhetaNT2Refit, costhetastarNTRefit, phiNTRefit, phiNT1Refit);
+}
+
+
+
+
 
 /*
 
