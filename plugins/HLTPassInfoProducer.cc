@@ -64,10 +64,10 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
   *trigOKEl_ = verifyHLTPass(trigNamesEl_, passedPaths);
   *trigOKDoubleEl_ = verifyHLTPass(trigNamesDoubleEl_, passedPaths);
   
-  cout << "Single Mu FLAG VALUE = " << *trigOKMu_ << endl;
-  cout << "Double Mu FLAG VALUE = " << *trigOKDoubleMu_ << endl;
-  cout << "Single El FLAG VALUE = " << *trigOKEl_ << endl;
-  cout << "Double El FLAG VALUE = " << *trigOKDoubleEl_ << endl;
+  //  cout << "Single Mu FLAG VALUE = " << *trigOKMu_ << endl;
+  //  cout << "Double Mu FLAG VALUE = " << *trigOKDoubleMu_ << endl;
+  //  cout << "Single El FLAG VALUE = " << *trigOKEl_ << endl;
+  //  cout << "Double El FLAG VALUE = " << *trigOKDoubleEl_ << endl;
 
   evt.put( trigOKMu_, "passSingleMuTrig" );
   evt.put( trigOKDoubleMu_, "passDoubleMuTrig" );
@@ -82,21 +82,19 @@ bool HLTPassInfoProducer::verifyHLTPass(std::vector<std::string> trigNames, pat:
 
   // simply pass if no trigger path is specified in input
   if(trigNames.size()==0) {
-    cout << "ALL PATHs" << endl;
+    //    cout << "ALL PATHs" << endl;
     return true;
   }
   for(vector<string>::iterator nameIt = trigNames.begin(); nameIt != trigNames.end();
       ++nameIt) {
-    //    if(passedTrig == true)
-    //      break;
     string requestedPath = *nameIt;
-    cout << "Examining " << requestedPath << endl;
+    //    cout << "Examining " << requestedPath << endl;
 
     for(pat::TriggerPathRefVector::const_iterator pathIt = passedPaths.begin(); pathIt!=passedPaths.end(); 
 	++pathIt) {
       string passedPathName = (*pathIt)->name();
       if(requestedPath == passedPathName){
-	cout << "SETTING flag to TRUE" << endl;
+	//	cout << "SETTING flag to TRUE" << endl;
 	return true;
       }
       
