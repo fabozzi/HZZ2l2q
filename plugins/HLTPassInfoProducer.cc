@@ -80,11 +80,10 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
 
 bool HLTPassInfoProducer::verifyHLTPass(std::vector<std::string> trigNames, pat::TriggerPathRefVector passedPaths) {
 
-  // simply pass if no trigger path is specified in input
-  if(trigNames.size()==0) {
-    //    cout << "ALL PATHs" << endl;
+  // if no trigger path is specified in input -> pass OK
+  if(trigNames.size()==0) 
     return true;
-  }
+
   for(vector<string>::iterator nameIt = trigNames.begin(); nameIt != trigNames.end();
       ++nameIt) {
     string requestedPath = *nameIt;
@@ -92,7 +91,14 @@ bool HLTPassInfoProducer::verifyHLTPass(std::vector<std::string> trigNames, pat:
 
     for(pat::TriggerPathRefVector::const_iterator pathIt = passedPaths.begin(); pathIt!=passedPaths.end(); 
 	++pathIt) {
-      string passedPathName = (*pathIt)->name();
+      string passedPathName = (*pathIt)->name();      
+      int vpos = passedPathName.find_last_of("_");
+      if(vpos < 0 )
+	continue;
+      passedPathName.erase(vpos);
+
+      //      cout << "PASSED PATH  = " << passedPathName << endl;
+
       if(requestedPath == passedPathName){
 	//	cout << "SETTING flag to TRUE" << endl;
 	return true;

@@ -7,7 +7,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2bedmNtuples_cff")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(51) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.MessageLogger.cerr.threshold = ''
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
@@ -26,13 +26,13 @@ process.PUInfoNtuple = cms.EDProducer(
 process.HLTPassInfo = cms.EDProducer(
     "HLTPassInfoProducer",
     triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here insert the HLT path you want to check for Spring11 MC
-    triggerNamesSingleMu = cms.vstring('HLT_Mu21',
-                                       'HLT_IsoMu17'
-                                       ),
-    triggerNamesDoubleMu = cms.vstring('HLT_DoubleMu5'),
-    triggerNamesSingleEl = cms.vstring('HLT_Ele22_SW_TighterEleId_L1R'),
-    triggerNamesDoubleEl = cms.vstring('HLT_Ele17_SW_TightCaloEleId_Ele8HE_L1R')
+    # here insert the HLT path (without _v[n] suffix) you want to check
+    # paths for Summer11 MC taken from here:
+    # http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/HLTrigger/Configuration/python/HLT_FULL_cff.py?revision=1.372.2.56&view=markup
+    triggerNamesSingleMu = cms.vstring('HLT_IsoMu17'),
+    triggerNamesDoubleMu = cms.vstring('HLT_DoubleMu7'),
+    triggerNamesSingleEl = cms.vstring('HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT'),
+    triggerNamesDoubleEl = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL')
     )
 
 
