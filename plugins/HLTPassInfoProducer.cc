@@ -69,7 +69,7 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
 
   int runNumber = evt.run();
 
-  cout << "RUN = " << runNumber << endl;
+  //  cout << "RUN = " << runNumber << endl;
 
   enum{ start5E32, start1E33, start1P4E33 };
     
@@ -129,10 +129,10 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
   *trigOKEl_ = verifyHLTPass(trigNamesEl_, passedPaths);
   *trigOKDoubleEl_ = verifyHLTPass(trigNamesDoubleEl_, passedPaths);
   
-  cout << "Single Mu FLAG VALUE = " << *trigOKMu_ << endl;
-  cout << "Double Mu FLAG VALUE = " << *trigOKDoubleMu_ << endl;
-  cout << "Single El FLAG VALUE = " << *trigOKEl_ << endl;
-  cout << "Double El FLAG VALUE = " << *trigOKDoubleEl_ << endl;
+  //  cout << "Single Mu FLAG VALUE = " << *trigOKMu_ << endl;
+  //  cout << "Double Mu FLAG VALUE = " << *trigOKDoubleMu_ << endl;
+  //  cout << "Single El FLAG VALUE = " << *trigOKEl_ << endl;
+  //  cout << "Double El FLAG VALUE = " << *trigOKDoubleEl_ << endl;
 
   evt.put( trigOKMu_, "passSingleMuTrig" );
   evt.put( trigOKDoubleMu_, "passDoubleMuTrig" );
@@ -152,7 +152,7 @@ bool HLTPassInfoProducer::verifyHLTPass(std::vector<std::string> trigNames, pat:
   for(vector<string>::iterator nameIt = trigNames.begin(); nameIt != trigNames.end();
       ++nameIt) {
     string requestedPath = *nameIt;
-    cout << "Examining " << requestedPath << endl;
+    //    cout << "Examining " << requestedPath << endl;
 
     for(pat::TriggerPathRefVector::const_iterator pathIt = passedPaths.begin(); pathIt!=passedPaths.end(); 
 	++pathIt) {
@@ -165,7 +165,7 @@ bool HLTPassInfoProducer::verifyHLTPass(std::vector<std::string> trigNames, pat:
       //      cout << "PASSED PATH  = " << passedPathName << endl;
 
       if(requestedPath == passedPathName){
-	cout << "SETTING flag to TRUE" << endl;
+	//	cout << "SETTING flag to TRUE" << endl;
 	return true;
       }
       
