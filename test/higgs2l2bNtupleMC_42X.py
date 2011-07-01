@@ -22,18 +22,36 @@ process.source.fileNames=cms.untracked.vstring(
 process.PUInfoNtuple = cms.EDProducer(
     "GenPUNtupleDump"
 )
-
 process.HLTPassInfo = cms.EDProducer(
     "HLTPassInfoProducer",
     triggerEvent = cms.InputTag("patTriggerEvent"),
+    # here the 1st run with a new trigger table
+    # leave empty for MC
+    runLimits = cms.vint32(),
     # here insert the HLT path (without _v[n] suffix) you want to check
-    # paths for Summer11 MC taken from here:
-    # http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/HLTrigger/Configuration/python/HLT_FULL_cff.py?revision=1.372.2.56&view=markup
-    triggerNamesSingleMu = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu = cms.vstring('HLT_DoubleMu7'),
-    triggerNamesSingleEl = cms.vstring('HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT'),
-    triggerNamesDoubleEl = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL')
+    # Summer11 MC path
+    triggerNamesSingleMu_MC = cms.vstring('HLT_IsoMu17'),
+    triggerNamesDoubleMu_MC = cms.vstring('HLT_DoubleMu7'),
+    triggerNamesSingleEl_MC = cms.vstring('HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT'),
+    triggerNamesDoubleEl_MC = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+    # Data: here all the paths making the PDs are listed
+    # 5e32 paths
+    triggerNamesSingleMu_5e32 = cms.vstring(),
+    triggerNamesDoubleMu_5e32 = cms.vstring(),
+    triggerNamesSingleEl_5e32 = cms.vstring(),
+    triggerNamesDoubleEl_5e32 = cms.vstring(),
+    # 1e33 paths
+    triggerNamesSingleMu_1e33 = cms.vstring(),
+    triggerNamesDoubleMu_1e33 = cms.vstring(),
+    triggerNamesSingleEl_1e33 = cms.vstring(),
+    triggerNamesDoubleEl_1e33 = cms.vstring(),
+##### 1.4e33 paths
+    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
+    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+    triggerNamesDoubleEl_1p4e33 = cms.vstring()
     )
+
 
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')
