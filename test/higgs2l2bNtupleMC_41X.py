@@ -7,7 +7,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2bedmNtuples_cff")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(51) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.MessageLogger.cerr.threshold = ''
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
@@ -26,15 +26,34 @@ process.PUInfoNtuple = cms.EDProducer(
 process.HLTPassInfo = cms.EDProducer(
     "HLTPassInfoProducer",
     triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here insert the HLT path you want to check for Spring11 MC
-    triggerNamesSingleMu = cms.vstring('HLT_Mu21',
-                                       'HLT_IsoMu17'
-                                       ),
-    triggerNamesDoubleMu = cms.vstring('HLT_DoubleMu5'),
-    triggerNamesSingleEl = cms.vstring('HLT_Ele22_SW_TighterEleId_L1R'),
-    triggerNamesDoubleEl = cms.vstring('HLT_Ele17_SW_TightCaloEleId_Ele8HE_L1R')
+    # here the 1st run with a new trigger table
+    # leave empty for MC
+    runLimits = cms.vint32(),
+    # here insert the HLT path (without _v[n] suffix) you want to check
+    # Summer11 MC path
+    triggerNamesSingleMu_MC = cms.vstring('HLT_Mu21',
+                                          'HLT_IsoMu17'
+                                          ),
+    triggerNamesDoubleMu_MC = cms.vstring('HLT_DoubleMu5'),
+    triggerNamesSingleEl_MC = cms.vstring('HLT_Ele22_SW_TighterEleId_L1R'),
+    triggerNamesDoubleEl_MC = cms.vstring('HLT_Ele17_SW_TightCaloEleId_Ele8HE_L1R'),
+    # Data:
+    # 5e32 paths
+    triggerNamesSingleMu_5e32 = cms.vstring(),
+    triggerNamesDoubleMu_5e32 = cms.vstring(),
+    triggerNamesSingleEl_5e32 = cms.vstring(),
+    triggerNamesDoubleEl_5e32 = cms.vstring(),
+    # 1e33 paths
+    triggerNamesSingleMu_1e33 = cms.vstring(),
+    triggerNamesDoubleMu_1e33 = cms.vstring(),
+    triggerNamesSingleEl_1e33 = cms.vstring(),
+    triggerNamesDoubleEl_1e33 = cms.vstring(),
+##### 1.4e33 paths
+    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
+    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+    triggerNamesDoubleEl_1p4e33 = cms.vstring()
     )
-
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
