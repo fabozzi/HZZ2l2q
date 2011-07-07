@@ -20,6 +20,11 @@ process.source.fileNames=cms.untracked.vstring(
     'file:h2l2bData_FJNew_99_1_2pl.root'
 )
 
+process.PUInfoNtuple = cms.EDProducer(
+    "GenPUNtupleDump",
+    isData = cms.bool(True)
+)
+
 process.HLTPassInfo = cms.EDProducer(
     "HLTPassInfoProducer",
     triggerEvent = cms.InputTag("patTriggerEvent"),
@@ -92,6 +97,7 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_HLTPassInfo_*_*",
     "keep *_eventVtxInfoNtuple_*_*",
+    "keep *_PUInfoNtuple_*_*",
     "keep *_metInfoProducer_*_*",
     "keep *_kt6PFJets_rho_PAT",
     "keep *_Higgs2e2bEdmNtuple_*_*",
@@ -103,6 +109,7 @@ process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 process.analysisPath = cms.Path(
     process.HLTPassInfo+
     process.eventVtxInfoNtuple+
+    process.PUInfoNtuple+
     process.Higgs2e2bEdmNtuple+
     process.Higgs2mu2bEdmNtuple
 #    process.Higgsemu2bEdmNtuple

@@ -18,10 +18,13 @@ public:
 private:
   void produce( edm::Event &, const edm::EventSetup & );
   edm::InputTag PileupSrc_;
+  bool isData_;
 };
 
 GenPUNtupleDump::GenPUNtupleDump( const ParameterSet & cfg ) : 
-  PileupSrc_("addPileupInfo") {
+  PileupSrc_("addPileupInfo"),
+  isData_(cfg.getParameter<bool>("isData"))
+{
   produces<int>( "nGenInt" ).setBranchAlias( "nGenInt" );
 }
 
@@ -35,20 +38,22 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   auto_ptr<int> nGenInt( new int );
   *nGenInt = -1;
   
-  std::vector<PileupSummaryInfo>::const_iterator PVI;
-  for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
-    
-    int BX = PVI->getBunchCrossing();
-    
-    if(BX == 0) { 
-      *nGenInt = PVI->getPU_NumInteractions();
-      continue;
+  if(!isData_) {
+    std::vector<PileupSummaryInfo>::const_iterator PVI;
+    for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
+      
+      int BX = PVI->getBunchCrossing();
+      
+      if(BX == 0) { 
+	*nGenInt = PVI->getPU_NumInteractions();
+	continue;
+      }
+      
     }
-    
   }
   
   evt.put( nGenInt, "nGenInt" );
-
+  
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"

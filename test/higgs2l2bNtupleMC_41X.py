@@ -20,7 +20,8 @@ process.source.fileNames=cms.untracked.vstring(
 )
 
 process.PUInfoNtuple = cms.EDProducer(
-    "GenPUNtupleDump"
+    "GenPUNtupleDump",
+    isData = cms.bool(False)
 )
 
 process.HLTPassInfo = cms.EDProducer(
