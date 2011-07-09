@@ -32,11 +32,9 @@ process.HLTPassInfo = cms.EDProducer(
     runLimits = cms.vint32(),
     # here insert the HLT path (without _v[n] suffix) you want to check
     # Summer11 MC path
-    triggerNamesSingleMu_MC = cms.vstring('HLT_Mu21',
-                                          'HLT_IsoMu17'
-                                          ),
+    triggerNamesSingleMu_MC = cms.vstring(),
     triggerNamesDoubleMu_MC = cms.vstring('HLT_DoubleMu5'),
-    triggerNamesSingleEl_MC = cms.vstring('HLT_Ele22_SW_TighterEleId_L1R'),
+    triggerNamesSingleEl_MC = cms.vstring(),
     triggerNamesDoubleEl_MC = cms.vstring('HLT_Ele17_SW_TightCaloEleId_Ele8HE_L1R'),
     # Data:
     # 5e32 paths
