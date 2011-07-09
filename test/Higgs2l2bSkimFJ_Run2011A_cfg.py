@@ -5,7 +5,7 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 
 
 ## global tag for data
-process.GlobalTag.globaltag = 'GR_R_42_V13::All'
+process.GlobalTag.globaltag = 'GR_R_42_V19::All'
 
 
 # Triggers for the /Jet PD are from:
@@ -32,9 +32,10 @@ process.GlobalTag.globaltag = 'GR_R_42_V13::All'
 
 # Jet energy corrections to use: 
 #inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
-#inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 # no residual correction in 4_2_X: 
-inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute'])
+#inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute'])
+# now residual correction in 4_2_X are available
+inputJetCorrLabel = ('AK5PF', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 
 # add pf met
 #from PhysicsTools.PatAlgos.tools.metTools import *
@@ -67,7 +68,7 @@ addJetCollection(process,cms.InputTag('ak5PFJets'),
                  'AK5','PFOffset',
                  doJTA        = True,
                  doBTagging   = True,
-                 jetCorrLabel = ('AK5PF', cms.vstring(['L1Offset', 'L2Relative', 'L3Absolute'])),
+                 jetCorrLabel = ('AK5PF', cms.vstring(['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])),
                  doType1MET   = False,
                  doL1Cleaning   = False,
                  doL1Counters   = True,
@@ -415,7 +416,7 @@ switchOnTrigger( process, sequence = 'p', hltProcess = '*' )
 process.muonTriggerMatchHLTMuon = cms.EDProducer( "PATTriggerMatcherDRLessByR",
                                                    src = cms.InputTag( "selectedPatMuons" ),
                                                    matched = cms.InputTag( "patTrigger" ),
-                                                   matchedCuts = cms.string( 'path( "HLT_DoubleMu7" )' ),
+                                                   matchedCuts = cms.string( 'path( "HLT_DoubleMu7_v*" ) || path( "HLT_Mu13_Mu8_v*" )' ),
                                                    maxDPtRel = cms.double( 1000.0 ),
                                                    maxDeltaR = cms.double( 0.2 ),
                                                    resolveAmbiguities    = cms.bool( True ),
@@ -427,7 +428,7 @@ process.muonTriggerMatchHLTMuon = cms.EDProducer( "PATTriggerMatcherDRLessByR",
 process.electronTriggerMatchHLTElectron = cms.EDProducer( "PATTriggerMatcherDRLessByR",
                                                           src = cms.InputTag( "selectedPatElectrons" ),
                                                           matched = cms.InputTag( "patTrigger" ),
-                                                          matchedCuts = cms.string( 'path( "Ele17_CaloIdL_CaloIsoV_Ele8_CaloIdL_CaloIsoVL_v1" )' ),
+                                                          matchedCuts = cms.string( 'path( "HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL_v*" )' ),
                                                           maxDPtRel = cms.double( 1000.0 ),
                                                           maxDeltaR = cms.double( 0.2 ),
                                                           resolveAmbiguities    = cms.bool( True ),
@@ -443,6 +444,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 
 # process all the events
-process.maxEvents.input = 500
+process.maxEvents.input = 10000
 process.options.wantSummary = True
 

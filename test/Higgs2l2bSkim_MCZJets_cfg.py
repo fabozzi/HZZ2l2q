@@ -3,7 +3,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 
 ## global tag for MC
-process.GlobalTag.globaltag = 'START42_V12::All'
+process.GlobalTag.globaltag = 'START42_V13::All'
 
 
 # Jet energy corrections to use: 
@@ -357,7 +357,7 @@ switchOnTrigger( process, sequence = 'p', hltProcess = '*' )
 process.muonTriggerMatchHLTMuon = cms.EDProducer( "PATTriggerMatcherDRLessByR",
                                                    src = cms.InputTag( "selectedPatMuons" ),
                                                    matched = cms.InputTag( "patTrigger" ),
-                                                   matchedCuts = cms.string( 'path( "HLT_DoubleMu7" )' ),
+                                                   matchedCuts = cms.string( 'path( "HLT_DoubleMu7_v*" )' ),
                                                    maxDPtRel = cms.double( 1000.0 ),
                                                    maxDeltaR = cms.double( 0.2 ),
                                                    resolveAmbiguities    = cms.bool( True ),
@@ -369,7 +369,7 @@ process.muonTriggerMatchHLTMuon = cms.EDProducer( "PATTriggerMatcherDRLessByR",
 process.electronTriggerMatchHLTElectron = cms.EDProducer( "PATTriggerMatcherDRLessByR",
                                                           src = cms.InputTag( "selectedPatElectrons" ),
                                                           matched = cms.InputTag( "patTrigger" ),
-                                                          matchedCuts = cms.string( 'path( "Ele17_CaloIdL_CaloIsoV_Ele8_CaloIdL_CaloIsoVL_v1" )' ),
+                                                          matchedCuts = cms.string( 'path( "Ele17_CaloIdL_CaloIsoV_Ele8_CaloIdL_CaloIsoVL_v*" )' ),
                                                           maxDPtRel = cms.double( 1000.0 ),
                                                           maxDeltaR = cms.double( 0.2 ),
                                                           resolveAmbiguities    = cms.bool( True ),
