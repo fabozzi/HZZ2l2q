@@ -16,6 +16,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('h2l2b4
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
+#    'file:h2l2bData_FJNew.root'
     'file:h2l2bData_FJNew_9_1_F2E.root',
     'file:h2l2bData_FJNew_99_1_2pl.root'
 )
@@ -39,56 +40,22 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesDoubleMu_MC = cms.vstring(),
     triggerNamesSingleEl_MC = cms.vstring(),
     triggerNamesDoubleEl_MC = cms.vstring(),
-    # Data: relevant paths in the PD (for singleEl needs better understanding)
+    # Data: requested path(s) in the PD
     # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'#,
-                                            #'HLT_IsoMu24',
-                                            ),
-    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'
-                                            ),
-    triggerNamesSingleEl_5e32 = cms.vstring('HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT',
-                                            'HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT',
-                                            'HLT_Ele45_CaloIdVT_TrkIdT'
-                                            ),
-    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'#,
-                                            #'HLT_Ele17_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL_Ele8_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL',
-                                            ),
+    triggerNamesSingleMu_5e32 = cms.vstring(),
+    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
+    triggerNamesSingleEl_5e32 = cms.vstring(),
+    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
     # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'#,
-                                            #'HLT_IsoMu24',
-                                            ),
-    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'#,
-                                            #'HLT_DoubleMu7',
-                                            ),
-    triggerNamesSingleEl_1e33 = cms.vstring('HLT_Ele25_CaloIdL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                            'HLT_Ele32_CaloIdVL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                            'HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT',
-                                            'HLT_Ele42_CaloIdVL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                            'HLT_Ele42_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT',
-                                            'HLT_Ele52_CaloIdVT_TrkIdT',
-                                            'HLT_Ele65_CaloIdVT_TrkIdT'
-                                            ),
-    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'#,
-                                            #'HLT_Ele17_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL_Ele8_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL',
-                                            ),
+    triggerNamesSingleMu_1e33 = cms.vstring(),
+    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
+    triggerNamesSingleEl_1e33 = cms.vstring(),
+    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
 ##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu24'#,
-                                              #'HLT_IsoMu20_eta2p1',
-                                              ),
-    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'#,
-                                              ),
-    triggerNamesSingleEl_1p4e33 = cms.vstring('HLT_Ele100_CaloIdVL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                              'HLT_Ele25_CaloIdL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                              'HLT_Ele27_WP80_PFMT50',
-                                              'HLT_Ele32_CaloIdVL_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                              'HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT',
-                                              'HLT_Ele32_WP70_PFMT50',
-                                              'HLT_Ele52_CaloIdVT_TrkIdT',
-                                              'HLT_Ele65_CaloIdVT_TrkIdT'
-                                              ),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'#,
-                                              #'HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL',
-                                              )
+    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
+    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL')
     )
 
 
