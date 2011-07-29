@@ -11,4 +11,7 @@
     <use name="DataFormats/Math"/>
     <use name="CommonTools/UtilAlgos"/>
     <use name="CommonTools/CandUtils"/>
+    <use name="RecoBTag/PerformanceDB"/>
+    <use name="CondFormats/PhysicsToolsObjects"/>
+    <use name="RecoBTag/Records"/>
 </library>
