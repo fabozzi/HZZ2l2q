@@ -32,7 +32,7 @@ process.HLTPassInfo = cms.EDProducer(
     runLimits = cms.vint32(),
     # here insert the HLT path (without _v[n] suffix) you want to check
     # Summer11 MC path
-    triggerNamesSingleMu_MC = cms.vstring(),
+    triggerNamesSingleMu_MC = cms.vstring('HLT_IsoMu17'),
     triggerNamesDoubleMu_MC = cms.vstring('HLT_DoubleMu5'),
     triggerNamesSingleEl_MC = cms.vstring(),
     triggerNamesDoubleEl_MC = cms.vstring('HLT_Ele17_SW_TightCaloEleId_Ele8HE_L1R'),
@@ -51,7 +51,12 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesSingleMu_1p4e33 = cms.vstring(),
     triggerNamesDoubleMu_1p4e33 = cms.vstring(),
     triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring()
+    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
+##### 2e33 paths
+    triggerNamesSingleMu_2e33 = cms.vstring(),
+    triggerNamesDoubleMu_2e33 = cms.vstring(),
+    triggerNamesSingleEl_2e33 = cms.vstring(),
+    triggerNamesDoubleEl_2e33 = cms.vstring()
     )
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')

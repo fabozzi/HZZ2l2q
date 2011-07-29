@@ -32,7 +32,8 @@ process.HLTPassInfo = cms.EDProducer(
     # here the 1st run with a new trigger table
     runLimits = cms.vint32(160410,#5e32
                            165121,#1e33
-                           167039 #1.4e33
+                           167039, #1.4e33
+                           170249 #2e33
                            ),
     # here insert the HLT path (without _v[n] suffix) you want to check
     # Summer11 MC path
@@ -42,20 +43,25 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesDoubleEl_MC = cms.vstring(),
     # Data: requested path(s) in the PD
     # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring(),
+    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
     triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
     triggerNamesSingleEl_5e32 = cms.vstring(),
     triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
     # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring(),
+    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
     triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
     triggerNamesSingleEl_1e33 = cms.vstring(),
     triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
 ##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
     triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
     triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL')
+    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+##### 2e33 paths
+    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
+    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
+    triggerNamesSingleEl_2e33 = cms.vstring(),
+    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
     )
 
 
