@@ -112,54 +112,54 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("jjdr"),
     quantity = cms.untracked.string("userFloat('jjdr')")
     ),
-#### Btag SF (dummy -1 for data)
+#### Btag SF
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFBtagTCHEL"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFBtagTCHEL')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFBtagTCHEM"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFBtagTCHEM')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFMistagTCHEL"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFMistagTCHEL')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFMistagTCHEM"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFMistagTCHEM')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFMistagTCHELeff"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFMistagTCHELeff')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau1SFMistagTCHEMeff"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j1SFMistagTCHEMeff')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFBtagTCHEL"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFBtagTCHEL')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFBtagTCHEM"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFBtagTCHEM')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFMistagTCHEL"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFMistagTCHEL')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFMistagTCHEM"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFMistagTCHEM')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFMistagTCHELeff"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFMistagTCHELeff')")
     ),
     cms.PSet(
     tag = cms.untracked.string("JetDau2SFMistagTCHEMeff"),
-    quantity = cms.untracked.string("-1")
+    quantity = cms.untracked.string("userFloat('j2SFMistagTCHEMeff')")
     ),
 #### 
     cms.PSet(
@@ -734,18 +734,21 @@ zjj = (
 Higgs2mu2bEdmNtuple = copy.deepcopy(higgs)
 Higgs2mu2bEdmNtuple.variables += zll
 Higgs2mu2bEdmNtuple.variables += zjj
-Higgs2mu2bEdmNtuple.src = cms.InputTag("hzzmmjj:h")
+#Higgs2mu2bEdmNtuple.src = cms.InputTag("hzzmmjj:h")
+Higgs2mu2bEdmNtuple.src = cms.InputTag("hzzmmjjSF:h")
 Higgs2mu2bEdmNtuple.prefix = cms.untracked.string("muHiggs")
 
 
 Higgs2e2bEdmNtuple = copy.deepcopy(Higgs2mu2bEdmNtuple)
 Higgs2e2bEdmNtuple.variables += zee
-Higgs2e2bEdmNtuple.src = cms.InputTag("hzzeejj:h")
+#Higgs2e2bEdmNtuple.src = cms.InputTag("hzzeejj:h")
+Higgs2e2bEdmNtuple.src = cms.InputTag("hzzeejjSF:h")
 Higgs2e2bEdmNtuple.prefix = cms.untracked.string("elHiggs")
 
 Higgsemu2bEdmNtuple = copy.deepcopy(Higgs2mu2bEdmNtuple)
 Higgsemu2bEdmNtuple.variables += zem
-Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
+#Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
+Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjjSF:h")
 Higgsemu2bEdmNtuple.prefix = cms.untracked.string("elmuHiggs")
 
 eventVtxInfoNtuple = cms.EDProducer(
