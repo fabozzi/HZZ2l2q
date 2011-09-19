@@ -56,7 +56,12 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesSingleMu_2e33 = cms.vstring(),
     triggerNamesDoubleMu_2e33 = cms.vstring(),
     triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring()
+    triggerNamesDoubleEl_2e33 = cms.vstring(),
+##### 3e33 paths
+    triggerNamesSingleMu_3e33 = cms.vstring(),
+    triggerNamesDoubleMu_3e33 = cms.vstring(),
+    triggerNamesSingleEl_3e33 = cms.vstring(),
+    triggerNamesDoubleEl_3e33 = cms.vstring()
     )
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')

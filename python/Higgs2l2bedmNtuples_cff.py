@@ -113,54 +113,14 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("userFloat('jjdr')")
     ),
 #### Btag SF (dummy -1 for data)
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFBtagTCHEL"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFBtagTCHEM"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFMistagTCHEL"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFMistagTCHEM"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFMistagTCHELeff"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau1SFMistagTCHEMeff"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFBtagTCHEL"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFBtagTCHEM"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFMistagTCHEL"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFMistagTCHEM"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFMistagTCHELeff"),
-    quantity = cms.untracked.string("-1")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("JetDau2SFMistagTCHEMeff"),
-    quantity = cms.untracked.string("-1")
-    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("JetDau1SFBtagTCHEL"),
+#    quantity = cms.untracked.string("-1")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("JetDau2SFMistagTCHEMeff"),
+#    quantity = cms.untracked.string("-1")
+#    ),
 #### 
     cms.PSet(
     tag = cms.untracked.string("JetDau1LooseID"),

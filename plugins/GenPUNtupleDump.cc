@@ -25,7 +25,7 @@ GenPUNtupleDump::GenPUNtupleDump( const ParameterSet & cfg ) :
   PileupSrc_("addPileupInfo"),
   isData_(cfg.getParameter<bool>("isData"))
 {
-  produces<int>( "nGenInt" ).setBranchAlias( "nGenInt" );
+  produces<float>( "nGenInt" ).setBranchAlias( "nGenInt" );
 }
 
 
@@ -35,21 +35,30 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   Handle<std::vector< PileupSummaryInfo > >  PupInfo;
   evt.getByLabel(PileupSrc_, PupInfo);
 
-  auto_ptr<int> nGenInt( new int );
-  *nGenInt = -1;
+  auto_ptr<float> nGenInt( new float );
+  *nGenInt = -1.;
   
   if(!isData_) {
     std::vector<PileupSummaryInfo>::const_iterator PVI;
+
+    float sum_nvtx = 0;
+
     for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
       
-      int BX = PVI->getBunchCrossing();
+      int npv = PVI->getPU_NumInteractions();
+      sum_nvtx += float(npv);
+
+      //      int BX = PVI->getBunchCrossing();
       
-      if(BX == 0) { 
-	*nGenInt = PVI->getPU_NumInteractions();
-	continue;
-      }
+      //      if(BX == 0) { 
+      //	*nGenInt = PVI->getPU_NumInteractions();
+      //	continue;
+      //      }
       
     }
+
+    *nGenInt = sum_nvtx/3.;
+
   }
   
   evt.put( nGenInt, "nGenInt" );

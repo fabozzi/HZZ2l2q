@@ -5,13 +5,13 @@ process = cms.Process("TRIM")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
-process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2bedmNtuplesSF_cff")
+process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2bedmNtuples_cff")
 
-process.load("CondCore.DBCommon.CondDBCommon_cfi")
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
 
 #Data measurements from Summer11
-process.load ("RecoBTag.PerformanceDB.BTagPerformanceDB1107")
-process.load ("RecoBTag.PerformanceDB.PoolBTagPerformanceDB1107")
+#process.load ("RecoBTag.PerformanceDB.BTagPerformanceDB1107")
+#process.load ("RecoBTag.PerformanceDB.PoolBTagPerformanceDB1107")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.MessageLogger.cerr.threshold = ''
@@ -62,9 +62,13 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesSingleMu_2e33 = cms.vstring(),
     triggerNamesDoubleMu_2e33 = cms.vstring(),
     triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring()
+    triggerNamesDoubleEl_2e33 = cms.vstring(),
+##### 3e33 paths
+    triggerNamesSingleMu_3e33 = cms.vstring(),
+    triggerNamesDoubleMu_3e33 = cms.vstring(),
+    triggerNamesSingleEl_3e33 = cms.vstring(),
+    triggerNamesDoubleEl_3e33 = cms.vstring()
     )
-
 
 
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2b_ntuple.root')
@@ -81,25 +85,25 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
 )
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
-process.hzzeejjSF = cms.EDProducer("Higgs2l2bUserDataSF",
-                                     higgs = cms.InputTag("hzzeejj:h")
-                                     )
-
-process.hzzmmjjSF = cms.EDProducer("Higgs2l2bUserDataSF",
-                                     higgs = cms.InputTag("hzzmmjj:h")
-                                     )
-
-process.hzzemjjSF = cms.EDProducer("Higgs2l2bUserDataSF",
-                                     higgs = cms.InputTag("hzzemjj:h")
-                                     )
+#process.hzzeejjSF = cms.EDProducer("Higgs2l2bUserDataSF",
+#                                     higgs = cms.InputTag("hzzeejj:h")
+#                                     )
+#
+#process.hzzmmjjSF = cms.EDProducer("Higgs2l2bUserDataSF",
+#                                     higgs = cms.InputTag("hzzmmjj:h")
+#                                     )
+#
+#process.hzzemjjSF = cms.EDProducer("Higgs2l2bUserDataSF",
+#                                     higgs = cms.InputTag("hzzemjj:h")
+#                                     )
 
 process.analysisPath = cms.Path(
     process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
-    process.hzzeejjSF +
-    process.hzzmmjjSF +
-    process.hzzemjjSF +
+#    process.hzzeejjSF +
+#    process.hzzmmjjSF +
+#    process.hzzemjjSF +
     process.Higgs2e2bEdmNtuple+
     process.Higgs2mu2bEdmNtuple
 #    process.Higgsemu2bEdmNtuple
