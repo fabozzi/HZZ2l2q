@@ -460,7 +460,40 @@ zee =(
     cms.PSet(
     tag = cms.untracked.string("EleDau2VBTF95CombID"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"eidVBTFCom95\")")
-    )
+    ),
+###### variables useful for custom electron selection
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1isEB"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isEB")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2isEB"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isEB")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1isEE"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isEE")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2isEE"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isEE")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1DeltaPhiAtVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.deltaPhiSuperClusterTrackAtVtx")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2DeltaPhiAtVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.deltaPhiSuperClusterTrackAtVtx")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1HOverE"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.hcalOverEcal")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2HOverE"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.hcalOverEcal")
+    )    
     )
 
 zem =(
