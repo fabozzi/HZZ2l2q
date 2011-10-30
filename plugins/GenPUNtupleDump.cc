@@ -26,9 +26,10 @@ GenPUNtupleDump::GenPUNtupleDump( const ParameterSet & cfg ) :
   isData_(cfg.getParameter<bool>("isData"))
 {
   produces<float>( "nGenInt" ).setBranchAlias( "nGenInt" );
+  produces<int>( "nGenIntBXm1" ).setBranchAlias( "nGenIntBXm1" );
+  produces<int>( "nGenIntBX0" ).setBranchAlias( "nGenIntBX0" );
+  produces<int>( "nGenIntBXp1" ).setBranchAlias( "nGenIntBXp1" );
 }
-
-
 
 void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   
@@ -38,30 +39,41 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   auto_ptr<float> nGenInt( new float );
   *nGenInt = -1.;
   
+  auto_ptr<int> nGenIntBXm1( new int );
+  *nGenIntBXm1 = -1;
+  
+  auto_ptr<int> nGenIntBX0( new int );
+  *nGenIntBX0 = -1;
+  
+  auto_ptr<int> nGenIntBXp1( new int );
+  *nGenIntBXp1 = -1;
+  
   if(!isData_) {
     std::vector<PileupSummaryInfo>::const_iterator PVI;
 
-    float sum_nvtx = 0;
-
     for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
-      
-      int npv = PVI->getPU_NumInteractions();
-      sum_nvtx += float(npv);
+      int BX = PVI->getBunchCrossing();
 
-      //      int BX = PVI->getBunchCrossing();
-      
-      //      if(BX == 0) { 
-      //	*nGenInt = PVI->getPU_NumInteractions();
-      //	continue;
-      //      }
-      
+      if(BX == -1) { 
+	*nGenIntBXm1 = PVI->getPU_NumInteractions();
+      }
+      if(BX == 0) { 
+	*nGenIntBX0 = PVI->getPU_NumInteractions();
+      }
+      if(BX == 1) { 
+	*nGenIntBXp1 = PVI->getPU_NumInteractions();
+      }
+
     }
 
-    *nGenInt = sum_nvtx/3.;
+    *nGenInt = float(*nGenIntBXm1 + *nGenIntBX0 + *nGenIntBXp1)/3.;
 
   }
   
   evt.put( nGenInt, "nGenInt" );
+  evt.put( nGenIntBXm1, "nGenIntBXm1" );
+  evt.put( nGenIntBX0, "nGenIntBX0" );
+  evt.put( nGenIntBXp1, "nGenIntBXp1" );
   
 }
 
