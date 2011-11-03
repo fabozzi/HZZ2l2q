@@ -34,6 +34,8 @@ private:
   std::vector<std::string> trigNamesDoubleMu_2e33_, trigNamesDoubleEl_2e33_;
   std::vector<std::string> trigNamesMu_3e33_, trigNamesEl_3e33_;
   std::vector<std::string> trigNamesDoubleMu_3e33_, trigNamesDoubleEl_3e33_;
+  std::vector<std::string> trigNamesMu_5e33_, trigNamesEl_5e33_;
+  std::vector<std::string> trigNamesDoubleMu_5e33_, trigNamesDoubleEl_5e33_;
   bool verifyHLTPass(std::vector<std::string>, pat::TriggerPathRefVector);
 };
 
@@ -63,7 +65,11 @@ HLTPassInfoProducer::HLTPassInfoProducer( const ParameterSet & cfg ) :
   trigNamesMu_3e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesSingleMu_3e33")),
   trigNamesEl_3e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesSingleEl_3e33")), 
   trigNamesDoubleMu_3e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesDoubleMu_3e33")),
-  trigNamesDoubleEl_3e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesDoubleEl_3e33"))
+  trigNamesDoubleEl_3e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesDoubleEl_3e33")),
+  trigNamesMu_5e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesSingleMu_5e33")),
+  trigNamesEl_5e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesSingleEl_5e33")), 
+  trigNamesDoubleMu_5e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesDoubleMu_5e33")),
+  trigNamesDoubleEl_5e33_(cfg.getParameter< std::vector<std::string> >("triggerNamesDoubleEl_5e33"))
 {
   produces<bool>( "passSingleMuTrig" ).setBranchAlias( "passSingleMuTrig" );
   produces<bool>( "passDoubleMuTrig" ).setBranchAlias( "passDoubleMuTrig" );
@@ -83,7 +89,7 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
 
   //  cout << "RUN = " << runNumber << endl;
 
-  enum{ start5E32, start1E33, start1P4E33 , start2E33, start3E33};
+  enum{ start5E32, start1E33, start1P4E33 , start2E33, start3E33, start5E33};
     
   std::vector<std::string> trigNamesMu_, trigNamesEl_;
   std::vector<std::string> trigNamesDoubleMu_, trigNamesDoubleEl_;
@@ -132,19 +138,26 @@ void HLTPassInfoProducer::produce( Event & evt, const EventSetup & ) {
       trigNamesDoubleMu_ = trigNamesDoubleMu_1p4e33_;
       trigNamesDoubleEl_ = trigNamesDoubleEl_1p4e33_;
     }
-    if( (runNumber>=runLimits_[start2E33]) )  {
+    if( (runNumber>=runLimits_[start2E33]) && ( runNumber<runLimits_[start3E33]) )  {
       // use 2e33 paths
       trigNamesMu_ = trigNamesMu_2e33_;
       trigNamesEl_ = trigNamesEl_2e33_;
       trigNamesDoubleMu_ = trigNamesDoubleMu_2e33_;
       trigNamesDoubleEl_ = trigNamesDoubleEl_2e33_;
     }
-    if( (runNumber>=runLimits_[start3E33]) )  {
+    if( (runNumber>=runLimits_[start3E33]) && ( runNumber<runLimits_[start5E33]) )  {
       // use 3e33 paths
       trigNamesMu_ = trigNamesMu_3e33_;
       trigNamesEl_ = trigNamesEl_3e33_;
       trigNamesDoubleMu_ = trigNamesDoubleMu_3e33_;
       trigNamesDoubleEl_ = trigNamesDoubleEl_3e33_;
+    }
+    if( (runNumber>=runLimits_[start5E33]) )  {
+      // use 5e33 paths
+      trigNamesMu_ = trigNamesMu_5e33_;
+      trigNamesEl_ = trigNamesEl_5e33_;
+      trigNamesDoubleMu_ = trigNamesDoubleMu_5e33_;
+      trigNamesDoubleEl_ = trigNamesDoubleEl_5e33_;
     }
 
   }
