@@ -279,8 +279,8 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     )
 
 readFiles.extend( [
-#'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
-'file:/data3/scratch/cms/mc/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
+'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
+#'file:/data3/scratch/cms/mc/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
 ] )
 
 process.source.fileNames = readFiles
@@ -347,9 +347,9 @@ process.out = cms.OutputModule("PoolOutputModule",
                  outputCommands =  cms.untracked.vstring(
                   'drop *_*_*_*',
                   'keep *_genParticles_*_*',
-                  'keep *_selectedPatElectrons_*_PAT',
+                  'keep *_userDataSelectedElectrons_*_PAT',
                   'keep *_selectedIsoElectrons_*_PAT',
-                  'keep *_selectedPatMuons_*_PAT',
+                  'keep *_userDataSelectedMuons_*_PAT',
                   'keep *_selectedIsoMuons_*_PAT',
 #                  'keep *_cleanPatJets_*_PAT',
                   'keep *_cleanPatJetsPURobust_*_PAT',
@@ -391,6 +391,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 2000
+process.maxEvents.input = 500
 process.options.wantSummary = True
 
