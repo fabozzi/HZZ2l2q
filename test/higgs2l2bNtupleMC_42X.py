@@ -67,7 +67,12 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesSingleMu_3e33 = cms.vstring(),
     triggerNamesDoubleMu_3e33 = cms.vstring(),
     triggerNamesSingleEl_3e33 = cms.vstring(),
-    triggerNamesDoubleEl_3e33 = cms.vstring()
+    triggerNamesDoubleEl_3e33 = cms.vstring(),
+##### 5e33 paths
+    triggerNamesSingleMu_5e33 = cms.vstring(),
+    triggerNamesDoubleMu_5e33 = cms.vstring(),
+    triggerNamesSingleEl_5e33 = cms.vstring(),
+    triggerNamesDoubleEl_5e33 = cms.vstring()
     )
 
 
