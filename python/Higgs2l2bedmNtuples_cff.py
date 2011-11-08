@@ -440,6 +440,14 @@ zll = (
     tag = cms.untracked.string("LeptDau2CombRelIso"),
     quantity = cms.untracked.string("(daughter(0).daughter(1).masterClone.hcalIso + daughter(0).daughter(1).masterClone.ecalIso + daughter(0).daughter(1).masterClone.trackIso )/ daughter(0).daughter(1).pt")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1AbsCombIsoPUCorr"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('absCombIsoPUCorrected')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2AbsCombIsoPUCorr"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('absCombIsoPUCorrected')")
+    ),
 
     )
 
