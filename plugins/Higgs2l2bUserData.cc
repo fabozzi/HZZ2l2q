@@ -7,7 +7,9 @@
 #include "FWCore/Utilities/interface/EDMException.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Lepton.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 
@@ -16,6 +18,13 @@
 #include "PhysicsTools/CandUtils/interface/CenterOfMassBooster.h"
 #include "PhysicsTools/CandUtils/interface/Booster.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+
+// PF candidates
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+// Vertex
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 // Helicity angles 
 #include "HiggsAnalysis/Higgs2l2b/interface/Helicity.h"
@@ -37,8 +46,6 @@ public:
 
 private:
   void produce( edm::Event &, const edm::EventSetup & );
-  // void calculateAngles(TLorentzVector leptMinus, TLorentzVector leptPlus, TLorentzVector jet1, TLorentzVector jet2 );
-  // void helicityAngles(const pat::CompositeCandidate &, const reco::Candidate *, const reco::Candidate *);
   void helicityAngles(const reco::Candidate *, const reco::Candidate *);
   void helicityAnglesRefit(const reco::Candidate *, TLorentzVector, TLorentzVector);
   int runJetKinFit(TLorentzVector &, TLorentzVector &, 
@@ -47,11 +54,10 @@ private:
   void getLDVariables(float, float, float, float, float, float, 
 		      float &, float &, float &);  
 
-  InputTag higgsTag, gensTag, metTag;
+  InputTag higgsTag, gensTag, PFCandTag, vtxTag;
+  double deltaZCut_;
   PFJetIDSelectionFunctor jetIDLoose;
   pat::strbitset ret; 
-  //  double costhetaNT1, costhetaNT2, costhetastarNT, phiNT,
-  //    phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2;
   // angular variables with unrefitted jet quantities
   double costhetaNT1, costhetaNT2, costhetastarNT, phiNT, phiNT1;
   // angular variables with refitted jet quantities
@@ -63,7 +69,9 @@ private:
 Higgs2l2bUserData::Higgs2l2bUserData( const ParameterSet & cfg ):
   higgsTag( cfg.getParameter<InputTag>( "higgs" ) ),
   gensTag( cfg.getParameter<edm::InputTag>("gensTag")),
-  metTag( cfg.getParameter<edm::InputTag>("metTag")),
+  PFCandTag( cfg.getParameter<edm::InputTag>("PFCandidates")),
+  vtxTag(cfg.getParameter<InputTag>("primaryVertices")),
+  deltaZCut_( cfg.getParameter<double>("dzCut")),
   jetIDLoose( PFJetIDSelectionFunctor::FIRSTDATA,
 	      PFJetIDSelectionFunctor::LOOSE ),
   zNominalMass_( 91.1876 ),
@@ -81,16 +89,18 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   Handle<GenParticleCollection> gensH;
   evt.getByLabel(gensTag, gensH);
   GenParticleCollection gens = *gensH;
-  
-  Handle<pat::METCollection> metH;
-  evt.getByLabel(metTag, metH);
-  pat::METCollection met_h = *metH;
+
+  // get PFCandidates
+  Handle<PFCandidateCollection> pfCandidates;
+  evt.getByLabel(PFCandTag, pfCandidates);
+
+  // get Primary vtx
+  Handle<reco::VertexCollection> primaryVertices;  // Collection of primary Vertices
+  evt.getByLabel(vtxTag, primaryVertices);
+  const reco::Vertex &pv = (*primaryVertices)[0];
 
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
 
-  //  float phi;
-  //  float met, metSumEt, metSig, metSignificance, metPhi;
-  float met2, Px, Py; 
   float zzdPhi, zzdEta, zzdr, lldPhi, lldEta,lldr, jjdPhi, jjdEta, jjdr; 
   float neutralEmEnergy, chargedEmEnergy, chargedHadronEnergy, energy;
   float jminid, jmaxid;
@@ -111,6 +121,10 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   float ldSig, ldBkg;
   float helyLDRefit;
   float ldSigRefit, ldBkgRefit;
+  float trkMetX, trkMetY, trkMet, trkPlusNeuMet;
+  float neutralContributionX, neutralContributionY;
+  float trkCorrectedMetX, trkCorrectedMetY;
+
 
   for (unsigned int i = 0; i< higgsH->size();++i){
     const reco::CompositeCandidate & H = (*higgsH)[i];
@@ -294,26 +308,121 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
       helyLDRefit = -100.0;
     }
 
-   // Phi in H rest frame
-    //    hFrameBoost.set( *boostedL0_HFrame );
-    //    hFrameBoost.set( *boostedL1_HFrame);
-    //    hFrameBoost.set( *boostedJ0_HFrame );
-    //    hFrameBoost.set( *boostedJ1_HFrame );
-    //    phi =  ROOT::Math::VectorUtil::Angle( (boostedL0_HFrame->momentum()).Cross(boostedL1_HFrame->momentum()), (boostedJ0_HFrame->momentum()).Cross(boostedJ1_HFrame->momentum()) );
-    //    if (phi>M_PI/2) phi = M_PI -phi;
 
-    //    met = met_h.front().et();
-    //    metSumEt = met_h.front().sumEt();
-    // rough met significance: met/sqrt(sumEt)
-    //    metSig = met_h.front().mEtSig();
-    // met significance
-    //    metSignificance = met_h.front().significance();
-    //    metPhi = met_h.front().phi();
-    Px = zDauRefl0->px() + zDauRefl1->px() + zDauRefj0->px() + zDauRefj1->px();
-    Py = zDauRefl0->py() + zDauRefl1->py() + zDauRefj0->py() + zDauRefj1->py();
-    met2 = sqrt(pow(Px,2)+pow(Py,2));
+    // get trk-MET
+    trkMetX=0.; trkMetY=0.;
+    neutralContributionX=0.; neutralContributionY=0.;
+    trkCorrectedMetX = 0.; trkCorrectedMetY=0;
+    trkMet=-100.; trkPlusNeuMet=-100.;
 
-    //    h.addUserFloat("azimuthalAngle", phi);
+    trkMetX = -zDauRefl0->px() - zDauRefl1->px() ;
+    trkMetY = -zDauRefl0->py() - zDauRefl1->py() ;
+
+    bool is0El(true), is1El(true);
+    const pat::Electron * lept0el = dynamic_cast<const pat::Electron *>(zDauRefl0->masterClone().get());
+    const pat::Electron * lept1el = dynamic_cast<const pat::Electron *>(zDauRefl1->masterClone().get());
+    const pat::Muon * lept0mu = dynamic_cast<const pat::Muon *>(zDauRefl0->masterClone().get());
+    const pat::Muon * lept1mu = dynamic_cast<const pat::Muon *>(zDauRefl1->masterClone().get());
+
+    if(lept0el==NULL)
+      is0El = false;
+    
+    if(lept1el==NULL)
+      is1El = false;
+
+    for( unsigned kk=0; kk<pfCandidates->size(); kk++ ) {
+      //      const reco::PFCandidate & pfc = dynamic_cast<const reco::PFCandidate &> ((*pfCandidates)[kk]);
+      const reco::PFCandidate & pfc = (*pfCandidates)[kk];
+      reco::TrackRef pfCandTrkRef = pfc.trackRef();
+      reco::GsfTrackRef pfCandGsfTrkRef = pfc.gsfTrackRef();
+
+      float DRval0 = deltaR( pfc.p4(), zDauRefl0->p4() );
+      float DRval1 = deltaR( pfc.p4(), zDauRefl1->p4() );
+
+      // charged candidate
+      if( pfCandTrkRef.isNonnull() || pfCandGsfTrkRef.isNonnull() ){
+	//skip the PF candidate if it's one of the Higgs cand daughters
+	//compare DR in muon case
+	//compare DR in electron case
+	if(!is0El){
+	  // muon case 
+	  //	  if( pfCandTrkRef == lept0mu->innerTrack() ) {
+	  //	    cout << "-------> GOT MUON 0 BY TRKREF, SKIPPING" << endl;
+	  //	    continue;
+	  //	  }
+	  if( DRval0 <= 0.1 ) {
+	    //	    cout << "------->GOT MUON 0 BY DR, SKIPPING" << endl;
+	    continue;
+	  }
+	} else { // electron case
+	  //	  if( ( ((lept0el->track()).isNonnull()) && (pfCandTrkRef == lept0el->track()) ) || 
+	  //	      (((lept0el->gsfTrack()).isNonnull()) && (pfCandGsfTrkRef == lept0el->gsfTrack())) ) {
+	  //	    cout << "------->GOT ELECTRON 0 BY TRKREF, SKIPPING " << endl;
+	  //	    continue;
+	  //	  } 
+	  if( DRval0 <= 0.1 ) {
+	    //	    cout << "------->GOT ELECTRON 0 BY DR, SKIPPING" << endl;
+	    continue;
+	  }
+	}
+
+	if(!is1El){
+	  // muon case 
+	  //	  if( pfCandTrkRef == lept1mu->innerTrack() ){
+	  //	    cout << "-------> GOT MUON 1 BY TRKREF, SKIPPING" << endl;
+	  //	    continue;
+	  //	  }
+	  if( DRval1 <= 0.1 ) {
+	    //	    cout << "------->GOT MUON 1 BY DR, SKIPPING" << endl;
+	    continue;
+	  }
+	} else { // electron case
+	  //	  if( ( ((lept1el->track()).isNonnull()) && (pfCandTrkRef == lept1el->track()) ) || 
+	  //	      (((lept1el->gsfTrack()).isNonnull()) && (pfCandGsfTrkRef == lept1el->gsfTrack())) ) {
+	  //	    cout << "------->GOT ELECTRON 1 BY TRKREF, SKIPPING " << endl;
+	  //	    continue;
+	  //	  }
+	  if( DRval1 <= 0.1 ){
+	    //	    cout << "------->GOT ELECTRON 1 BY DR, SKIPPING" << endl;
+	    continue;
+	  }
+	}
+	
+	if ( ( (pfCandTrkRef.isNonnull()) && (fabs(pfCandTrkRef->dz( pv.position() )) < deltaZCut_) ) ||
+	     ((pfCandGsfTrkRef.isNonnull()) && (fabs(pfCandGsfTrkRef->dz( pv.position() )) < deltaZCut_)) ) {
+	  trkMetX -= pfc.px();
+	  trkMetY -= pfc.py();
+	}
+
+      } // end if (pfCandTrkRef.isNonnull() || pfCandGsfTrkRef.isNonnull() )
+
+      // neutral candidate
+      if( (PFCandidate::ParticleType((pfc).particleId())==PFCandidate::h0) ||
+	  (PFCandidate::ParticleType((pfc).particleId())==PFCandidate::gamma) ) {
+	if ( (pfc.pt()>8) && (fabs(pfc.eta()) < 3) ) {
+	  neutralContributionX -= pfc.px();
+	  neutralContributionY -= pfc.py();
+	}
+      }
+
+    } // end of loop on PFCands
+
+    // get trkMet variable
+    trkMet = sqrt(trkMetX*trkMetX + trkMetY*trkMetY);
+    // get trk+neutral Met variable
+    trkCorrectedMetX = trkMetX+neutralContributionX; 
+    trkCorrectedMetY = trkMetY+neutralContributionY;
+    trkPlusNeuMet = sqrt(trkCorrectedMetX*trkCorrectedMetX + trkCorrectedMetY*trkCorrectedMetY);
+
+    //    cout << "trkMet_X = " << trkMetX << endl;
+    //    cout << "trkMet_Y = " << trkMetY << endl;
+    //    cout << "trkMet = " << trkMet << endl;
+
+    //    cout << "trkCorrectedMet_X = " << trkCorrectedMetX << endl;
+    //    cout << "trkCorrectedMet_Y = " << trkCorrectedMetY << endl;
+    //    cout << "trkPluNeuMet = " << trkPlusNeuMet << endl;
+
+
     h.addUserFloat("zzdPhi", zzdPhi);
     h.addUserFloat("zzdEta", zzdEta);
     h.addUserFloat("zzdr", zzdr);
@@ -329,22 +438,12 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("jmaxcmatch",jmaxcmatch );
     h.addUserFloat("jminid",jminid);
     h.addUserFloat("jmaxid",jmaxid);
-    //    h.addUserFloat("met",met);
-    //    h.addUserFloat("metSumEt",metSumEt);
-    //    h.addUserFloat("metSig",metSig);
-    //    h.addUserFloat("metSignificance",metSignificance);
-    //    h.addUserFloat("metPhi",metPhi);
-    h.addUserFloat("met2",met2);
     h.addUserFloat("jet1LooseID",j0LooseID);
     h.addUserFloat("jet2LooseID",j1LooseID);
     h.addUserFloat("costhetaNT1",costhetaNT1);
     h.addUserFloat("costhetaNT2",costhetaNT2);
-    //    h.addUserFloat("phistarNT1", phistarNT1);
-    //    h.addUserFloat("phistarNT2", phistarNT2);
-    //    h.addUserFloat("phistarNT12", phistarNT12);  
     h.addUserFloat("phiNT",phiNT);
     h.addUserFloat("phiNT1",phiNT1);
-    //    h.addUserFloat("phiNT2",phiNT2);
     h.addUserFloat("costhetastarNT",costhetastarNT);
     h.addUserFloat("costhetaNT1Refit",costhetaNT1Refit);
     h.addUserFloat("costhetaNT2Refit",costhetaNT2Refit);
@@ -369,7 +468,13 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("helyLDRefit", helyLDRefit);
     h.addUserFloat("ldSigRefit", ldSigRefit);
     h.addUserFloat("ldBkgRefit", ldBkgRefit);
-
+    // new met variables
+    h.addUserFloat("trkMetX", trkMetX);
+    h.addUserFloat("trkMetY", trkMetY);
+    h.addUserFloat("trkCorrectedMetX", trkCorrectedMetX);
+    h.addUserFloat("trkCorrectedMetY", trkCorrectedMetY);
+    h.addUserFloat("trkMet", trkMet);
+    h.addUserFloat("trkPlusNeuMet", trkPlusNeuMet);
 
     higgsColl->push_back(h);
   }
@@ -447,103 +552,6 @@ void Higgs2l2bUserData::helicityAnglesRefit(const reco::Candidate *Zll, TLorentz
   Helicity myAngles;
   myAngles.calculateAngles(p4lept1, p4lept2, p4jet1, p4jet2, costhetaNT1Refit, costhetaNT2Refit, costhetastarNTRefit, phiNTRefit, phiNT1Refit);
 }
-
-
-
-
-
-/*
-
-void Higgs2l2bUserData::helicityAngles (const pat::CompositeCandidate &X, const reco::Candidate *Z1, const reco::Candidate *Z2) {
-
-   TLorentzVector myp4H(X.p4().x(),X.p4().y(),X.p4().z(),X.p4().e() );
-   TLorentzVector myp4Z1(Z1->p4().x(),Z1->p4().y(),Z1->p4().z(),Z1->p4().e());
-   TLorentzVector myp4Z2(Z2->p4().x(),Z2->p4().y(),Z2->p4().z(),Z2->p4().e());
-
-   TLorentzVector myp4M11(0.0,0.0,0.0,0.0);
-   TLorentzVector myp4M12(0.0,0.0,0.0,0.0);
-   TLorentzVector myp4M21(0.0,0.0,0.0,0.0);
-   TLorentzVector myp4M22(0.0,0.0,0.0,0.0);
-
-   //output
-   costhetaNT1 = -8.80; costhetaNT2 = -8.80; costhetastarNT = -8.80;
-   phistarNT1  = -8.80; phistarNT2  = -8.80; phistarNT12    = -8.80;
-   phiNT       = -8.80; phiNT1      = -8.80; phiNT2         = -8.80;
-
-   // Zll is always Z1 (in our case)
-   bool Zllis1=true;
-
-   // pick the jet with pos azim angle in the Zjj rest frame
-   reco::Candidate * Zjjb = Z2->clone();
-   CenterOfMassBooster boostZjj(*Zjjb);
-   boostZjj.set(*Zjjb);
-
-   int posphiZjjdau=-1;
-   for(size_t dau=0;dau<2;dau++){    //Zjjb->numberOfDaughters();dau++){ //careful! there 4 daughters!
-     if(Zjjb->daughter(dau)->phi()>0) posphiZjjdau = dau;
-   }
-   // std::cout << " ### posphiZjjdau " << posphiZjjdau << " ###" << std::endl;
-
-   if(Zllis1){
-     //set as lepton #1 the negative one
-     if(Z1->daughter(0)->charge()<0.0){
-        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
-        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
-     }
-     else{
-        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
-        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
-     }
-     //set as jet #1 the pos phi one
-     if( posphiZjjdau==0){
-        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
-        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
-     }
-     else{
-        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
-        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
-     }
-   }//end if Z1 == Z->ll
-   else{
-     //set as lepton #1 the negative one
-     if(Z2->daughter(0)->charge()<0.0){
-        myp4M21.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
-        myp4M22.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
-     }
-     else{
-        myp4M21.SetPxPyPzE(Z2->daughter(1)->p4().x(),Z2->daughter(1)->p4().y(),Z2->daughter(1)->p4().z(),Z2->daughter(1)->p4().e());
-        myp4M22.SetPxPyPzE(Z2->daughter(0)->p4().x(),Z2->daughter(0)->p4().y(),Z2->daughter(0)->p4().z(),Z2->daughter(0)->p4().e());
-     }
-     //set as jet #1 the pos phi one
-     if( posphiZjjdau==0 ){
-        myp4M11.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
-        myp4M12.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
-     }
-     else{
-        myp4M11.SetPxPyPzE(Z1->daughter(1)->p4().x(),Z1->daughter(1)->p4().y(),Z1->daughter(1)->p4().z(),Z1->daughter(1)->p4().e());
-        myp4M12.SetPxPyPzE(Z1->daughter(0)->p4().x(),Z1->daughter(0)->p4().y(),Z1->daughter(0)->p4().z(),Z1->daughter(0)->p4().e());
-     }
-   }
-
-   bool swapped=false;
-
-   Helicity myAngles;
-
-   myAngles.calculateAngles(myp4H, myp4Z1, myp4M11, myp4M12, myp4Z2, myp4M21, myp4M22,
-                            costhetaNT1, costhetaNT2, phiNT, costhetastarNT,
-                            phistarNT1, phistarNT2, phistarNT12, phiNT1, phiNT2,swapped);
-
-// std::cout << "Helicity angles: "<<
-//              costhetaNT1 <<" , "<< costhetaNT2 <<" , "<< costhetastarNT <<" , "<<
-//              phistarNT1  <<" , "<< phistarNT2  <<" , "<< phistarNT12    <<" , "<<
-//              phiNT       <<" , "<< phiNT1      <<" , "<< phiNT2         << std::endl;
-
-   costhetaNT2 = fabs(costhetaNT2);
-
-}
-
-
-*/
 
 int Higgs2l2bUserData::runJetKinFit(TLorentzVector &j1,TLorentzVector &j2,
 				    const TLorentzVector &ZLL, TLorentzVector & Zjj, 
