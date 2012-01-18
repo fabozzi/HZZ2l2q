@@ -16,9 +16,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('h2l2b4
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-#    'file:h2l2bData_FJNew.root'
-    'file:h2l2bData_FJNew_9_1_F2E.root',
-    'file:h2l2bData_FJNew_99_1_2pl.root'
+    'file:h2l2bData.root'
+#    'file:h2l2bData_FJNew_9_1_F2E.root',
+#    'file:h2l2bData_FJNew_99_1_2pl.root'
 )
 
 process.PUInfoNtuple = cms.EDProducer(
@@ -71,7 +71,7 @@ process.HLTPassInfo = cms.EDProducer(
     triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
 ##### 5e33 paths
     triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
-    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_TrkMu8'),
+    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
     triggerNamesSingleEl_5e33 = cms.vstring(),
     triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
     )
