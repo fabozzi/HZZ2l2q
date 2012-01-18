@@ -32,34 +32,6 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("Phi"),
     quantity = cms.untracked.string("phi")
     ),
-#    cms.PSet(
-#    tag = cms.untracked.string("Met"),
-#    quantity = cms.untracked.string("userFloat('met')")
-#    ),
-    cms.PSet(
-    tag = cms.untracked.string("Met2"),
-    quantity = cms.untracked.string("userFloat('met2')")
-    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("MetSumEt"),
-#    quantity = cms.untracked.string("userFloat('metSumEt')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("MetSig"),
-#    quantity = cms.untracked.string("userFloat('metSig')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("MetSignificance"),
-#    quantity = cms.untracked.string("userFloat('metSignificance')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("MetPhi"),
-#    quantity = cms.untracked.string("userFloat('metPhi')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("AzimuthalAngle"),
-#    quantity = cms.untracked.string("userFloat('azimuthalAngle')")
-#    ),
     cms.PSet(
     tag = cms.untracked.string("jminbmatch"),
     quantity = cms.untracked.string("userFloat('jminbmatch')")
@@ -112,16 +84,6 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("jjdr"),
     quantity = cms.untracked.string("userFloat('jjdr')")
     ),
-#### Btag SF (dummy -1 for data)
-#    cms.PSet(
-#    tag = cms.untracked.string("JetDau1SFBtagTCHEL"),
-#    quantity = cms.untracked.string("-1")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("JetDau2SFMistagTCHEMeff"),
-#    quantity = cms.untracked.string("-1")
-#    ),
-#### 
     cms.PSet(
     tag = cms.untracked.string("JetDau1LooseID"),
     quantity = cms.untracked.string("userFloat('jet1LooseID')")
@@ -138,18 +100,6 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("costhetaNT2"),
     quantity = cms.untracked.string("userFloat('costhetaNT2')")
     ),
-#    cms.PSet(
-#    tag = cms.untracked.string("phistarNT1"),
-#    quantity = cms.untracked.string("userFloat('phistarNT1')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("phistarNT2"),
-#    quantity = cms.untracked.string("userFloat('phistarNT2')")
-#    ),
-#    cms.PSet(
-#    tag = cms.untracked.string("phistarNT12"),
-#    quantity = cms.untracked.string("userFloat('phistarNT12')")
-#    ),
     cms.PSet(
     tag = cms.untracked.string("phiNT"),
     quantity = cms.untracked.string("userFloat('phiNT')")
@@ -158,10 +108,6 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("phiNT1"),
     quantity = cms.untracked.string("userFloat('phiNT1')")
     ),
-#    cms.PSet(
-#    tag = cms.untracked.string("phiNT2"),
-#    quantity = cms.untracked.string("userFloat('phiNT2')")
-#    ),
     cms.PSet(
     tag = cms.untracked.string("costhetastarNT"),
     quantity = cms.untracked.string("userFloat('costhetastarNT')")
@@ -257,6 +203,31 @@ higgs =  cms.EDProducer(
     cms.PSet(
     tag = cms.untracked.string("ldBkgRefit"),
     quantity = cms.untracked.string("userFloat('ldBkgRefit')")
+    ),
+# new met variables
+    cms.PSet(
+    tag = cms.untracked.string("trkMetX"),
+    quantity = cms.untracked.string("userFloat('trkMetX')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("trkMetY"),
+    quantity = cms.untracked.string("userFloat('trkMetY')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("trkCorrectedMetX"),
+    quantity = cms.untracked.string("userFloat('trkCorrectedMetX')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("trkCorrectedMetY"),
+    quantity = cms.untracked.string("userFloat('trkCorrectedMetY')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("trkMet"),
+    quantity = cms.untracked.string("userFloat('trkMet')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("trkPlusNeuMet"),
+    quantity = cms.untracked.string("userFloat('trkPlusNeuMet')")
     ),
     )
     )
@@ -712,20 +683,6 @@ zjj = (
     tag = cms.untracked.string("Jet2TKHP"),
     quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.bDiscriminator(\"trackCountingHighPurBJetTags\") ")
     ),
-
-
-##     ## jET ID
-    
-##     cms.PSet(
-##     tag = cms.untracked.string("JetMinID"),
-##     quantity = cms.untracked.string("? (daughter(0).masterClone.pt < daughter(1).masterClone.pt) && ((daughter(0).masterClone.neutralEmEnergy/daughter(0).masterClone.energy ) < 1.00) && ((daughter(0).masterClone.chargedEmEnergy/daughter(0).masterClone.energy)<1.00) && ((daughter(0).masterClone.chargedHadronEnergy/daughter(0).masterClone.energy)>0) ? true : false")
-##     ),
-##     cms.PSet(
-##     tag = cms.untracked.string("JetMaxID"),
-##     quantity = cms.untracked.string("? (daughter(0).masterClone.pt < daughter(1).masterClone.pt) && ? daughter(1).masterClone.bDiscriminator(\"trackCountingHighPurBJetTags\") :daughter(0).masterClone.bDiscriminator(\"trackCountingHighPurBJetTags\") ")
-##     ),
-
-
     )
 
 
