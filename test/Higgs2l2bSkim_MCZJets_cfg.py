@@ -212,19 +212,19 @@ process.met_Type1Corr_Sequence = cms.Sequence (
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoElectrons@+ selectedIsoElectrons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedElectrons@-")
                              )
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoMuons@+ selectedIsoMuons@-")
+                                 decay = cms.string("userDataSelectedMuons@+ userDataSelectedMuons@-")
                              )
 
 process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoElectrons@+ selectedIsoMuons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedMuons@-")
                              )
 
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",

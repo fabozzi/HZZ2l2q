@@ -29,6 +29,8 @@ GenPUNtupleDump::GenPUNtupleDump( const ParameterSet & cfg ) :
   produces<int>( "nGenIntBXm1" ).setBranchAlias( "nGenIntBXm1" );
   produces<int>( "nGenIntBX0" ).setBranchAlias( "nGenIntBX0" );
   produces<int>( "nGenIntBXp1" ).setBranchAlias( "nGenIntBXp1" );
+  // true number of interactions (available in Fall11 MC)
+  produces<float>( "trueNInt" ).setBranchAlias( "trueNInt" );
 }
 
 void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
@@ -48,7 +50,11 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   auto_ptr<int> nGenIntBXp1( new int );
   *nGenIntBXp1 = -1;
   
+  auto_ptr<float> trueNInt( new float );
+  *trueNInt = -1.;
+
   if(!isData_) {
+
     std::vector<PileupSummaryInfo>::const_iterator PVI;
 
     for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
@@ -59,6 +65,7 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
       }
       if(BX == 0) { 
 	*nGenIntBX0 = PVI->getPU_NumInteractions();
+	*trueNInt = PVI->getTrueNumInteractions();
       }
       if(BX == 1) { 
 	*nGenIntBXp1 = PVI->getPU_NumInteractions();
@@ -74,6 +81,7 @@ void GenPUNtupleDump::produce( Event & evt, const EventSetup & ) {
   evt.put( nGenIntBXm1, "nGenIntBXm1" );
   evt.put( nGenIntBX0, "nGenIntBX0" );
   evt.put( nGenIntBXp1, "nGenIntBXp1" );
+  evt.put( trueNInt, "trueNInt" );
   
 }
 

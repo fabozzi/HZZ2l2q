@@ -33,6 +33,10 @@ higgs =  cms.EDProducer(
     quantity = cms.untracked.string("phi")
     ),
     cms.PSet(
+    tag = cms.untracked.string("En"),
+    quantity = cms.untracked.string("energy")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("jminbmatch"),
     quantity = cms.untracked.string("userFloat('jminbmatch')")
     ),
@@ -256,7 +260,23 @@ zll = (
     tag = cms.untracked.string("zllPhi"),
     quantity = cms.untracked.string("daughter(0).phi")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("zllEn"),
+    quantity = cms.untracked.string("daughter(0).energy")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("zllCharge"),
+    quantity = cms.untracked.string("daughter(0).charge")
+    ),
     ## pt
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1Charge"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).charge ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Charge"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).charge")
+    ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1Pt"),
     quantity = cms.untracked.string("daughter(0).daughter(0).pt ")
@@ -306,6 +326,14 @@ zll = (
     cms.PSet(
     tag = cms.untracked.string("LeptDau2Phi"),
     quantity = cms.untracked.string("daughter(0).daughter(1).phi ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1En"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).energy ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2En"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).energy ")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1GlobalMuonBit"),
@@ -520,6 +548,10 @@ zjj = (
     quantity = cms.untracked.string("daughter(1).phi")
     ),
     cms.PSet(
+    tag = cms.untracked.string("zjjEn"),
+    quantity = cms.untracked.string("daughter(1).energy")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1Pt"),
     quantity = cms.untracked.string("daughter(1).daughter(0).pt ")
     ),
@@ -566,6 +598,14 @@ zjj = (
     cms.PSet(
     tag = cms.untracked.string("JetDau2Phi"),
     quantity = cms.untracked.string("daughter(1).daughter(1).phi ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1En"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).energy ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2En"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).energy ")
     ),
     ### MC parton flavour ###
     cms.PSet(

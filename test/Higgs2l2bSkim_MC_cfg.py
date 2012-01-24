@@ -212,19 +212,19 @@ process.met_Type1Corr_Sequence = cms.Sequence (
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoElectrons@+ selectedIsoElectrons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedElectrons@-")
                              )
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoMuons@+ selectedIsoMuons@-")
+                                 decay = cms.string("userDataSelectedMuons@+ userDataSelectedMuons@-")
                              )
 
 process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIsoElectrons@+ selectedIsoMuons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedMuons@-")
                              )
 
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
@@ -286,8 +286,8 @@ readFiles = cms.untracked.vstring()
 secFiles = cms.untracked.vstring()
 
 readFiles.extend( [
-'file:/data3/scratch/cms/mc/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
-#'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
+#file:/data3/scratch/cms/mc/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
+'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
  ] )
 
 process.source.fileNames = readFiles
@@ -397,6 +397,6 @@ process.outPath = cms.EndPath(process.out)
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
 
 # process all the events
-process.maxEvents.input = 4000
+process.maxEvents.input = 1000
 process.options.wantSummary = True
 
