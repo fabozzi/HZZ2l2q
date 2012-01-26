@@ -64,7 +64,7 @@ process.patJets.tagInfoSources  = cms.VInputTag(
     cms.InputTag("secondaryVertexTagInfosAOD"),
     )
 
-# Select jets (modified: 30 GeV -> 20 GeV)
+# Select jets (modified: 30 GeV -> 25 GeV)
 process.selectedPatJets.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 
 # Apply loose PF jet ID

@@ -50,7 +50,6 @@ process.dielectronFilter = cms.EDFilter("CandViewCountFilter",
 # Jet filter
 process.goodJets = cms.EDFilter("CandViewSelector",
   src = cms.InputTag("ak5PFJets"),
-# 20 or 10 ????                                
   cut = cms.string('pt > 20'),
   filter = cms.bool(True)                                
 )
