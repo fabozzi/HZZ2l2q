@@ -47,7 +47,7 @@ process.patJets.tagInfoSources  = cms.VInputTag(
     )
 
 # Select jets (modified: 30 GeV -> 20 GeV)
-process.selectedPatJets.cut = cms.string('pt > 20.0 && abs(eta) < 2.4')
+process.selectedPatJets.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 
 # Apply loose PF jet ID
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector

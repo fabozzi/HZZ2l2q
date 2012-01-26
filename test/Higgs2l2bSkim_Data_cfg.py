@@ -65,7 +65,7 @@ process.patJets.tagInfoSources  = cms.VInputTag(
     )
 
 # Select jets (modified: 30 GeV -> 20 GeV)
-process.selectedPatJets.cut = cms.string('pt > 20.0 && abs(eta) < 2.4')
+process.selectedPatJets.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 
 # Apply loose PF jet ID
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
@@ -220,7 +220,7 @@ process.patPFJetMETtype1p2Corr = cms.EDProducer("PATPFJetMETcorrInputProducer",
     src = cms.InputTag('selectedPatJetsForMETtype1p2Corr'),
     offsetCorrLabel = cms.string("L1FastJet"),
 # ---> NOTE: use "L3Absolute" for MC / "L2L3Residual" for Data
-    jetCorrLabel = cms.string("L3Absolute"),
+    jetCorrLabel = cms.string("L2L3Residual"),
     type1JetPtThreshold = cms.double(10.0),
     skipEM = cms.bool(True),
     skipEMfractionThreshold = cms.double(0.90),
