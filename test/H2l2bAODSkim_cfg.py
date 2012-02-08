@@ -78,6 +78,12 @@ process.dielectronPath = cms.Path(
     process.dielectronFilter
     )
 
+process.emuPath = cms.Path(
+    process.dijetSequence *
+    process.goodElectrons *
+    process.goodMuons
+    )
+
 
 # Output module configuration
 from Configuration.EventContent.EventContent_cff import *
@@ -92,7 +98,8 @@ H2l2bAODSkimEventSelection = cms.PSet(
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring(
            'dimuonPath',
-           'dielectronPath')
+           'dielectronPath',
+           'emuPath')
     )
 )
 
