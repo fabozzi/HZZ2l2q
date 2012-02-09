@@ -62,6 +62,7 @@ switchJetCollection(process,cms.InputTag('ak5PFJets'),
 process.patJets.addTagInfos = True
 process.patJets.tagInfoSources  = cms.VInputTag(
     cms.InputTag("secondaryVertexTagInfosAOD"),
+    cms.InputTag("impactParameterTagInfosAOD")
     )
 
 # Select jets (modified: 30 GeV -> 25 GeV)
@@ -427,6 +428,12 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_secondaryVertexTagInfos*_*_*',
                   'keep *_*_*tagInfo*_*',
                   'keep *_generalTracks_*_*',
+# keep additional collections
+                  'keep *_electronGsfTracks_*_*',
+                  'keep *_muons_*_*',
+                  'keep *_globalMuons_*_*',
+                  'keep *_standAloneMuons_*_*',
+#####################################
                   'keep *_metInfoProducer_*_*',
                   ),
 )
