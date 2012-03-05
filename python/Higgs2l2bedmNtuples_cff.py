@@ -746,6 +746,47 @@ Higgsemu2bEdmNtuple.variables += zem
 Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
 Higgsemu2bEdmNtuple.prefix = cms.untracked.string("elmuHiggs")
 
+
+## jet variables 
+jetinfos =  cms.EDProducer(
+    "CandViewNtpProducer",
+    src=cms.InputTag("cleanPatJetsIsoLept"),
+    lazyParser=cms.untracked.bool(True),
+    prefix=cms.untracked.string("CleanJet"),
+    eventInfo=cms.untracked.bool(True),
+    variables = cms.VPSet(
+    cms.PSet(
+    tag = cms.untracked.string("Pt"),
+    quantity = cms.untracked.string("pt")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("Eta"),
+    quantity = cms.untracked.string("eta")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("Phi"),
+    quantity = cms.untracked.string("phi")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("En"),
+    quantity = cms.untracked.string("energy")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("PartonFlavour"),
+    quantity = cms.untracked.string("partonFlavour")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("CSVtag"),
+    quantity = cms.untracked.string("bDiscriminator(\"combinedSecondaryVertexBJetTags\") ")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JPtag"),
+    quantity = cms.untracked.string("bDiscriminator(\"jetProbabilityBJetTags\")")
+    ),
+)
+)
+
+
 eventVtxInfoNtuple = cms.EDProducer(
     "EventVtxInfoNtupleDumper",
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
@@ -762,7 +803,7 @@ edmNtuplesOut = cms.OutputModule(
     "keep *_kt6PFJets_rho_PAT",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
-#    "keep *_Higgsemu2bEdmNtuple_*_*"
+    "keep *_Higgsemu2bEdmNtuple_*_*"
     
     )
     )
