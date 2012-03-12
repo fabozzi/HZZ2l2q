@@ -87,7 +87,8 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "keep *_kt6PFJets_rho_PAT",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
-    "keep *_Higgsemu2bEdmNtuple_*_*"
+    "keep *_Higgsemu2bEdmNtuple_*_*",
+    "keep *_jetinfos_*_*"
 )
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
@@ -97,11 +98,11 @@ process.analysisPath = cms.Path(
     process.PUInfoNtuple+
     process.Higgs2e2bEdmNtuple+
     process.Higgs2mu2bEdmNtuple+
-    process.Higgsemu2bEdmNtuple
+    process.Higgsemu2bEdmNtuple+
+    process.jetinfos
 )
 
 process.endPath = cms.EndPath(process.edmNtuplesOut)
-
 
 process.schedule = cms.Schedule(
     process.analysisPath,
