@@ -39,8 +39,20 @@ process.ak5PFJets.doAreaFastjet = True
 
 ##### PFnoPU sequence
 
+# selection of good PV for PU subtraction
+from PhysicsTools.SelectorUtils.pvSelector_cfi import pvSelector
+process.goodOfflinePrimaryVertices = cms.EDFilter(
+    "PrimaryVertexObjectFilter",
+    filterParams = pvSelector.clone( minNdof = cms.double(4.0), maxZ = cms.double(24.0) ),
+    src=cms.InputTag('offlinePrimaryVertices')
+    )
+
 process.load("CommonTools.ParticleFlow.pfNoPileUp_cff")
-process.pfPUSequence = cms.Sequence( process.pfPileUp * process.pfNoPileUp )
+process.pfPileUp.Enable = True
+process.pfPileUp.checkClosestZVertex = cms.bool(False)
+process.pfPileUp.Vertices = 'goodOfflinePrimaryVertices'
+
+process.pfPUSequence = cms.Sequence( process.goodOfflinePrimaryVertices * process.pfPileUp * process.pfNoPileUp )
 
 process.kt6PFnoPUJets = process.kt6PFJets.clone()
 process.kt6PFnoPUJets.src = cms.InputTag("pfNoPileUp")
@@ -56,26 +68,13 @@ from PhysicsTools.PatAlgos.tools.jetTools import *
 
 #### Define additional patJets 
 
-### PFPUFastJets (same as default patJets, so skipping)
-#addJetCollection(process,cms.InputTag('ak5PFJets'),
-#                  'AK5','PFPUFastJet',
-#                  doJTA = True,
-#                  doBTagging = True,
-#                  jetCorrLabel = ('AK5PF', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])),
-#                  doType1MET = True,
-#                  doL1Cleaning = True,
-#                  doL1Counters = True,
-#                  genJetCollection=cms.InputTag("ak5GenJets"),
-#                  doJetID = True
-#                  )
-
-
 # PFnoPUPUFastJet
+# JEC for PFJets with charged hadron subtraction used (AK5PFchs)
 addJetCollection(process,cms.InputTag('ak5PFnoPUJets'),
                   'AK5','PFnoPUPUFastJet',
                   doJTA = True,
                   doBTagging = True,
-                  jetCorrLabel = ('AK5PF', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])),
+                  jetCorrLabel = ('AK5PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])),
                   doType1MET = True,
                   doL1Cleaning = True,
                   doL1Counters = True,
@@ -111,31 +110,18 @@ process.patJets.embedPFCandidates = cms.bool(True)
 process.selectedPatJets.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 process.selectedPatJetsAK5PFnoPUPUFastJet.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 
-# Apply loose PF jet ID (not used)
-#from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
-#process.goodPatJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
-#                                   filterParams = pfJetIDSelector.clone(),
-#                                   src = cms.InputTag("selectedPatJets"),
-#                                   filter = cms.bool(True)
-#                                   )
-
-
 #add user variables to PAT-jets 
 process.customPFJets = cms.EDProducer('PFJetUserData',
                                       JetInputCollection=cms.untracked.InputTag("selectedPatJets"),
                                       Verbosity=cms.untracked.bool(False)
                                       )
 
-#process.customPFJetsPUFastjet = cms.EDProducer('PFJetUserData',
-#                                      JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5PFPUFastJet"),
-#                                      Verbosity=cms.untracked.bool(False)
-#                                      )
 process.customPFnoPUJetsPUFastjet = cms.EDProducer('PFJetUserData',
                                       JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5PFnoPUPUFastJet"),
                                       Verbosity=cms.untracked.bool(False)
                                       )
 
-#### end Jet specific part
+#### end Jet configuration
 
 # --> electron configuration <--
 
@@ -337,19 +323,19 @@ process.met_Type1Corr_Sequence = cms.Sequence (
 process.zee = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIDElectrons@+ selectedIDElectrons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedElectrons@-")
                              )
 
 process.zmm = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIDMuons@+ selectedIDMuons@-")
+                                 decay = cms.string("userDataSelectedMuons@+ userDataSelectedMuons@-")
                              )
 
 process.zem = cms.EDProducer("CandViewShallowCloneCombiner",
                                  checkCharge = cms.bool(False),
                                  cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedIDElectrons@+ selectedIDMuons@-")
+                                 decay = cms.string("userDataSelectedElectrons@+ userDataSelectedMuons@-")
                              )
 
 process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
@@ -400,11 +386,11 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      dzCut = cms.double(0.1)
                                      )
 
-# Met variables producer
-process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
-                                    metTag = cms.InputTag("patMETs"),
-                                    t1CorrMetTag = cms.InputTag("patType1CorrectedPFMet")
-                                    )
+# Met variables producer (let's comment it for the moment)
+#process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
+#                                    metTag = cms.InputTag("patMETs"),
+#                                    t1CorrMetTag = cms.InputTag("patType1CorrectedPFMet")
+#                                    )
 
 # Add the files
 readFiles = cms.untracked.vstring()
@@ -455,8 +441,8 @@ process.p = cms.Path(
     process.hzzemjjBaseColl +
     process.hzzeejj +
     process.hzzmmjj +
-    process.hzzemjj +
-    process.metInfoProducer
+    process.hzzemjj #+
+#    process.metInfoProducer
 )
 
 # Setup for a basic filtering
@@ -470,7 +456,7 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 )
 
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("cleanPatJetsIsoLept"),
+                                 src = cms.InputTag("customPFJets"),
                                  minNumber = cms.uint32(2),
 )
 
@@ -493,20 +479,15 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'drop *_*_*_*',
 # PAT leptons and jets
                   'keep *_userDataSelectedElectrons_*_PAT',
-#                  'keep *_selectedIDElectrons_*_PAT',
-#                  'keep *_selectedIsoElectrons_*_PAT',
                   'keep *_userDataSelectedMuons_*_PAT',
-#                  'keep *_selectedIDMuons_*_PAT',
-#                  'keep *_selectedIsoMuons_*_PAT',
                   'keep *_customPFJets_*_PAT',
                   'keep *_customPFnoPUJetsPUFastjet_*_PAT',
                   'keep *_cleanPatJetsIsoLept_*_PAT',
-                  'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
 # rho variables
                   'keep *_kt6PFJets_rho_PAT',
                   'keep *_kt6PFnoPUJets_rho_*',
                   'keep *_kt6PFJetsForIsolation_rho_*',
-
+# ll, jj, lljj candidates
                   'keep *_zee_*_PAT',
                   'keep *_zmm_*_PAT',
                   'keep *_zem_*_PAT',
@@ -514,12 +495,13 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep *_hzzeejj_*_PAT',
                   'keep *_hzzmmjj_*_PAT',
                   'keep *_hzzemjj_*_PAT',
+####
                   'keep *_offlineBeamSpot_*_*',
                   'keep *_offlinePrimaryVertices_*_*',
                   'keep *_secondaryVertexTagInfos*_*_*',
                   'keep *_*_*tagInfo*_*',
+# additional collections from AOD   
                   'keep *_generalTracks_*_*',
-# keep additional collections from AOD   
                   'keep *_electronGsfTracks_*_*',
                   'keep *_muons_*_*',
                   'keep *_globalMuons_*_*',
@@ -536,11 +518,11 @@ process.out = cms.OutputModule("PoolOutputModule",
                   'keep LHEEventProduct_*_*_*',
                   'keep *_genEventScale_*_*',
 ###### MET products
-                  'keep *_metInfoProducer_*_*',
-                  'keep *_patMETs*_*_*',
-### AOD HLT
+                  'keep *_patMETs_*_*',
+                  'keep *_patType1CorrectedPFMet_*_*',
+### for HLT selection
                   'keep edmTriggerResults_TriggerResults_*_HLT',
-                  'keep *_hltTriggerSummaryAOD_*_*',
+#                  'keep *_hltTriggerSummaryAOD_*_*',
                   ),
 )
 
