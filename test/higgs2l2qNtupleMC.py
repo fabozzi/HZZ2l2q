@@ -23,6 +23,13 @@ process.PUInfoNtuple = cms.EDProducer(
     isData = cms.bool(False)
 )
 
+# Event rho dumper
+process.rhoDumper = cms.EDProducer("EventRhoDumper",
+                                    rho = cms.InputTag("kt6PFJets:rho"),
+                                    restrictedRho = cms.InputTag("kt6PFJetsForIsolation:rho")
+                                    )
+
+
 # Met variables producer
 process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     metTag = cms.InputTag("patMETs"),
@@ -34,9 +41,10 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
+    "keep *_rhoDumper_*_*",
     "keep *_metInfoProducer_*_*",
     "keep *_kt6PFJets_rho_PAT",
-    'keep *_kt6PFJetsForIsolation_rho_*',
+    "keep *_kt6PFJetsForIsolation_rho_*",
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
     "keep *_Higgsemu2bEdmNtuple_*_*",
@@ -47,6 +55,7 @@ process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 process.analysisPath = cms.Path(
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
+    process.rhoDumper+
     process.metInfoProducer+
     process.Higgs2e2bEdmNtuple+
     process.Higgs2mu2bEdmNtuple+
