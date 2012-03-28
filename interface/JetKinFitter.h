@@ -25,9 +25,9 @@ private:
   float M_,Merr_;
   TLorentzVector j1in_, j2in_,j1out_, j2out_;
   vector<TLorentzVector> corrjets_;
-  Double_t ErrEt(Float_t Et, Float_t Eta);
-  Double_t ErrEta(Float_t Et, Float_t Eta);
-  Double_t ErrPhi(Float_t Et, Float_t Eta);
+  //  Double_t ErrEt(Float_t Et, Float_t Eta);
+  //  Double_t ErrEta(Float_t Et, Float_t Eta);
+  //  Double_t ErrPhi(Float_t Et, Float_t Eta);
   double chiSquare_, chiSquareProb_;
   // void init();
 };

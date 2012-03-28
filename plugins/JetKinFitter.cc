@@ -59,7 +59,7 @@ int JetKinFitter::Refit(){
 
 
 // error functions for jets:
-
+/*
 Double_t JetKinFitter::ErrEt(Float_t Et, Float_t Eta) {
   Double_t InvPerr2, a, b, c;
   if(fabs(Eta) < 1.4){
@@ -110,3 +110,4 @@ Double_t JetKinFitter::ErrPhi(Float_t Et, Float_t Eta) {
   return InvPerr2;
 }
 
+*/
