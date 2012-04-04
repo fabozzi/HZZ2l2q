@@ -369,27 +369,27 @@ zll = (
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NofStripHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.innerTrack.hitPattern.numberOfValidStripHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.globalTrack.hitPattern.numberOfValidStripHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau2NofStripHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.innerTrack.hitPattern.numberOfValidStripHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidStripHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NofPixelHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.innerTrack.hitPattern.numberOfValidPixelHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.globalTrack.hitPattern.numberOfValidPixelHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau2NofPixelHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.innerTrack.hitPattern.numberOfValidPixelHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidPixelHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NofTrackerHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.innerTrack.hitPattern.numberOfValidTrackerHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.globalTrack.hitPattern.numberOfValidTrackerHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau2NofTrackerHits"),
-    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.innerTrack.hitPattern.numberOfValidTrackerHits: -1")
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidTrackerHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NormChi2"),
