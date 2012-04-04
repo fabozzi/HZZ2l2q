@@ -95,8 +95,8 @@ process.selectedPatElectrons.cut = (
 # Muon Selection (no isolation)
 process.selectedPatMuons.cut = (
             "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
-            "innerTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
-            "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
+            "globalTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
+            "globalTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
             "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
             "dB < 0.2 && "                                                                     +
 #            "trackIso + caloIso < 0.15 * pt && "                                               +
@@ -298,8 +298,8 @@ process.source.inputCommands = cms.untracked.vstring("keep *", "drop *_MEtoEDMCo
 # let it run
 
 process.p = cms.Path(
-    process.HBHENoiseFilter*
-    process.EcalDeadCellEventFilter*
+#    process.HBHENoiseFilter*
+#    process.EcalDeadCellEventFilter*
     process.recoPFJets *
     process.eidSequence *
     process.patDefaultSequence *
@@ -341,8 +341,8 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
 
 
 process.filterPath = cms.Path(
-    process.HBHENoiseFilter *
-    process.EcalDeadCellEventFilter *
+#    process.HBHENoiseFilter *
+#    process.EcalDeadCellEventFilter *
     process.zll *
     process.zllFilter *
     process.jetFilter
@@ -401,9 +401,9 @@ switchOnTrigger( process, sequence = 'p', hltProcess = '*' )
 process.outPath = cms.EndPath(process.out)
 
 # reduce verbosity
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
 
 # process all the events
-process.maxEvents.input = 2000
+process.maxEvents.input = 200
 process.options.wantSummary = True
 

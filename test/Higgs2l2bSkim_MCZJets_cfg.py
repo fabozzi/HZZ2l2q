@@ -95,8 +95,8 @@ process.selectedPatElectrons.cut = (
 # Muon Selection (no isolation)
 process.selectedPatMuons.cut = (
             "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
-            "innerTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
-            "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
+            "globalTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
+            "globalTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
             "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
             "dB < 0.2 && "                                                                     +
 #            "trackIso + caloIso < 0.15 * pt && "                                               +

@@ -151,8 +151,9 @@ process.patElectrons.electronIDSources = cms.PSet(
 
 # loosely selected pat electrons
 process.selectedPatElectrons.cut = (
-            "pt > 10.0 && abs(eta) < 2.5 &&"                               +
-            "(isEE || isEB) && !isEBEEGap"
+            "pt > 10.0 && abs(eta) < 2.5"
+#            &&"                               +
+#            "(isEE || isEB) && !isEBEEGap"
         )
 
 
@@ -202,8 +203,8 @@ process.selectedIDMuons = cms.EDFilter(
     src = cms.InputTag("userDataSelectedMuons"),
     cut = cms.string(
             "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
-            "innerTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
-            "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
+            "globalTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
+            "globalTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
             "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
             "dB < 0.2 && numberOfMatches > 1 && abs(eta) < 2.4" )
 )
@@ -397,7 +398,6 @@ readFiles = cms.untracked.vstring()
 secFiles = cms.untracked.vstring()
 
 readFiles.extend( [
-#file:/data3/scratch/cms/mc/Summer11/TT/EA1C42B3-E47D-E011-BA8D-001D0967D670.root'
 'file:/data3/scratch/cms/mc/Summer11/GluGluToHToZZTo2L2Q_M-300/F6D80D8E-3794-E011-9800-00215E93D944.root'
  ] )
 
@@ -471,7 +471,7 @@ process.filterPath = cms.Path(
 
 # Output Module : Hopefully we keep all we need
 process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('h2l2qSkimData.root'),
+                 fileName = cms.untracked.string('h2l2qSkimData_F6D80D8E-3794-E011-9800-00215E93D944.root'),
                  SelectEvents = cms.untracked.PSet(
                     SelectEvents = cms.vstring("filterPath")
                  ),
@@ -539,9 +539,9 @@ switchOnTrigger( process, sequence = 'p', hltProcess = '*' )
 process.outPath = cms.EndPath(process.out)
 
 # reduce verbosity
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
 
 # process all the events
-process.maxEvents.input = 200
+process.maxEvents.input = -1
 process.options.wantSummary = True
 
