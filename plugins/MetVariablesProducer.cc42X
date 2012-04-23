@@ -41,9 +41,9 @@ void MetVariablesProducer::produce( Event & evt, const EventSetup & ) {
   evt.getByLabel(metTag_, metHandle);
   pat::METCollection met_h = *metHandle;
 
-  //  Handle<pat::METCollection> t1CorrMetHandle;
-  //  evt.getByLabel(t1CorrMetTag_, t1CorrMetHandle);
-  //  pat::METCollection corrmet_h = *t1CorrMetHandle;
+  Handle<pat::METCollection> t1CorrMetHandle;
+  evt.getByLabel(t1CorrMetTag_, t1CorrMetHandle);
+  pat::METCollection corrmet_h = *t1CorrMetHandle;
 
   auto_ptr<float> met_( new float );
   auto_ptr<float> metSumEt_( new float );
@@ -74,7 +74,7 @@ void MetVariablesProducer::produce( Event & evt, const EventSetup & ) {
   //  cout << "metSignificance = " << *metSignificance_ << endl;
   *metPhi_ = met_h.front().phi();
 
-  //  *t1corrmet_ = corrmet_h.front().et();
+  *t1corrmet_ = corrmet_h.front().et();
 
   evt.put( met_, "met" );
   evt.put( metSumEt_, "metSumEt" );
