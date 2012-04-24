@@ -46,7 +46,7 @@ print sep_line
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/mc/Summer12/PU_S7_START52_V5-v2/DYJetsToLL_M-50/FE123555-F27A-E111-8E40-003048D46046.root'
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
@@ -100,7 +100,7 @@ removeUseless( "pfType1CorrectedMet" )
 removeUseless( "pfType1p2CorrectedMet" )
 #########################################################
 
-############# set some parametern for leptons ###########
+############# set some parameters for leptons ###########
 # removing stupid useless stuff from our muons:
 getattr(process,"patMuons"+postfixAK5).embedCaloMETMuonCorrs = False 
 getattr(process,"patMuons"+postfixAK5).embedTcMETMuonCorrs = False
@@ -126,27 +126,11 @@ if doJetPileUpCorrection:
     enablePileUpCorrection( process, postfix=postfixAK5 )
 ################################################################
 
-# NOT INTERESTED IN TAUS
-#from CMGTools.Common.PAT.tauTools import *
-#if doEmbedPFCandidatesInTaus:
-#    embedPFCandidatesInTaus( process, postfix=postfixAK5, enable=True )
-#if hpsTaus:
-#    #Lucie : HPS is the default in 52X & V08-08-11-03, see PhysicsTools/PatAlgos/python/Tools/pfTools.py. Following line not needed (crash) in 5X.
-#    import os
-#    if os.environ['CMSSW_VERSION'] < "CMSSW_5_0":
-#        adaptPFTaus(process,"hpsPFTau",postfix=postfixAK5) 
-#    #  note that the following disables the tau cleaning in patJets
-#    adaptSelectedPFJetForHPSTau(process,jetSelection="pt()>15.0",postfix=postfixAK5)
-#    # currently (Sept 27,2011) there are three sets of tau isolation discriminators better to choose in CMG tuples.
-#    removeHPSTauIsolation(process,postfix=postfixAK5)
-###################################################################
-   
 # curing a weird bug in PAT..
 from CMGTools.Common.PAT.removePhotonMatching import removePhotonMatching
 removePhotonMatching( process, postfixAK5 )
 
 ###################################################################
-
 
 # use non pileup substracted rho as in the Jan2012 JEC set
 getattr(process,"patJetCorrFactors"+postfixAK5).rho = cms.InputTag("kt6PFJets","rho")
@@ -213,24 +197,33 @@ if not runOnMC:
     process.patMuons.embedGenMatch = False
     process.patElectrons.embedGenMatch = False
 
-# Modules for the Cut-based Electron ID in the VBTF prescription
+# Modules for Electron ID
+# MVA Electron ID
+process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
+process.mvaeIdSequence = cms.Sequence(
+    process.mvaTrigV0 +
+    process.mvaNonTrigV0
+)
+# ElectronID in the VBTF prescription
 #import ElectroWeakAnalysis.WENu.simpleCutBasedElectronIDSpring10_cfi as vbtfid
 # Switch to the official Electron VBTF Selection for 2011 Data (relax H/E cut in the Endcap):
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/VbtfEleID2011
-
 import HiggsAnalysis.Higgs2l2b.simpleCutBasedElectronIDSummer11_cfi as vbtfid
 process.eidVBTFRel95 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '95relIso' )
 process.eidVBTFRel80 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '80relIso' )
 process.eidVBTFCom95 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '95cIso'   )
 process.eidVBTFCom80 = vbtfid.simpleCutBasedElectronID.clone( electronQuality = '80cIso'   )
-
-process.eidSequence = cms.Sequence(
+        
+process.vbtfeIdSequence = cms.Sequence(
         process.eidVBTFRel95 +
         process.eidVBTFRel80 +
         process.eidVBTFCom95 +
         process.eidVBTFCom80
-#        mvaTrigV0 +
-#        mvaNonTrigV0 +
+)
+
+process.eidSequence = cms.Sequence(
+    process.mvaeIdSequence +
+    process.vbtfeIdSequence
 )
 
 process.patElectronsAK5.electronIDSources = cms.PSet(
@@ -238,9 +231,9 @@ process.patElectronsAK5.electronIDSources = cms.PSet(
         eidVBTFRel80 = cms.InputTag("eidVBTFRel80"),
         eidVBTFCom95 = cms.InputTag("eidVBTFCom95"),
         eidVBTFCom80 = cms.InputTag("eidVBTFCom80"),
-        #MVA (to be added)
-#        mvaTrigV0 = cms.InputTag("mvaTrigV0"),
-#        mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
+        #MVA 
+        mvaTrigV0 = cms.InputTag("mvaTrigV0"),
+        mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
 )
 
 process.patElectrons.electronIDSources = cms.PSet(
@@ -248,33 +241,15 @@ process.patElectrons.electronIDSources = cms.PSet(
         eidVBTFRel80 = cms.InputTag("eidVBTFRel80"),
         eidVBTFCom95 = cms.InputTag("eidVBTFCom95"),
         eidVBTFCom80 = cms.InputTag("eidVBTFCom80"),
-        #MVA (to be added)
-#        mvaTrigV0 = cms.InputTag("mvaTrigV0"),
-#        mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
+        #MVA 
+        mvaTrigV0 = cms.InputTag("mvaTrigV0"),
+        mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
 )
 
 getattr(process, 'patDefaultSequence' + postfixAK5).replace(
     getattr(process, "patElectrons" + postfixAK5),
     process.eidSequence  + getattr(process, "patElectrons" + postfixAK5) 
     )
-
-# # adding custom detector based iso deposit ---> !!! this works only on V4 event content !!!
-from RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi import *
-from CMGTools.Common.PAT.addLeptCustomIsoDeposit_cff import addMuonCustomIsoDeposit
-from CMGTools.Common.PAT.addLeptCustomIsoDeposit_cff import addElectronCustomIsoDeposit
-
-# COLIN REMOVED CANNOT RUN
-# uncomment -> segv 
-# addMuonCustomIsoDeposit( process, 'patDefaultSequence', postfixAK5)
-# uncomment -> segv
-# track deposit alone -> segv
-# ecal and hcal deposits alone -> segv
-# addMuonCustomIsoDeposit( process, 'stdMuonSeq', '')
-# addElectronCustomIsoDeposit( process, 'patDefaultSequence', postfixAK5)
-# did not try to uncomment the following, as std electrons can't be made (bad refcore problem)
-# addElectronCustomIsoDeposit( process, 'stdElectronSeq', '')
-
-
 
 process.stdLeptonSequence = cms.Sequence(
     process.stdMuonSeq +
