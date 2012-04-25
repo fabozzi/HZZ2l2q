@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 50
+process.maxEvents.input = -1
 process.MessageLogger.cerr.FwkReport.reportEvery = 10
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -46,14 +46,20 @@ print sep_line
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root',
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA178E3B-CB7A-E111-88E9-003048D460B6.root',
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA28D4A9-D37A-E111-B990-001A64789E00.root',
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FAB6476C-D37A-E111-81A2-0025B3E063EA.root',
+    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FC6345EE-D17A-E111-9656-001A64789D8C.root',
     '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
 # load the PAT config
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
-process.out.fileName = cms.untracked.string('patTuple_myTest.root')
-
+#process.out.fileName = cms.untracked.string('patTuple_myTest.root')
+from PhysicsTools.PatAlgos.tools.coreTools import *
+removeSpecificPATObjects(process, ['Taus'])
 # Configure PAT to use PFBRECO instead of AOD sources
 # this function will modify the PAT sequences.
 from PhysicsTools.PatAlgos.tools.pfTools import *
@@ -79,8 +85,8 @@ process.kt6PFJetsForIso = process.kt6PFJets.clone( Rho_EtaMax = cms.double(2.5) 
 # PFBRECO+PAT sequence 1:
 # no lepton cleaning, AK5PFJets
 
-postfixAK5 = "AK5"
-jetAlgoAK5="AK5"
+postfixAK5 ="AK5"
+jetAlgoAK5 ="AK5"
 
 usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5,
           jetCorrections=('AK5PFchs', jetCorrections))
@@ -477,7 +483,7 @@ process.zjj = cms.EDProducer("CandViewShallowCloneCombiner",
                              checkCharge = cms.bool(False),
                              checkOverlap = cms.bool(False),
                              cut = cms.string(''),
-                             decay = cms.string("cleanPatJetsIsoLept cleanPatJetsIsoLept")
+                             decay = cms.string("cleanPatJetsNoPUIsoLept cleanPatJetsNoPUIsoLept")
 )
 
 process.hzzeejjBaseColl = cms.EDProducer("CandViewCombiner",
@@ -586,10 +592,21 @@ process.jetFilter = cms.EDFilter("CandViewCountFilter",
                                  minNumber = cms.uint32(2),
 )
 
-process.filterPath = cms.Path(
+process.jetFilterNoPUSub = cms.EDFilter("CandViewCountFilter",
+                                 src = cms.InputTag("customPFJetsNoPUSub"),
+                                 minNumber = cms.uint32(2),
+)
+
+process.filterPath1 = cms.Path(
     process.zll *
     process.zllFilter *
     process.jetFilter
+)
+
+process.filterPath2= cms.Path(
+    process.zll *
+    process.zllFilter *
+    process.jetFilterNoPUSub
 )
 
 ### OUTPUT DEFINITION #############################################
@@ -603,7 +620,9 @@ from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning,
 process.out = cms.OutputModule("PoolOutputModule",
                  fileName = cms.untracked.string('h2l2qSkimData_DY.root'),
                  SelectEvents = cms.untracked.PSet(
-                    SelectEvents = cms.vstring("filterPath")
+                    SelectEvents = cms.vstring(
+                        'filterPath1',
+                        'filterPath2')
                  ),
                  outputCommands =  cms.untracked.vstring(
                   'drop *_*_*_*',
@@ -626,7 +645,7 @@ process.out.outputCommands.extend([
     'keep *_userDataSelectedMuons_*_PAT',
     'keep *_customPFJets_*_PAT',
     'keep *_customPFJetsNoPUSub_*_PAT',
-    'keep *_cleanPatJetsIsoLept_*_PAT',
+    'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables
     'keep *_kt6PFJets_rho_PAT',
     'keep *_kt6PFJetsForIso_rho_*',
