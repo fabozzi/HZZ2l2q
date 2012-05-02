@@ -560,6 +560,23 @@ zee =(
     tag = cms.untracked.string("EleDau2VBTF95CombID"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"eidVBTFCom95\")")
     ),
+####### mva eleID
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1mvaTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"mvaTrigV0\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2mvaTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"mvaTrigV0\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1mvaNonTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"mvaNonTrigV0\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2mvaNonTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"mvaNonTrigV0\")")
+    ),
 ###### variables useful for custom electron selection
     cms.PSet(
     tag = cms.untracked.string("LeptDau1EtaSC"),
