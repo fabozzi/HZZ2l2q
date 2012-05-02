@@ -291,7 +291,8 @@ process.selectedIsoElectrons = cms.EDFilter(
 process.userDataSelectedMuons = cms.EDProducer(
     "Higgs2l2bMuonUserData",
     src = cms.InputTag("selectedPatMuons"),
-    rho = cms.InputTag("kt6PFJetsForIso:rho")
+    rho = cms.InputTag("kt6PFJetsForIso:rho"),
+    primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
 
 # ID-selected muons
@@ -665,6 +666,7 @@ process.out.outputCommands.extend([
     'keep *_offlineBeamSpot_*_*',
     'keep *_offlinePrimaryVertices_*_*',
     'keep *_secondaryVertexTagInfos*_*_*',
+    'keep *_impactParameterTagInfos*_*_*',
     'keep *_*_*tagInfo*_*',
     # additional collections from AOD   
     'keep *_generalTracks_*_*',

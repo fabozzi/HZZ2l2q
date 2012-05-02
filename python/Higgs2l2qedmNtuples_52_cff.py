@@ -1012,6 +1012,14 @@ zmm =(
     tag = cms.untracked.string("MuDau2IsPFIsoValid"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isPFIsolationValid")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1DzVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('dzVtx')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2DzVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('dzVtx')")
+    ),
 )
 
 Higgs2mu2bEdmNtuple.variables += zmm
