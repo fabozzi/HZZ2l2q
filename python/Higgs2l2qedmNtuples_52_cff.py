@@ -335,6 +335,14 @@ zll = (
     tag = cms.untracked.string("LeptDau2En"),
     quantity = cms.untracked.string("daughter(0).daughter(1).energy ")
     ),
+#    cms.PSet(
+#    tag = cms.untracked.string("LeptDau1PFMuonBit"),
+#    quantity = cms.untracked.string("daughter(0).daughter(0).isPFMuon")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("LeptDau2PFMuonBit"),
+#    quantity = cms.untracked.string("daughter(0).daughter(1).isPFMuon")
+#    ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1GlobalMuonBit"),
     quantity = cms.untracked.string("daughter(0).daughter(0).isGlobalMuon")
@@ -376,12 +384,20 @@ zll = (
     quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidStripHits: -1")
     ),
     cms.PSet(
-    tag = cms.untracked.string("LeptDau1NofPixelHits"),
+    tag = cms.untracked.string("LeptDau1NofPixelHitsFromGlb"),
     quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.globalTrack.hitPattern.numberOfValidPixelHits: -1")
     ),
     cms.PSet(
-    tag = cms.untracked.string("LeptDau2NofPixelHits"),
+    tag = cms.untracked.string("LeptDau2NofPixelHitsFromGlb"),
     quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidPixelHits: -1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1NofPixelHits"),
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.innerTrack.hitPattern.numberOfValidPixelHits: -1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2NofPixelHits"),
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.innerTrack.hitPattern.numberOfValidPixelHits: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NofTrackerHits"),
@@ -390,6 +406,14 @@ zll = (
     cms.PSet(
     tag = cms.untracked.string("LeptDau2NofTrackerHits"),
     quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.globalTrack.hitPattern.numberOfValidTrackerHits: -1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1NofTrackerLayers"),
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.track.hitPattern.trackerLayersWithMeasurement: -1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2NofTrackerLayers"),
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.track.hitPattern.trackerLayersWithMeasurement: -1")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau1NormChi2"),
@@ -416,6 +440,14 @@ zll = (
     quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.numberOfMatches: -1")
     ),
     cms.PSet(
+    tag = cms.untracked.string("LeptDau1NofMatchedStations"),
+    quantity = cms.untracked.string("?daughter(0).daughter(0).isGlobalMuon?daughter(0).daughter(0).masterClone.numberOfMatchedStations: -1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2NofMatchedStations"),
+    quantity = cms.untracked.string("?daughter(0).daughter(1).isGlobalMuon?daughter(0).daughter(1).masterClone.numberOfMatchedStations: -1")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1dB"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dB")
     ),
@@ -423,6 +455,16 @@ zll = (
     tag = cms.untracked.string("LeptDau2dB"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.dB")
     ),
+############ TO ADD AS USER DATA #############
+#    cms.PSet(
+#    tag = cms.untracked.string("LeptDau1dz"),
+#    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dz")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("LeptDau2dz"),
+#    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.dz")
+#    ),
+##############################################
     cms.PSet(
     tag = cms.untracked.string("LeptDau1TrkIso"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.trackIso")
@@ -439,7 +481,7 @@ zll = (
     tag = cms.untracked.string("LeptDau2EcalIso"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.ecalIso")
     ),
-      cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1HcalIso"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.hcalIso")
     ),
@@ -447,7 +489,41 @@ zll = (
     tag = cms.untracked.string("LeptDau2HcalIso"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.hcalIso")
     ),
-     cms.PSet(
+######### PF isolation #########
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1ChHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.chargedHadronIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2ChHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.chargedHadronIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1NeuHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.neutralHadronIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2NeuHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.neutralHadronIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1PhotonIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.photonIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2PhotonIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.photonIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1PUChHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.puChargedHadronIso")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2PUChHadIso"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.puChargedHadronIso")
+    ),
+################################
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1CombRelIso"),
     quantity = cms.untracked.string("(daughter(0).daughter(0).masterClone.hcalIso + daughter(0).daughter(0).masterClone.ecalIso + daughter(0).daughter(0).masterClone.trackIso )/ daughter(0).daughter(0).pt")
     ),
@@ -900,10 +976,33 @@ Higgsemu2bEdmNtuple.src = cms.InputTag("hzzemjj:h")
 Higgsemu2bEdmNtuple.prefix = cms.untracked.string("elmuHiggs")
 
 
+
+
+zmm =(
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1PFMuonBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isPFMuon")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2PFMuonBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isPFMuon")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1IsPFIsoValid"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isPFIsolationValid")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2IsPFIsoValid"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isPFIsolationValid")
+    ),
+)
+
+Higgs2mu2bEdmNtuple.variables += zmm
+
 ## jet variables 
 jetinfos =  cms.EDProducer(
     "CandViewNtpProducer",
-    src=cms.InputTag("cleanPatJetsIsoLept"),
+    src=cms.InputTag("cleanPatJetsNoPUIsoLept"),
     lazyParser=cms.untracked.bool(True),
     prefix=cms.untracked.string("CleanJet"),
     eventInfo=cms.untracked.bool(True),

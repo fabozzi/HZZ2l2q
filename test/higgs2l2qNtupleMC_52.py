@@ -14,7 +14,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-    'file:h2l2qSkimData_DY.root'
+    'file:h2l2qSkimData_DY_v1.root'
 )
 
 process.PUInfoNtuple = cms.EDProducer(
