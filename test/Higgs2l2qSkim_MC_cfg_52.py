@@ -21,8 +21,8 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = -1
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.maxEvents.input = 9000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
@@ -177,6 +177,15 @@ process.customPFJets = cms.EDProducer(
     Verbosity=cms.untracked.bool(False)
     )
 
+from  CMGTools.External.pujetidsequence_cff import puJetId, puJetMva
+process.puJetIdAK5 = puJetId.clone( jets = 'customPFJets')
+process.puJetMvaAK5= puJetMva.clone(
+    jetids = cms.InputTag("puJetIdAK5"),
+    jets = 'customPFJets',
+    )
+
+process.puJetIdSequenceAK5 = cms.Sequence(process.puJetIdAK5*process.puJetMvaAK5)
+
 ############## "Classic" PAT Muons and Electrons ########################
 # (made from all reco muons, and all gsf electrons, respectively)
 process.patMuons.embedTcMETMuonCorrs = False
@@ -268,11 +277,27 @@ process.stdLeptonSequence = cms.Sequence(
     process.stdElectronSeq 
     )
 
+##### PAT TRIGGER ####
+process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
+process.patTrigger.processName = cms.string('*')
+
+# patMuonsWithTrigger is produced: to be added in input to userdata!
+process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
+# patElectronsWithTrigger is produced: to be added in input to userdata!
+process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
+
+process.patTriggerSequence = cms.Sequence(
+    process.patTrigger *
+    process.patMuonsWithTriggerSequence * 
+    process.patElectronsWithTriggerSequence *
+    process.patTriggerEvent
+    )
+
 # Classic Electrons with UserData
 
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
-    src = cms.InputTag("selectedPatElectrons"),
+    src = cms.InputTag("patElectronsWithTrigger"),
     rho = cms.InputTag("kt6PFJetsForIso:rho")
 )
 
@@ -295,7 +320,7 @@ process.selectedIsoElectrons = cms.EDFilter(
 # Classic Muons with UserData
 process.userDataSelectedMuons = cms.EDProducer(
     "Higgs2l2bMuonUserData",
-    src = cms.InputTag("selectedPatMuons"),
+    src = cms.InputTag("patMuonsWithTrigger"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -414,6 +439,15 @@ if runAK5NoPUSub:
         Verbosity=cms.untracked.bool(False)
         )
 
+
+    process.puJetIdAK5NoPUSub = puJetId.clone( jets = 'customPFJetsNoPUSub')
+    process.puJetMvaAK5NoPUSub= puJetMva.clone(
+        jetids = cms.InputTag("puJetIdAK5NoPUSub"),
+        jets = 'customPFJetsNoPUSub',
+        )
+
+    process.puJetIdSequenceAK5NoPUSub = cms.Sequence(process.puJetIdAK5NoPUSub*process.puJetMvaAK5NoPUSub)
+
 # Jet cleaning for patJets NoPUSub
     process.cleanPatJetsNoPUIsoLept = cms.EDProducer(
         "PATJetCleaner",
@@ -445,9 +479,6 @@ if runAK5NoPUSub:
 
 # ---------------- Common stuff ---------------
 
-process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-process.patTrigger.processName = cms.string('*')
-
 ### PATH DEFINITION #############################################
 
 # counters that can be used at analysis level to know the processed events
@@ -456,8 +487,8 @@ process.postPathCounter = cms.EDProducer("EventCountProducer")
 
 # trigger information (no selection)
 
-process.p = cms.Path( process.prePathCounter +
-                      process.patTriggerDefaultSequence )
+process.p = cms.Path( process.prePathCounter )
+
 process.p += process.kt6PFJets
 
 # PFBRECO+PAT ---
@@ -470,8 +501,12 @@ process.p += process.kt6PFJetsCHSForIso
 
 
 process.p += process.customPFJets
+process.p += process.puJetIdSequenceAK5
 
 process.p += process.stdLeptonSequence
+
+process.p += process.patTriggerSequence
+
 process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsIsoLept
 
@@ -480,6 +515,7 @@ process.p += process.cleanPatJetsIsoLept
 if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
     process.p += process.customPFJetsNoPUSub
+    process.p += process.puJetIdSequenceAK5NoPUSub
     process.p += process.cleanPatJetsNoPUIsoLept
 
 
@@ -657,7 +693,7 @@ from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning,
 
 
 process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('h2l2qSkimData.root'),
+                 fileName = cms.untracked.string('h2l2qSkimData_DY_v3.root'),
                  SelectEvents = cms.untracked.PSet(
                     SelectEvents = cms.vstring(
                         'filterPath1',
@@ -688,6 +724,9 @@ process.out.outputCommands.extend([
     # rho variables
     'keep *_kt6PFJets_rho_PAT',
     'keep *_kt6PFJetsForIso_rho_*',
+    # PU jetID maps
+    "keep *_puJetId*_*_*", # input variables
+    "keep *_puJetMva*_*_*", # final MVAs and working point flags
     # ll, jj, lljj candidates
     'keep *_zee_*_PAT',
     'keep *_zmm_*_PAT',
