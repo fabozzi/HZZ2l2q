@@ -54,9 +54,10 @@ void Higgs2l2bMuonUserData::produce( Event & evt, const EventSetup & ) {
     pat::Muon & m = (*muonColl)[i];
     float absCombIsoPUCorrected = m.trackIso() + m.caloIso() - PUEnergyInCone;
     m.addUserFloat("absCombIsoPUCorrected", absCombIsoPUCorrected);
-    float dzVtx = m.innerTrack()->dz(pv.position());
+    float dzVtx(-1000.0);
+    if( m.innerTrack().isNonnull() )
+      dzVtx = m.innerTrack()->dz(pv.position());
     m.addUserFloat("dzVtx", dzVtx);
-
   }
 
   evt.put( muonColl);
