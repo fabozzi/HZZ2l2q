@@ -97,6 +97,17 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
 )
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
+process.edmNtuplesOut.outputCommands.extend([
+    'keep *_ecalDeadCellTPfilter_*_*',
+    'keep *_HBHENoiseFilterResultProducer*_*_*',
+    'keep *_BeamHaloSummary_*_*',
+    'keep *_recovRecHitFilter_*_*',
+    'keep *_eeNoiseFilter_*_*',
+    'keep *_trackingFailureFilter_*_*',
+    'keep *_goodPrimaryVertexFilter_*_*',
+    'keep *_scrapingFilter_*_*',
+    'keep *_totalKinematicsFilterCMG_*_*'])
+
 process.analysisPath = cms.Path(
     process.HLTPassInfo+
     process.eventVtxInfoNtuple+
