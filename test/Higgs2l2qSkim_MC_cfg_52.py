@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 9000
+process.maxEvents.input = -1
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -400,6 +400,11 @@ if runAK5NoPUSub:
     getattr(process,"pfNoPileUp"+postfixAK5NoPUSub).enable = False
     getattr(process,"patJetCorrFactors"+postfixAK5NoPUSub).payload = "AK5PF"
 
+    getattr(process,"patJets"+postfixAK5NoPUSub).tagInfoSources  = cms.VInputTag(
+        cms.InputTag("secondaryVertexTagInfosAODAK5NoPUSub"),
+        cms.InputTag("impactParameterTagInfosAODAK5NoPUSub")
+        )
+
     # disable embedding of genjets in PAT jets to avoid duplication of the genjet collection
     if runOnMC:
         process.patJetsAK5.embedGenJetMatch=False
@@ -693,7 +698,7 @@ from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning,
 
 
 process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('h2l2qSkimData_DY_v3.root'),
+                 fileName = cms.untracked.string('h2l2qSkimData.root'),
                  SelectEvents = cms.untracked.PSet(
                     SelectEvents = cms.vstring(
                         'filterPath1',

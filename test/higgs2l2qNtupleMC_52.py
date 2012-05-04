@@ -14,7 +14,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-    'file:h2l2qSkimData_DY_v1.root'
+    'file:h2l2qSkimData.root'
 )
 
 process.PUInfoNtuple = cms.EDProducer(
@@ -35,7 +35,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     t1CorrMetTag = cms.InputTag("patType1CorrectedPFMetAK5")
                                     )
 
-process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple_h300.root')
+process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
     "keep *_eventVtxInfoNtuple_*_*",
