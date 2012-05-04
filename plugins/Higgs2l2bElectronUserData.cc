@@ -4,6 +4,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "FWCore/Utilities/interface/EDMException.h"
 
 #include <vector>
@@ -45,6 +46,13 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
   auto_ptr<vector<pat::Electron> > electronColl( new vector<pat::Electron> (*electrons) );
   for (unsigned int i = 0; i< electronColl->size();++i){
     pat::Electron & el = (*electronColl)[i];
+
+    const pat::TriggerObjectStandAloneCollection elHLTMatches = el.triggerObjectMatches();
+    float elHLTBit =-1 ;
+    unsigned int elHLTSize = elHLTMatches.size();
+    elHLTSize>0 ? elHLTBit = 1 : elHLTBit = 0;  
+    el.addUserFloat("elHLTBit", elHLTBit);
+
     float absCombIsoPUCorrected = -1.0;
     if( el.isEB() )
       // pedestal subtraction for barrel 

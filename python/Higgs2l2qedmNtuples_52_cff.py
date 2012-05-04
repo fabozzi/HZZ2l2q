@@ -617,7 +617,16 @@ zee =(
     cms.PSet(
     tag = cms.untracked.string("LeptDau2HOverE"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.hcalOverEcal")
-    )    
+    ), 
+###### HLT match bit
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('elHLTBit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('elHLTBit')")
+    ),
     )
 
 zem =(
@@ -639,12 +648,94 @@ zem =(
     quantity = cms.untracked.string("-1")
     ),
     cms.PSet(
+    tag = cms.untracked.string("EleDau1mvaTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"mvaTrigV0\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2mvaTrigV0"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1mvaNonTrigV0"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"mvaNonTrigV0\")")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2mvaNonTrigV0"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1EtaSC"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.superCluster.eta")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau2EtaSC"),
     quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1isEB"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isEB")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2isEB"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1isEE"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.isEE")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2isEE"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1DeltaPhiAtVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.deltaPhiSuperClusterTrackAtVtx")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2DeltaPhiAtVtx"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1HOverE"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.hcalOverEcal")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2HOverE"),
+    quantity = cms.untracked.string("-1")
+    ), 
+###### HLT match bit
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('elHLTBit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('muHLTBit')")
+    ), 
+###################
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1PFMuonBit"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2PFMuonBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isPFMuon")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1IsPFIsoValid"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2IsPFIsoValid"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isPFIsolationValid")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau1DzVtx"),
+    quantity = cms.untracked.string("-1")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("MuDau2DzVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('dzVtx')")
     ),
     )
 
@@ -921,7 +1012,7 @@ zjj = (
     tag = cms.untracked.string("Jet2ElPt"),
     quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.bDiscriminator(\"softElectronByPtBJetTags\") ")
     ),
-        cms.PSet(
+    cms.PSet(
     tag = cms.untracked.string("Jet1ElIp"),
     quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.bDiscriminator(\"softElectronByIP3dBJetTags\")")
     ),
@@ -1019,6 +1110,15 @@ zmm =(
     cms.PSet(
     tag = cms.untracked.string("MuDau2DzVtx"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('dzVtx')")
+    ),
+###### HLT match bit
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('muHLTBit')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2HLTBit"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('muHLTBit')")
     ),
 )
 

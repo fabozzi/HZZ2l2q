@@ -4,9 +4,10 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
-#include "FWCore/Utilities/interface/EDMException.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "FWCore/Utilities/interface/EDMException.h"
 
 #include <vector>
 #include <TMath.h>
@@ -52,8 +53,17 @@ void Higgs2l2bMuonUserData::produce( Event & evt, const EventSetup & ) {
   auto_ptr<vector<pat::Muon> > muonColl( new vector<pat::Muon> (*muons) );
   for (unsigned int i = 0; i< muonColl->size();++i){
     pat::Muon & m = (*muonColl)[i];
+
+    const pat::TriggerObjectStandAloneCollection muHLTMatches =  m.triggerObjectMatches();
+    float muHLTBit =-1 ;
+    unsigned int muHLTSize = muHLTMatches.size();
+    muHLTSize>0 ? muHLTBit = 1 : muHLTBit = 0;  
+    m.addUserFloat("muHLTBit", muHLTBit);
+
+
     float absCombIsoPUCorrected = m.trackIso() + m.caloIso() - PUEnergyInCone;
     m.addUserFloat("absCombIsoPUCorrected", absCombIsoPUCorrected);
+
     float dzVtx(-1000.0);
     if( m.innerTrack().isNonnull() )
       dzVtx = m.innerTrack()->dz(pv.position());
