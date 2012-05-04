@@ -727,8 +727,7 @@ process.out.outputCommands.extend([
     'keep *_customPFJetsNoPUSub_*_PAT',
     'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables
-    'keep *_kt6PFJets_rho_PAT',
-    'keep *_kt6PFJetsForIso_rho_*',
+    'keep *_*_rho_PAT',
     # PU jetID maps
     "keep *_puJetId*_*_*", # input variables
     "keep *_puJetMva*_*_*", # final MVAs and working point flags
