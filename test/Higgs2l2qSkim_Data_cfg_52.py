@@ -67,7 +67,7 @@ in_file.close()
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file: /data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
+    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
