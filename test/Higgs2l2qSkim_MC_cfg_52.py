@@ -43,15 +43,37 @@ print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
 print sep_line
 
+############ Loading files for mva EleId ############
+import os
+cmsbase = os.environ["CMSSW_BASE"]
+in_file = open(cmsbase+"/src/EGamma/EGammaAnalysisTools/data/download.url","r")
+
+i = 0
+while 1:
+    text = in_file.readline()
+    if len(text) <= 5:
+        break
+    item = text.rstrip()
+    os.system('wget %s'%(item))
+    subpieces = item.split('/')
+    num_of_pieces = len(subpieces)
+    filename = subpieces[num_of_pieces-1]
+    print filename
+    os.system('mv %s %s/src/EGamma/EGammaAnalysisTools/data/'%(filename, cmsbase))
+    i = i + 1
+in_file.close()
+######################################################
+    
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root',
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA178E3B-CB7A-E111-88E9-003048D460B6.root',
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA28D4A9-D37A-E111-B990-001A64789E00.root',
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FAB6476C-D37A-E111-81A2-0025B3E063EA.root',
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FC6345EE-D17A-E111-9656-001A64789D8C.root',
-    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root'
+    'file:/data3/scratch/cms/mc/Summer12/PU_S7_START52_V5-v2/DYJetsToLL_M-50/FE123555-F27A-E111-8E40-003048D46046.root'
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root',
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA178E3B-CB7A-E111-88E9-003048D460B6.root',
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA28D4A9-D37A-E111-B990-001A64789E00.root',
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FAB6476C-D37A-E111-81A2-0025B3E063EA.root',
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FC6345EE-D17A-E111-9656-001A64789D8C.root',
+#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
