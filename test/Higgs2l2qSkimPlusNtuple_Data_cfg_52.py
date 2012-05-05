@@ -43,10 +43,31 @@ print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
 print sep_line
 
+############ Loading files for mva EleId ############
+import os
+cmsbase = os.environ["CMSSW_BASE"]
+in_file = open(cmsbase+"/src/EGamma/EGammaAnalysisTools/data/download.url","r")
+
+i = 0
+while 1:
+    text = in_file.readline()
+    if len(text) <= 5:
+        break
+    item = text.rstrip()
+    os.system('wget %s'%(item))
+    subpieces = item.split('/')
+    num_of_pieces = len(subpieces)
+    filename = subpieces[num_of_pieces-1]
+    print filename
+    os.system('mv %s %s/src/EGamma/EGammaAnalysisTools/data/'%(filename, cmsbase))
+    i = i + 1
+in_file.close()
+######################################################
+
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/afs/cern.ch/work/f/fabozzi/723EF864-8584-E111-A833-003048CFB40C.root'
+    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
