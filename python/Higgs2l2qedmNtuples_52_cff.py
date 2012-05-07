@@ -825,6 +825,22 @@ zjj = (
     ),
 ##########################
     cms.PSet(
+    tag = cms.untracked.string("JetDau1puBeta"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('puBeta')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2puBeta"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userFloat('puBeta')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1puBetaStar"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('puBetaStar')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2puBetaStar"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userFloat('puBetaStar')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1ChHadMult"),
     quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('nChrgdHadrMult')")
     ),
