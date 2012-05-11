@@ -603,6 +603,14 @@ zee =(
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.isEE")
     ),
     cms.PSet(
+    tag = cms.untracked.string("LeptDau1DeltaEtaAtVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.deltaEtaSuperClusterTrackAtVtx")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2DeltaEtaAtVtx"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.deltaEtaSuperClusterTrackAtVtx")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1DeltaPhiAtVtx"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.deltaPhiSuperClusterTrackAtVtx")
     ),
@@ -611,12 +619,44 @@ zee =(
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.deltaPhiSuperClusterTrackAtVtx")
     ),
     cms.PSet(
+    tag = cms.untracked.string("LeptDau1Sigmaee"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.sigmaIetaIeta")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Sigmaee"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.sigmaIetaIeta")
+    ), 
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1HOverE"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.hcalOverEcal")
     ),
     cms.PSet(
     tag = cms.untracked.string("LeptDau2HOverE"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.hcalOverEcal")
+    ), 
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1Fbrem"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.fbrem")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2Fbrem"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.fbrem")
+    ), 
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1EPin"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.eSuperClusterOverP")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2EPin"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.eSuperClusterOverP")
+    ), 
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau1EcalEn"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.ecalEnergy")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("LeptDau2EcalEn"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.ecalEnergy")
     ), 
 ###### HLT match bit
     cms.PSet(
