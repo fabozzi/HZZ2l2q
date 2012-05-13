@@ -297,7 +297,8 @@ process.patTriggerSequence = cms.Sequence(
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
     src = cms.InputTag("patElectronsWithTrigger"),
-    rho = cms.InputTag("kt6PFJetsForIso:rho")
+    rho = cms.InputTag("kt6PFJetsForIso:rho"),
+    primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
 
 # ID-selected electrons (only ID and conversion, no isolation)

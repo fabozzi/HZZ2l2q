@@ -579,6 +579,54 @@ zee =(
     ),
 ###### variables useful for custom electron selection
     cms.PSet(
+    tag = cms.untracked.string("EleDau1dz"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('dz')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2dz"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('dz')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1dxy"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('dxy')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2dxy"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('dxy')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1mHits"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('mHits')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2mHits"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('mHits')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1TrkIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dr03TkSumPt()")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2TrkIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.dr03TkSumPt()")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1EcalIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dr03EcalRecHitSumEt()")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2EcalIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.dr03EcalRecHitSumEt()")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1HcalIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dr03HcalTowerSumEt()")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2HcalIso03"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.dr03HcalTowerSumEt()")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("LeptDau1EtaSC"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.superCluster.eta")
     ),
