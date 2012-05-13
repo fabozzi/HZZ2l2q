@@ -20,7 +20,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 500
+process.maxEvents.input = 200
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -309,7 +309,8 @@ process.patTriggerSequence = cms.Sequence(
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
     src = cms.InputTag("patElectronsWithTrigger"),
-    rho = cms.InputTag("kt6PFJetsForIso:rho")
+    rho = cms.InputTag("kt6PFJetsForIso:rho"),
+    primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
 
 # ID-selected electrons (only ID and conversion, no isolation)
