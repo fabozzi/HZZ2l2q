@@ -722,6 +722,7 @@ process.out.outputCommands.extend([
     'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables
     'keep *_*_rho_PAT',
+    'keep *_kt6PFJetsCentralNeutral_rho_*',
     # PU jetID maps
     "keep *_puJetId*_*_*", # input variables
     "keep *_puJetMva*_*_*", # final MVAs and working point flags

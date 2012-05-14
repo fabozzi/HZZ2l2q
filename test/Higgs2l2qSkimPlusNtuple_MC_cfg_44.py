@@ -727,6 +727,7 @@ process.out.outputCommands.extend([
     'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables
     'keep *_*_rho_PAT',
+    'keep *_kt6PFJetsCentralNeutral_rho_*',
     # PU jetID maps
     "keep *_puJetId*_*_*", # input variables
     "keep *_puJetMva*_*_*", # final MVAs and working point flags
@@ -874,8 +875,7 @@ process.edmNtuplesOut = cms.OutputModule(
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
     "keep *_metInfoProducer_*_*",
-#    "keep *_kt6PFJets_rho_PAT",
-#    "keep *_kt6PFJetsForIso_rho_*",
+    'keep *_kt6PFJetsCentralNeutral_rho_*',
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
     "keep *_Higgsemu2bEdmNtuple_*_*",
