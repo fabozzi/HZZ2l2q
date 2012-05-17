@@ -2,6 +2,9 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("TRIM")
 
+
+applyFilter = True
+
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
@@ -117,18 +120,26 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "keep *_jetinfos_*_*"
 )
 
-process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring('analysisPath')
-    )
+if applyFilter:
+    process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
+        SelectEvents = cms.vstring('analysisPath')
+        )
 
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
 process.edmNtuplesOut.outputCommands.extend([
+    'keep edmTriggerResults_TriggerResults_*_HLT',
     'keep *_TriggerResults_*_PAT',
     ])
 
-process.analysisPath = cms.Path(
-    process.badEventFilter +
+process.analysisPath = cms.Path()
+
+if applyFilter:
+    process.analysisPath += process.badEventFilter
+
+#process.analysisPath = cms.Path(
+#    process.badEventFilter +
+process.analysisSequence = cms.Sequence(
     process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
@@ -139,6 +150,8 @@ process.analysisPath = cms.Path(
     process.Higgsemu2bEdmNtuple+
     process.jetinfos
 )
+
+process.analysisPath += process.analysisSequence
 
 process.endPath = cms.EndPath(process.edmNtuplesOut)
 
