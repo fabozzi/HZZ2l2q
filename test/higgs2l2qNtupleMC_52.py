@@ -17,6 +17,29 @@ process.source.fileNames=cms.untracked.vstring(
     'file:h2l2qSkimData.root'
 )
 
+
+#### Event cleaning 
+process.badEventFilter = cms.EDFilter(
+    "HLTHighLevel",
+    TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
+    HLTPaths = cms.vstring('primaryVertexFilterPath',
+                           'noscrapingFilterPath',          
+                           'hcalLaserEventFilterPath',
+                           'HBHENoiseFilterPath',
+                           'totalKinematicsFilterPath' #only for Madgraph MC
+                           ),
+    eventSetupPathsKey = cms.string(''),
+    # how to deal with multiple triggers: True (OR) accept if ANY is true, False
+    # (AND) accept if ALL are true
+    andOr = cms.bool(False),
+    throw = cms.bool(True)  # throw exception on unknown path names
+    )
+
+process.cleaningPath = cms.Path(
+    process.badEventFilter
+    )
+
+
 process.PUInfoNtuple = cms.EDProducer(
     "GenPUNtupleDump",
     isData = cms.bool(False)
@@ -73,7 +96,6 @@ process.rhoDumper = cms.EDProducer("EventRhoDumper",
                                     restrictedRho = cms.InputTag("kt6PFJetsForIso:rho")
                                     )
 
-
 # Met variables producer
 process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     metTag = cms.InputTag("patMETsAK5"),
@@ -87,26 +109,25 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
+    "keep *_eventFlagDumper_*_*",
     "keep *_metInfoProducer_*_*",
-#    "keep *_kt6PFJets_rho_PAT",
-#    "keep *_kt6PFJetsForIso_rho_*",
+# keep rho recommended for muoniso
+    'keep *_kt6PFJetsCentralNeutral_rho_*',
     "keep *_Higgs2e2bEdmNtuple_*_*",
     "keep *_Higgs2mu2bEdmNtuple_*_*",
     "keep *_Higgsemu2bEdmNtuple_*_*",
     "keep *_jetinfos_*_*"
 )
+
+process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
+    SelectEvents = cms.vstring('cleaningPath')
+    )
+
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
 
 process.edmNtuplesOut.outputCommands.extend([
-    'keep *_ecalDeadCellTPfilter_*_*',
-    'keep *_HBHENoiseFilterResultProducer*_*_*',
-    'keep *_BeamHaloSummary_*_*',
-    'keep *_recovRecHitFilter_*_*',
-    'keep *_eeNoiseFilter_*_*',
-    'keep *_trackingFailureFilter_*_*',
-    'keep *_goodPrimaryVertexFilter_*_*',
-    'keep *_scrapingFilter_*_*',
-    'keep *_totalKinematicsFilterCMG_*_*'])
+    'keep *_TriggerResults_*_PAT',
+    ])
 
 process.analysisPath = cms.Path(
     process.HLTPassInfo+
@@ -123,6 +144,7 @@ process.analysisPath = cms.Path(
 process.endPath = cms.EndPath(process.edmNtuplesOut)
 
 process.schedule = cms.Schedule(
+    process.cleaningPath,
     process.analysisPath,
     process.endPath
     )

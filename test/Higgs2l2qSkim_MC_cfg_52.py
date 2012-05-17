@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 200
+process.maxEvents.input = 400
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -653,12 +653,6 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
-# event cleaning (in tagging mode, no event rejected)
-
-process.load('CMGTools.Common.eventCleaning.eventCleaning_cff')
-
-process.p += process.eventCleaningSequence
-
 process.p += getattr(process,"postPathCounter") 
  
 # Setup for a basic filtering
@@ -693,6 +687,37 @@ process.filterPath2= cms.Path(
     process.jetFilterNoPUSub
 )
 
+
+# event cleaning (in tagging mode, no event rejected)
+process.load('CMGTools.Common.PAT.addFilterPaths_cff')
+### if you have a tag which contains rev >=1.3 of addFilterPaths_cff.py,
+### you can use the paths currently commented
+process.fullPath = cms.Schedule(
+    process.p,
+    process.filterPath1,
+    process.filterPath2,
+    process.EcalDeadCellBoundaryEnergyFilterPath,
+    process.simpleDRfilterPath,
+############# ->
+#    process.EcalDeadCellTriggerPrimitiveFilterPath,
+#    process.greedyMuonPFCandidateFilterPath,
+############# <-
+    process.hcalLaserEventFilterPath,
+    process.inconsistentMuonPFCandidateFilterPath,
+    process.trackingFailureFilterPath,
+############# ->
+#    process.CSCTightHaloFilterPath,
+############# <-
+    process.HBHENoiseFilterPath,
+    process.primaryVertexFilterPath,
+    process.noscrapingFilterPath
+    )
+#this is needed only for MC:
+if runOnMC:
+    process.fullPath.append(process.totalKinematicsFilterPath)
+
+
+
 ### OUTPUT DEFINITION #############################################
 
 # PFBRECO+PAT ---
@@ -714,8 +739,6 @@ process.out = cms.OutputModule("PoolOutputModule",
 )
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
-
-
 
 # add trigger information to the pat-tuple
 #process.out.outputCommands += patEventContentNoCleaning
@@ -777,16 +800,19 @@ process.out.outputCommands.extend([
     ### for HLT selection
     'keep edmTriggerResults_TriggerResults_*_HLT'])
 
+# additional products for event cleaning
 process.out.outputCommands.extend([
-    'keep *_ecalDeadCellTPfilter_*_*',
-    'keep *_HBHENoiseFilterResultProducer*_*_*',
-    'keep *_BeamHaloSummary_*_*',
-    'keep *_recovRecHitFilter_*_*',
-    'keep *_eeNoiseFilter_*_*',
-    'keep *_trackingFailureFilter_*_*',
-    'keep *_goodPrimaryVertexFilter_*_*',
-    'keep *_scrapingFilter_*_*',
-    'keep *_totalKinematicsFilterCMG_*_*'])
+    'keep *_TriggerResults_*_PAT',
+#    'keep *_ecalDeadCellTPfilter_*_*',
+#    'keep *_HBHENoiseFilterResultProducer*_*_*',
+#    'keep *_BeamHaloSummary_*_*',
+#    'keep *_recovRecHitFilter_*_*',
+#    'keep *_eeNoiseFilter_*_*',
+#    'keep *_trackingFailureFilter_*_*',
+#    'keep *_goodPrimaryVertexFilter_*_*',
+#    'keep *_scrapingFilter_*_*',
+#    'keep *_totalKinematicsFilterCMG_*_*'
+    ])
 
 process.out.outputCommands.extend(['keep edmMergeableCounter_*_*_*'])
 
