@@ -189,6 +189,13 @@ process.puJetMvaAK5= puJetMva.clone(
 
 process.puJetIdSequenceAK5 = cms.Sequence(process.puJetIdAK5*process.puJetMvaAK5)
 
+# central jets for filtering and Z->jj candidates
+process.customPFJetsCentral = cms.EDFilter(
+    "PATJetSelector",
+    src = cms.InputTag("customPFJets"),
+    cut = cms.string("abs(eta) < 2.4")
+    )
+
 ############## "Classic" PAT Muons and Electrons ########################
 # (made from all reco muons, and all gsf electrons, respectively)
 process.patMuons.embedTcMETMuonCorrs = False
@@ -377,7 +384,7 @@ process.userDataStandardLeptonSequence = cms.Sequence(
 # Jet cleaning for patJets
 process.cleanPatJetsIsoLept = cms.EDProducer(
     "PATJetCleaner",
-    src = cms.InputTag("customPFJets"),
+    src = cms.InputTag("customPFJetsCentral"),
     preselection = cms.string(''),
     checkOverlaps = cms.PSet(
     muons = cms.PSet(
@@ -473,10 +480,16 @@ if runAK5NoPUSub:
 
     process.puJetIdSequenceAK5NoPUSub = cms.Sequence(process.puJetIdAK5NoPUSub*process.puJetMvaAK5NoPUSub)
 
+    process.customPFJetsNoPUSubCentral = cms.EDFilter(
+        "PATJetSelector",
+        src = cms.InputTag("customPFJetsNoPUSub"),
+        cut = cms.string("abs(eta) < 2.4")
+        )
+
 # Jet cleaning for patJets NoPUSub
     process.cleanPatJetsNoPUIsoLept = cms.EDProducer(
         "PATJetCleaner",
-        src = cms.InputTag("customPFJetsNoPUSub"),
+        src = cms.InputTag("customPFJetsNoPUSubCentral"),
         preselection = cms.string(''),
         checkOverlaps = cms.PSet(
         muons = cms.PSet(
@@ -527,6 +540,7 @@ process.p += process.kt6PFJetsCHSForIso
 
 process.p += process.customPFJets
 process.p += process.puJetIdSequenceAK5
+process.p += process.customPFJetsCentral
 
 process.p += process.stdLeptonSequence
 
@@ -541,6 +555,7 @@ if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
     process.p += process.customPFJetsNoPUSub
     process.p += process.puJetIdSequenceAK5NoPUSub
+    process.p += process.customPFJetsNoPUSubCentral
     process.p += process.cleanPatJetsNoPUIsoLept
 
 
@@ -558,8 +573,10 @@ process.selectedPatElectrons.cut = (
     "pt > 10.0 && abs(eta) < 2.5"
     )
 # Select jets
-process.selectedPatJetsAK5.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
-process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
+#process.selectedPatJetsAK5.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
+#process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
+process.selectedPatJetsAK5.cut = cms.string('pt > 25.0')
+process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0')
 
 ################# COMBINATORIAL ANALYSIS ###########################
 
@@ -682,12 +699,12 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 )
 
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("customPFJets"),
+                                 src = cms.InputTag("customPFJetsCentral"),
                                  minNumber = cms.uint32(2),
 )
 
 process.jetFilterNoPUSub = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("customPFJetsNoPUSub"),
+                                 src = cms.InputTag("customPFJetsNoPUSubCentral"),
                                  minNumber = cms.uint32(2),
 )
 
