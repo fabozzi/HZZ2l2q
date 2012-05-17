@@ -197,10 +197,26 @@ process.patMuons.embedTrack = True
 
 process.patElectrons.embedTrack = True
 process.patElectrons.pfElectronSource = 'particleFlow'
+
+# use PFIsolation
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons', 'PFIso')
 process.muIsoSequence = setupPFMuonIso(process, 'muons', 'PFIso')
 adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""), 'PFIso')
 adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""), 'PFIso')
+
+
+# setup recommended 0.3 cone for electron PF isolation
+process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
+process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
+process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
+process.patElectrons.isolationValues = cms.PSet(
+        pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
+        pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
+        pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
+        pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
+        pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
+        )
+
 process.stdMuonSeq = cms.Sequence(
     process.pfParticleSelectionSequence +
     process.muIsoSequence +
@@ -712,7 +728,7 @@ process.fullPath = cms.Schedule(
     process.primaryVertexFilterPath,
     process.noscrapingFilterPath
     )
-#this is needed only for MC:
+#this is needed only for Madgraph MC:
 if runOnMC:
     process.fullPath.append(process.totalKinematicsFilterPath)
 
@@ -803,15 +819,6 @@ process.out.outputCommands.extend([
 # additional products for event cleaning
 process.out.outputCommands.extend([
     'keep *_TriggerResults_*_PAT',
-#    'keep *_ecalDeadCellTPfilter_*_*',
-#    'keep *_HBHENoiseFilterResultProducer*_*_*',
-#    'keep *_BeamHaloSummary_*_*',
-#    'keep *_recovRecHitFilter_*_*',
-#    'keep *_eeNoiseFilter_*_*',
-#    'keep *_trackingFailureFilter_*_*',
-#    'keep *_goodPrimaryVertexFilter_*_*',
-#    'keep *_scrapingFilter_*_*',
-#    'keep *_totalKinematicsFilterCMG_*_*'
     ])
 
 process.out.outputCommands.extend(['keep edmMergeableCounter_*_*_*'])

@@ -23,6 +23,9 @@ process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
     HLTPaths = cms.vstring('primaryVertexFilterPath',
+#                           'CSCTightHaloFilterPath',
+#                           'EcalDeadCellTriggerPrimitiveFilterPath',
+                           'EcalDeadCellBoundaryEnergyFilterPath',
                            'noscrapingFilterPath',          
                            'hcalLaserEventFilterPath',
                            'HBHENoiseFilterPath',
@@ -34,11 +37,6 @@ process.badEventFilter = cms.EDFilter(
     andOr = cms.bool(False),
     throw = cms.bool(True)  # throw exception on unknown path names
     )
-
-process.cleaningPath = cms.Path(
-    process.badEventFilter
-    )
-
 
 process.PUInfoNtuple = cms.EDProducer(
     "GenPUNtupleDump",
@@ -120,7 +118,7 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
 )
 
 process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring('cleaningPath')
+    SelectEvents = cms.vstring('analysisPath')
     )
 
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
@@ -130,6 +128,7 @@ process.edmNtuplesOut.outputCommands.extend([
     ])
 
 process.analysisPath = cms.Path(
+    process.badEventFilter +
     process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
@@ -144,7 +143,6 @@ process.analysisPath = cms.Path(
 process.endPath = cms.EndPath(process.edmNtuplesOut)
 
 process.schedule = cms.Schedule(
-    process.cleaningPath,
     process.analysisPath,
     process.endPath
     )
