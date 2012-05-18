@@ -95,8 +95,7 @@ process.kt6PFJetsCHSForIso = process.kt6PFJets.clone(
 postfixAK5 ="AK5"
 jetAlgoAK5 ="AK5"
 
-usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5,
-          jetCorrections=('AK5PFchs', jetCorrections))
+usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5, jetCorrections=('AK5PFchs', jetCorrections))
 
 removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 
