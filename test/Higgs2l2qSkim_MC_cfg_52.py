@@ -61,7 +61,7 @@ process.source.fileNames = [
 # load the PAT config
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.coreTools import *
-removeSpecificPATObjects(process, ['Taus'])
+
 # Configure PAT to use PFBRECO instead of AOD sources
 # this function will modify the PAT sequences.
 from PhysicsTools.PatAlgos.tools.pfTools import *
@@ -97,6 +97,8 @@ jetAlgoAK5 ="AK5"
 
 usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5,
           jetCorrections=('AK5PFchs', jetCorrections))
+
+removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 
 ############### remove useless modules ####################
 def removeUseless( modName ):
@@ -748,8 +750,8 @@ process.fullPath = cms.Schedule(
 #this is needed only for Madgraph MC:
 if runOnMC:
     process.fullPath.append(process.totalKinematicsFilterPath)
-
-
+else:
+    del process.totalKinematicsFilterPath
 
 ### OUTPUT DEFINITION #############################################
 
