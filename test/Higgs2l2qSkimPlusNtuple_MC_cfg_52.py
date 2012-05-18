@@ -61,7 +61,7 @@ process.source.fileNames = [
 # load the PAT config
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 from PhysicsTools.PatAlgos.tools.coreTools import *
-removeSpecificPATObjects(process, ['Taus'])
+
 # Configure PAT to use PFBRECO instead of AOD sources
 # this function will modify the PAT sequences.
 from PhysicsTools.PatAlgos.tools.pfTools import *
@@ -97,6 +97,8 @@ jetAlgoAK5 ="AK5"
 
 usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5,
           jetCorrections=('AK5PFchs', jetCorrections))
+
+removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 
 ############### remove useless modules ####################
 def removeUseless( modName ):
@@ -189,6 +191,13 @@ process.puJetMvaAK5= puJetMva.clone(
 
 process.puJetIdSequenceAK5 = cms.Sequence(process.puJetIdAK5*process.puJetMvaAK5)
 
+# central jets for filtering and Z->jj candidates
+process.customPFJetsCentral = cms.EDFilter(
+    "PATJetSelector",
+    src = cms.InputTag("customPFJets"),
+    cut = cms.string("abs(eta) < 2.4")
+    )
+
 ############## "Classic" PAT Muons and Electrons ########################
 # (made from all reco muons, and all gsf electrons, respectively)
 process.patMuons.embedTcMETMuonCorrs = False
@@ -197,10 +206,25 @@ process.patMuons.embedTrack = True
 
 process.patElectrons.embedTrack = True
 process.patElectrons.pfElectronSource = 'particleFlow'
+
+# use PFIsolation
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons', 'PFIso')
 process.muIsoSequence = setupPFMuonIso(process, 'muons', 'PFIso')
 adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""), 'PFIso')
 adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""), 'PFIso')
+
+# setup recommended 0.3 cone for electron PF isolation
+process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
+process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
+process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
+process.patElectrons.isolationValues = cms.PSet(
+        pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
+        pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
+        pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
+        pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
+        pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
+        )
+
 process.stdMuonSeq = cms.Sequence(
     process.pfParticleSelectionSequence +
     process.muIsoSequence +
@@ -361,7 +385,7 @@ process.userDataStandardLeptonSequence = cms.Sequence(
 # Jet cleaning for patJets
 process.cleanPatJetsIsoLept = cms.EDProducer(
     "PATJetCleaner",
-    src = cms.InputTag("customPFJets"),
+    src = cms.InputTag("customPFJetsCentral"),
     preselection = cms.string(''),
     checkOverlaps = cms.PSet(
     muons = cms.PSet(
@@ -457,10 +481,16 @@ if runAK5NoPUSub:
 
     process.puJetIdSequenceAK5NoPUSub = cms.Sequence(process.puJetIdAK5NoPUSub*process.puJetMvaAK5NoPUSub)
 
+    process.customPFJetsNoPUSubCentral = cms.EDFilter(
+        "PATJetSelector",
+        src = cms.InputTag("customPFJetsNoPUSub"),
+        cut = cms.string("abs(eta) < 2.4")
+        )
+
 # Jet cleaning for patJets NoPUSub
     process.cleanPatJetsNoPUIsoLept = cms.EDProducer(
         "PATJetCleaner",
-        src = cms.InputTag("customPFJetsNoPUSub"),
+        src = cms.InputTag("customPFJetsNoPUSubCentral"),
         preselection = cms.string(''),
         checkOverlaps = cms.PSet(
         muons = cms.PSet(
@@ -511,6 +541,7 @@ process.p += process.kt6PFJetsCHSForIso
 
 process.p += process.customPFJets
 process.p += process.puJetIdSequenceAK5
+process.p += process.customPFJetsCentral
 
 process.p += process.stdLeptonSequence
 
@@ -525,6 +556,7 @@ if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
     process.p += process.customPFJetsNoPUSub
     process.p += process.puJetIdSequenceAK5NoPUSub
+    process.p += process.customPFJetsNoPUSubCentral
     process.p += process.cleanPatJetsNoPUIsoLept
 
 
@@ -542,8 +574,8 @@ process.selectedPatElectrons.cut = (
     "pt > 10.0 && abs(eta) < 2.5"
     )
 # Select jets
-process.selectedPatJetsAK5.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
-process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
+process.selectedPatJetsAK5.cut = cms.string('pt > 25.0')
+process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0')
 
 ################# COMBINATORIAL ANALYSIS ###########################
 
@@ -653,12 +685,6 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
-# event cleaning (in tagging mode, no event rejected)
-
-process.load('CMGTools.Common.eventCleaning.eventCleaning_cff')
-
-process.p += process.eventCleaningSequence
-
 process.p += getattr(process,"postPathCounter") 
 
 
@@ -673,12 +699,12 @@ process.zllFilter = cms.EDFilter("CandViewCountFilter",
 )
 
 process.jetFilter = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("customPFJets"),
+                                 src = cms.InputTag("customPFJetsCentral"),
                                  minNumber = cms.uint32(2),
 )
 
 process.jetFilterNoPUSub = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("customPFJetsNoPUSub"),
+                                 src = cms.InputTag("customPFJetsNoPUSubCentral"),
                                  minNumber = cms.uint32(2),
 )
 
@@ -694,6 +720,37 @@ process.filterPath2= cms.Path(
     process.jetFilterNoPUSub
 )
 
+
+# event cleaning (in tagging mode, no event rejected)
+process.load('CMGTools.Common.PAT.addFilterPaths_cff')
+### if you have a tag which contains rev >=1.3 of addFilterPaths_cff.py,
+### you can use the paths currently commented
+process.fullPath = cms.Schedule(
+    process.p,
+    process.filterPath1,
+    process.filterPath2,
+    process.EcalDeadCellBoundaryEnergyFilterPath,
+    process.simpleDRfilterPath,
+############# ->
+#    process.EcalDeadCellTriggerPrimitiveFilterPath,
+#    process.greedyMuonPFCandidateFilterPath,
+############# <-
+    process.hcalLaserEventFilterPath,
+    process.inconsistentMuonPFCandidateFilterPath,
+    process.trackingFailureFilterPath,
+############# ->
+#    process.CSCTightHaloFilterPath,
+############# <-
+    process.HBHENoiseFilterPath,
+    process.primaryVertexFilterPath,
+    process.noscrapingFilterPath
+    )
+#this is needed only for Madgraph MC:
+if runOnMC:
+    process.fullPath.append(process.totalKinematicsFilterPath)
+else:
+    del process.totalKinematicsFilterPath
+
 ### OUTPUT DEFINITION #############################################
 
 # PFBRECO+PAT ---
@@ -706,13 +763,13 @@ process.out = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('h2l2qSkimData.root'),
     SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring(
-    'filterPath1',
-    'filterPath2')
-    ),
+      SelectEvents = cms.vstring(
+        'filterPath1',
+        'filterPath2')
+      ),
     outputCommands =  cms.untracked.vstring(
-    'drop *_*_*_*',
-    ),
+      'drop *_*_*_*',
+      ),
     )
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
@@ -777,16 +834,10 @@ process.out.outputCommands.extend([
     ### for HLT selection
     'keep edmTriggerResults_TriggerResults_*_HLT'])
 
+# additional products for event cleaning
 process.out.outputCommands.extend([
-    'keep *_ecalDeadCellTPfilter_*_*',
-    'keep *_HBHENoiseFilterResultProducer*_*_*',
-    'keep *_BeamHaloSummary_*_*',
-    'keep *_recovRecHitFilter_*_*',
-    'keep *_eeNoiseFilter_*_*',
-    'keep *_trackingFailureFilter_*_*',
-    'keep *_goodPrimaryVertexFilter_*_*',
-    'keep *_scrapingFilter_*_*',
-    'keep *_totalKinematicsFilterCMG_*_*'])
+    'keep *_TriggerResults_*_PAT',
+    ])
 
 process.out.outputCommands.extend(['keep edmMergeableCounter_*_*_*'])
 
@@ -874,37 +925,30 @@ process.edmNtuplesOut = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string('h2l2q_ntuple.root'),
     outputCommands = cms.untracked.vstring(
-    "drop *",
-    "keep *_HLTPassInfo_*_*",
-    "keep *_eventVtxInfoNtuple_*_*",
-    "keep *_PUInfoNtuple_*_*",
-    "keep *_rhoDumper_*_*",
-    "keep *_metInfoProducer_*_*",
-    'keep *_kt6PFJetsCentralNeutral_rho_*',
-    "keep *_Higgs2e2bEdmNtuple_*_*",
-    "keep *_Higgs2mu2bEdmNtuple_*_*",
-    "keep *_Higgsemu2bEdmNtuple_*_*",
-    "keep *_jetinfos_*_*"
-    ),
+      "drop *",
+      "keep *_HLTPassInfo_*_*",
+      "keep *_eventVtxInfoNtuple_*_*",
+      "keep *_PUInfoNtuple_*_*",
+      "keep *_rhoDumper_*_*",
+      "keep *_metInfoProducer_*_*",
+      'keep *_kt6PFJetsCentralNeutral_rho_*',
+      "keep *_Higgs2e2bEdmNtuple_*_*",
+      "keep *_Higgs2mu2bEdmNtuple_*_*",
+      "keep *_Higgsemu2bEdmNtuple_*_*",
+      "keep *_jetinfos_*_*"
+      ),
     dropMetaData = cms.untracked.string('ALL'),
     SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring(
-    'filterPath1',
-    'filterPath2')
-    ),
-)
+      SelectEvents = cms.vstring(
+        'filterPath1',
+        'filterPath2')
+      ),
+    )
 
 process.edmNtuplesOut.outputCommands.extend([
-    'keep *_ecalDeadCellTPfilter_*_*',
-    'keep *_HBHENoiseFilterResultProducer*_*_*',
-    'keep *_BeamHaloSummary_*_*',
-    'keep *_recovRecHitFilter_*_*',
-    'keep *_eeNoiseFilter_*_*',
-    'keep *_trackingFailureFilter_*_*',
-    'keep *_goodPrimaryVertexFilter_*_*',
-    'keep *_scrapingFilter_*_*',
-    'keep *_totalKinematicsFilterCMG_*_*'])
+    'keep edmTriggerResults_TriggerResults_*_HLT',
+    'keep *_TriggerResults_*_PAT',
+    ])
 
 process.endPath = cms.EndPath(process.edmNtuplesOut)
  
-#process.outPath = cms.EndPath(process.out)

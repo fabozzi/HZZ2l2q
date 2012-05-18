@@ -110,7 +110,6 @@ process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
-    "keep *_eventFlagDumper_*_*",
     "keep *_metInfoProducer_*_*",
 # keep rho recommended for muoniso
     'keep *_kt6PFJetsCentralNeutral_rho_*',
