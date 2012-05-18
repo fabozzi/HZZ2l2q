@@ -24,8 +24,8 @@ process.badEventFilter = cms.EDFilter(
                            'EcalDeadCellBoundaryEnergyFilterPath',
                            'noscrapingFilterPath',          
                            'hcalLaserEventFilterPath',
-                           'HBHENoiseFilterPath',
-                           'totalKinematicsFilterPath' #only for Madgraph MC
+                           'HBHENoiseFilterPath'#,
+#                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False

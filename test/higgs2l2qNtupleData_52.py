@@ -29,7 +29,7 @@ process.badEventFilter = cms.EDFilter(
                            'EcalDeadCellBoundaryEnergyFilterPath',
                            'noscrapingFilterPath',          
                            'hcalLaserEventFilterPath',
-                           'HBHENoiseFilterPath',
+                           'HBHENoiseFilterPath'#,
 #                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
     eventSetupPathsKey = cms.string(''),
