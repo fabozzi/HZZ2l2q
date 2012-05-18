@@ -2,7 +2,6 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("TRIM")
 
-
 applyFilter = True
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -32,7 +31,7 @@ process.badEventFilter = cms.EDFilter(
                            'noscrapingFilterPath',          
                            'hcalLaserEventFilterPath',
                            'HBHENoiseFilterPath',
-                           'totalKinematicsFilterPath' #only for Madgraph MC
+#                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
