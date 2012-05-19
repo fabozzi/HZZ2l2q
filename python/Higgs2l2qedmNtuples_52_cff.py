@@ -603,6 +603,14 @@ zee =(
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('mHits')")
     ),
     cms.PSet(
+    tag = cms.untracked.string("EleDau1hasMatchConv"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('hasMatchConv')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2hasMatchConv"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('hasMatchConv')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("EleDau1TrkIso03"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.dr03TkSumPt()")
     ),

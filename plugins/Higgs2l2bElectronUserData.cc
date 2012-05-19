@@ -8,6 +8,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "FWCore/Utilities/interface/EDMException.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 
 #include <vector>
 #include <TMath.h>
@@ -50,12 +51,12 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
   evt.getByLabel(primaryVertices_, primaryVertices);
   const reco::Vertex &pv = (*primaryVertices)[0];
 
-  //  Handle<reco::BeamSpot> bsHandle;
-  //  evt.getByLabel("offlineBeamSpot", bsHandle);
-  //  const reco::BeamSpot &beamspot = *bsHandle.product();
-  //  
-  //  Handle<reco::ConversionCollection> conversions;
-  //  evt.getByLabel("allConversions", conversions);
+  Handle<reco::BeamSpot> bsHandle;
+  evt.getByLabel("offlineBeamSpot", bsHandle);
+  const reco::BeamSpot &beamspot = *bsHandle.product();
+    
+  Handle<reco::ConversionCollection> conversions;
+  evt.getByLabel("allConversions", conversions);
   
   auto_ptr<vector<pat::Electron> > electronColl( new vector<pat::Electron> (*electrons) );
   for (unsigned int i = 0; i< electronColl->size();++i){
@@ -89,8 +90,8 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
     el.addUserFloat("mHits", missHits);
 
     // conversion rejection match (not yet working)
-    //    bool hasMatchConv = ConversionTools::hasMatchedConversion(el, conversions, beamspot.position());
-    //    el.addUserFloat("hasMatchConv", float(hasMatchConv));
+    bool hasMatchConv = ConversionTools::hasMatchedConversion(el, conversions, beamspot.position());
+    el.addUserFloat("hasMatchConv", float(hasMatchConv));
 
   }
 
