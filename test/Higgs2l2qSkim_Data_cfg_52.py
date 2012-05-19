@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 200
+process.maxEvents.input = 500
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
