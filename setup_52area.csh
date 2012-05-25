@@ -15,9 +15,9 @@ cvs co -r cbern_25Apr12 DataFormats/PatCandidates
 
 cvs co -r V00-00-08 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
 
-cvs co -r Shervin20022012_2011Jan16ReRec0_and_Shervin05032012_Fall11MC_smearing -d EgammaCalibratedGsfElectrons/CalibratedElectronAlgos UserCode/EGamma/EgammaCalibratedGsfElectrons/CalibratedElectronAlgos
+cvs co -r Shervin20022012_2011Jan16ReRec0_and_Shervin05032012_Fall11MC_smearing_V01 -d EgammaCalibratedGsfElectrons/CalibratedElectronAlgos UserCode/EGamma/EgammaCalibratedGsfElectrons/CalibratedElectronAlgos
 
-cvs co -r Shervin20022012_2011Jan16ReRec0_and_Shervin05032012_Fall11MC_smearing -d EgammaCalibratedGsfElectrons/CalibratedElectronProducers UserCode/EGamma/EgammaCalibratedGsfElectrons/CalibratedElectronProducers
+cvs co -r Shervin20022012_2011Jan16ReRec0_and_Shervin05032012_Fall11MC_smearing_V01 -d EgammaCalibratedGsfElectrons/CalibratedElectronProducers UserCode/EGamma/EgammaCalibratedGsfElectrons/CalibratedElectronProducers
 
 cvs co -r V00-00-60  FWCore/GuiBrowsers                               
 
