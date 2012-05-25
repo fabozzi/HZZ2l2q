@@ -313,6 +313,22 @@ process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
 # patElectronsWithTrigger is produced: to be added in input to userdata!
 process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
 
+process.muonMatchHLTL3.src = "selectedPatMuons"
+process.muonMatchHLTL3T.src = "selectedPatMuons"
+process.patMuonsWithTrigger.src = "selectedPatMuons"
+
+process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
+process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
+process.patElectronsWithTrigger.src = "selectedPatElectrons"
+
 process.patTriggerSequence = cms.Sequence(
     process.patTrigger *
     process.patMuonsWithTriggerSequence * 
@@ -528,7 +544,7 @@ process.postPathCounter = cms.EDProducer("EventCountProducer")
 
 process.p = cms.Path( process.prePathCounter )
 
-process.p += process.kt6PFJets
+#process.p += process.kt6PFJets
 
 # PFBRECO+PAT ---
 
