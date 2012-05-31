@@ -21,11 +21,21 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 500
+process.maxEvents.input = 200
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+
+process.GlobalTag.toGet = cms.VPSet(
+    cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
+             tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
+             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
+    cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+             tag = cms.string("TrackProbabilityCalibration_3D_2012DataTOT_v1_offline"),
+             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
+    )
+
 ##################################################
 
 ############ PRINTOUT ###################
@@ -798,6 +808,7 @@ process.out.outputCommands.extend([
     # rho variables
     'keep *_*_rho_PAT',
     'keep *_kt6PFJetsCentralNeutral_rho_*',
+    'keep *_kt6PFJets*_rho_*',
     # PU jetID maps
     "keep *_puJetId*_*_*", # input variables
     "keep *_puJetMva*_*_*", # final MVAs and working point flags
