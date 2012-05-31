@@ -20,11 +20,12 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 400
+process.maxEvents.input = 200
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
-from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
-process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+#from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
+#process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+process.GlobalTag.globaltag = 'START44_V9B::All'
 ##################################################
 
 ############ PRINTOUT ###################
