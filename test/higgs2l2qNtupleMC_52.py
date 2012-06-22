@@ -45,50 +45,50 @@ process.PUInfoNtuple = cms.EDProducer(
     isData = cms.bool(False)
 )
 
-process.HLTPassInfo = cms.EDProducer(
-    "HLTPassInfoProducer",
-    triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here the 1st run with a new trigger table
-    # leave empty for MC
-    runLimits = cms.vint32(),
-    # here insert the HLT path (without _v[n] suffix) you want to check
-    # MC path
-    triggerNamesSingleMu_MC = cms.vstring(),
-    triggerNamesDoubleMu_MC = cms.vstring(),
-    triggerNamesSingleEl_MC = cms.vstring(),
-    triggerNamesDoubleEl_MC = cms.vstring(),
-    # Data: here all the paths making the PDs are listed
-    # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring(),
-    triggerNamesDoubleMu_5e32 = cms.vstring(),
-    triggerNamesSingleEl_5e32 = cms.vstring(),
-    triggerNamesDoubleEl_5e32 = cms.vstring(),
-    # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring(),
-    triggerNamesDoubleMu_1e33 = cms.vstring(),
-    triggerNamesSingleEl_1e33 = cms.vstring(),
-    triggerNamesDoubleEl_1e33 = cms.vstring(),
-##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring(),
-    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
-    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
-##### 2e33 paths
-    triggerNamesSingleMu_2e33 = cms.vstring(),
-    triggerNamesDoubleMu_2e33 = cms.vstring(),
-    triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring(),
-##### 3e33 paths
-    triggerNamesSingleMu_3e33 = cms.vstring(),
-    triggerNamesDoubleMu_3e33 = cms.vstring(),
-    triggerNamesSingleEl_3e33 = cms.vstring(),
-    triggerNamesDoubleEl_3e33 = cms.vstring(),
-##### 5e33 paths
-    triggerNamesSingleMu_5e33 = cms.vstring(),
-    triggerNamesDoubleMu_5e33 = cms.vstring(),
-    triggerNamesSingleEl_5e33 = cms.vstring(),
-    triggerNamesDoubleEl_5e33 = cms.vstring()
-    )
+#process.HLTPassInfo = cms.EDProducer(
+#    "HLTPassInfoProducer",
+#    triggerEvent = cms.InputTag("patTriggerEvent"),
+#    # here the 1st run with a new trigger table
+#    # leave empty for MC
+#    runLimits = cms.vint32(),
+#    # here insert the HLT path (without _v[n] suffix) you want to check
+#    # MC path
+#    triggerNamesSingleMu_MC = cms.vstring(),
+#    triggerNamesDoubleMu_MC = cms.vstring(),
+#    triggerNamesSingleEl_MC = cms.vstring(),
+#    triggerNamesDoubleEl_MC = cms.vstring(),
+#    # Data: here all the paths making the PDs are listed
+#    # 5e32 paths
+#    triggerNamesSingleMu_5e32 = cms.vstring(),
+#    triggerNamesDoubleMu_5e32 = cms.vstring(),
+#    triggerNamesSingleEl_5e32 = cms.vstring(),
+#    triggerNamesDoubleEl_5e32 = cms.vstring(),
+#    # 1e33 paths
+#    triggerNamesSingleMu_1e33 = cms.vstring(),
+#    triggerNamesDoubleMu_1e33 = cms.vstring(),
+#    triggerNamesSingleEl_1e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1e33 = cms.vstring(),
+###### 1.4e33 paths
+#    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
+#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
+###### 2e33 paths
+#    triggerNamesSingleMu_2e33 = cms.vstring(),
+#    triggerNamesDoubleMu_2e33 = cms.vstring(),
+#    triggerNamesSingleEl_2e33 = cms.vstring(),
+#    triggerNamesDoubleEl_2e33 = cms.vstring(),
+###### 3e33 paths
+#    triggerNamesSingleMu_3e33 = cms.vstring(),
+#    triggerNamesDoubleMu_3e33 = cms.vstring(),
+#    triggerNamesSingleEl_3e33 = cms.vstring(),
+#    triggerNamesDoubleEl_3e33 = cms.vstring(),
+###### 5e33 paths
+#    triggerNamesSingleMu_5e33 = cms.vstring(),
+#    triggerNamesDoubleMu_5e33 = cms.vstring(),
+#    triggerNamesSingleEl_5e33 = cms.vstring(),
+#    triggerNamesDoubleEl_5e33 = cms.vstring()
+#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",
@@ -105,7 +105,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
-    "keep *_HLTPassInfo_*_*",
+#    "keep *_HLTPassInfo_*_*",
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
@@ -138,7 +138,7 @@ if applyFilter:
 #process.analysisPath = cms.Path(
 #    process.badEventFilter +
 process.analysisSequence = cms.Sequence(
-    process.HLTPassInfo+
+#    process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
     process.rhoDumper+
