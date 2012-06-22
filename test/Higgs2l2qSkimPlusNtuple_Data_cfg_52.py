@@ -307,42 +307,42 @@ process.stdLeptonSequence = cms.Sequence(
     )
 
 ##### PAT TRIGGER ####
-process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-process.patTrigger.processName = cms.string('*')
+#process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
+#process.patTrigger.processName = cms.string('*')
 
 # patMuonsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
+#process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
 # patElectronsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
+#process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
 
-process.muonMatchHLTL3.src = "selectedPatMuons"
-process.muonMatchHLTL3T.src = "selectedPatMuons"
-process.patMuonsWithTrigger.src = "selectedPatMuons"
+#process.muonMatchHLTL3.src = "selectedPatMuons"
+#process.muonMatchHLTL3T.src = "selectedPatMuons"
+#process.patMuonsWithTrigger.src = "selectedPatMuons"
 
-process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
-process.patElectronsWithTrigger.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
+#process.patElectronsWithTrigger.src = "selectedPatElectrons"
 
-process.patTriggerSequence = cms.Sequence(
-    process.patTrigger *
-    process.patMuonsWithTriggerSequence * 
-    process.patElectronsWithTriggerSequence *
-    process.patTriggerEvent
-    )
+#process.patTriggerSequence = cms.Sequence(
+#    process.patTrigger *
+#    process.patMuonsWithTriggerSequence * 
+#    process.patElectronsWithTriggerSequence *
+#    process.patTriggerEvent
+#    )
 
 # Classic Electrons with UserData
 
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
-    src = cms.InputTag("patElectronsWithTrigger"),
+    src = cms.InputTag("selectedPatElectrons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -366,7 +366,7 @@ process.selectedIsoElectrons = cms.EDFilter(
 # Classic Muons with UserData
 process.userDataSelectedMuons = cms.EDProducer(
     "Higgs2l2bMuonUserData",
-    src = cms.InputTag("patMuonsWithTrigger"),
+    src = cms.InputTag("selectedPatMuons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -563,7 +563,7 @@ process.p += process.customPFJetsCentral
 
 process.p += process.stdLeptonSequence
 
-process.p += process.patTriggerSequence
+#process.p += process.patTriggerSequence
 
 process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsIsoLept
@@ -773,7 +773,7 @@ else:
 # PFBRECO+PAT ---
 
 # Add PFBRECO output to the created file
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
+#from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
 
 
 process.out = cms.OutputModule(
@@ -791,10 +791,10 @@ process.out = cms.OutputModule(
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
-# add trigger information to the pat-tuple
-#process.out.outputCommands += patEventContentNoCleaning
-process.out.outputCommands += patTriggerEventContent
-process.out.outputCommands += patTriggerStandAloneEventContent
+## add trigger information to the pat-tuple
+##process.out.outputCommands += patEventContentNoCleaning
+#process.out.outputCommands += patTriggerEventContent
+#process.out.outputCommands += patTriggerStandAloneEventContent
 
 process.out.outputCommands.extend([
     'keep *_selectedPatElectronsAK5_*_PAT',
@@ -867,56 +867,56 @@ process.PUInfoNtuple = cms.EDProducer(
     isData = cms.bool(True)
 )
 
-process.HLTPassInfo = cms.EDProducer(
-    "HLTPassInfoProducer",
-    triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here the 1st run with a new trigger table
-    # leave empty for MC
-    runLimits = cms.vint32(160410,#5e32
-                           165121,#1e33
-                           167039, #1.4e33
-                           170249, #2e33
-                           173236, #3e33
-                           178421  #5e33
-                           ),
-    # here insert the HLT path (without _v[n] suffix) you want to check
-    # Summer11 MC path
-    triggerNamesSingleMu_MC = cms.vstring(),
-    triggerNamesDoubleMu_MC = cms.vstring(),
-    triggerNamesSingleEl_MC = cms.vstring(),
-    triggerNamesDoubleEl_MC = cms.vstring(),
-    # Data: requested path(s) in the PD
-    # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
-    triggerNamesSingleEl_5e32 = cms.vstring(),
-    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-    # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_1e33 = cms.vstring(),
-    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-##### 2e33 paths
-    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-##### 3e33 paths
-    triggerNamesSingleMu_3e33 = cms.vstring('HLT_IsoMu20'),
-    triggerNamesDoubleMu_3e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_3e33 = cms.vstring(),
-    triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-##### 5e33 paths
-    triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
-    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
-    triggerNamesSingleEl_5e33 = cms.vstring(),
-    triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
-    )
+#process.HLTPassInfo = cms.EDProducer(
+#    "HLTPassInfoProducer",
+#    triggerEvent = cms.InputTag("patTriggerEvent"),
+#    # here the 1st run with a new trigger table
+#    # leave empty for MC
+#    runLimits = cms.vint32(160410,#5e32
+#                           165121,#1e33
+#                           167039, #1.4e33
+#                           170249, #2e33
+#                           173236, #3e33
+#                           178421  #5e33
+#                           ),
+#    # here insert the HLT path (without _v[n] suffix) you want to check
+#    # Summer11 MC path
+#    triggerNamesSingleMu_MC = cms.vstring(),
+#    triggerNamesDoubleMu_MC = cms.vstring(),
+#    triggerNamesSingleEl_MC = cms.vstring(),
+#    triggerNamesDoubleEl_MC = cms.vstring(),
+#    # Data: requested path(s) in the PD
+#    # 5e32 paths
+#    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
+#    triggerNamesSingleEl_5e32 = cms.vstring(),
+#    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+#    # 1e33 paths
+#    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_1e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+###### 1.4e33 paths
+#    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+###### 2e33 paths
+#    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_2e33 = cms.vstring(),
+#    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
+###### 3e33 paths
+#    triggerNamesSingleMu_3e33 = cms.vstring('HLT_IsoMu20'),
+#    triggerNamesDoubleMu_3e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_3e33 = cms.vstring(),
+#    triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
+###### 5e33 paths
+#    triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
+#    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
+#    triggerNamesSingleEl_5e33 = cms.vstring(),
+#    triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
+#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",
@@ -932,7 +932,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     )
 
 process.analysisPath = cms.Sequence(
-    process.HLTPassInfo+
+#    process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
     process.rhoDumper+
@@ -950,7 +950,7 @@ process.edmNtuplesOut = cms.OutputModule(
     fileName = cms.untracked.string('h2l2q_ntuple.root'),
     outputCommands = cms.untracked.vstring(
       "drop *",
-      "keep *_HLTPassInfo_*_*",
+#      "keep *_HLTPassInfo_*_*",
       "keep *_eventVtxInfoNtuple_*_*",
       "keep *_PUInfoNtuple_*_*",
       "keep *_rhoDumper_*_*",
