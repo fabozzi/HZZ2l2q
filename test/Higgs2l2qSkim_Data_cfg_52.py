@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 200
+process.maxEvents.input = 1000
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -310,42 +310,42 @@ process.stdLeptonSequence = cms.Sequence(
     )
 
 ##### PAT TRIGGER ####
-process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-process.patTrigger.processName = cms.string('*')
+#process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
+#process.patTrigger.processName = cms.string('*')
 
-# patMuonsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
-# patElectronsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
+## patMuonsWithTrigger is produced: to be added in input to userdata!
+#process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
+## patElectronsWithTrigger is produced: to be added in input to userdata!
+#process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
 
-process.muonMatchHLTL3.src = "selectedPatMuons"
-process.muonMatchHLTL3T.src = "selectedPatMuons"
-process.patMuonsWithTrigger.src = "selectedPatMuons"
+#process.muonMatchHLTL3.src = "selectedPatMuons"
+#process.muonMatchHLTL3T.src = "selectedPatMuons"
+#process.patMuonsWithTrigger.src = "selectedPatMuons"
 
-process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
-process.patElectronsWithTrigger.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
+#process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
+#process.patElectronsWithTrigger.src = "selectedPatElectrons"
 
-process.patTriggerSequence = cms.Sequence(
-    process.patTrigger *
-    process.patMuonsWithTriggerSequence * 
-    process.patElectronsWithTriggerSequence *
-    process.patTriggerEvent
-    )
+#process.patTriggerSequence = cms.Sequence(
+#    process.patTrigger *
+#    process.patMuonsWithTriggerSequence * 
+#    process.patElectronsWithTriggerSequence *
+#    process.patTriggerEvent
+#    )
 
 # Classic Electrons with UserData
 
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
-    src = cms.InputTag("patElectronsWithTrigger"),
+    src = cms.InputTag("selectedPatElectrons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -369,7 +369,7 @@ process.selectedIsoElectrons = cms.EDFilter(
 # Classic Muons with UserData
 process.userDataSelectedMuons = cms.EDProducer(
     "Higgs2l2bMuonUserData",
-    src = cms.InputTag("patMuonsWithTrigger"),
+    src = cms.InputTag("selectedPatMuons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -566,7 +566,7 @@ process.p += process.customPFJetsCentral
 
 process.p += process.stdLeptonSequence
 
-process.p += process.patTriggerSequence
+#process.p += process.patTriggerSequence
 
 process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsIsoLept
@@ -775,7 +775,7 @@ else:
 # PFBRECO+PAT ---
 
 # Add PFBRECO output to the created file
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
+#from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
 
 
 process.out = cms.OutputModule("PoolOutputModule",
@@ -793,9 +793,9 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
 # add trigger information to the pat-tuple
-#process.out.outputCommands += patEventContentNoCleaning
-process.out.outputCommands += patTriggerEventContent
-process.out.outputCommands += patTriggerStandAloneEventContent
+##process.out.outputCommands += patEventContentNoCleaning
+#process.out.outputCommands += patTriggerEventContent
+#process.out.outputCommands += patTriggerStandAloneEventContent
 
 process.out.outputCommands.extend([
     'keep *_selectedPatElectronsAK5_*_PAT',

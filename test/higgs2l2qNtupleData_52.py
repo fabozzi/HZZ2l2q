@@ -44,56 +44,56 @@ process.PUInfoNtuple = cms.EDProducer(
     isData = cms.bool(True)
 )
 
-process.HLTPassInfo = cms.EDProducer(
-    "HLTPassInfoProducer",
-    triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here the 1st run with a new trigger table
-    # leave empty for MC
-    runLimits = cms.vint32(160410,#5e32
-                           165121,#1e33
-                           167039, #1.4e33
-                           170249, #2e33
-                           173236, #3e33
-                           178421  #5e33
-                           ),
-    # here insert the HLT path (without _v[n] suffix) you want to check
-    # Summer11 MC path
-    triggerNamesSingleMu_MC = cms.vstring(),
-    triggerNamesDoubleMu_MC = cms.vstring(),
-    triggerNamesSingleEl_MC = cms.vstring(),
-    triggerNamesDoubleEl_MC = cms.vstring(),
-    # Data: requested path(s) in the PD
-    # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
-    triggerNamesSingleEl_5e32 = cms.vstring(),
-    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-    # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_1e33 = cms.vstring(),
-    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-##### 2e33 paths
-    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
-    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-##### 3e33 paths
-    triggerNamesSingleMu_3e33 = cms.vstring('HLT_IsoMu20'),
-    triggerNamesDoubleMu_3e33 = cms.vstring('HLT_Mu13_Mu8'),
-    triggerNamesSingleEl_3e33 = cms.vstring(),
-    triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-##### 5e33 paths
-    triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
-    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
-    triggerNamesSingleEl_5e33 = cms.vstring(),
-    triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
-    )
+#process.HLTPassInfo = cms.EDProducer(
+#    "HLTPassInfoProducer",
+#    triggerEvent = cms.InputTag("patTriggerEvent"),
+#    # here the 1st run with a new trigger table
+#    # leave empty for MC
+#    runLimits = cms.vint32(160410,#5e32
+#                           165121,#1e33
+#                           167039, #1.4e33
+#                           170249, #2e33
+#                           173236, #3e33
+#                           178421  #5e33
+#                           ),
+#    # here insert the HLT path (without _v[n] suffix) you want to check
+#    # Summer11 MC path
+#    triggerNamesSingleMu_MC = cms.vstring(),
+#    triggerNamesDoubleMu_MC = cms.vstring(),
+#    triggerNamesSingleEl_MC = cms.vstring(),
+#    triggerNamesDoubleEl_MC = cms.vstring(),
+#    # Data: requested path(s) in the PD
+#    # 5e32 paths
+#    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
+#    triggerNamesSingleEl_5e32 = cms.vstring(),
+#    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+#    # 1e33 paths
+#    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_1e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+###### 1.4e33 paths
+#    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
+###### 2e33 paths
+#    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
+#    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_2e33 = cms.vstring(),
+#    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
+###### 3e33 paths
+#    triggerNamesSingleMu_3e33 = cms.vstring('HLT_IsoMu20'),
+#    triggerNamesDoubleMu_3e33 = cms.vstring('HLT_Mu13_Mu8'),
+#    triggerNamesSingleEl_3e33 = cms.vstring(),
+#    triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
+###### 5e33 paths
+#    triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
+#    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
+#    triggerNamesSingleEl_5e33 = cms.vstring(),
+#    triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
+#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",
@@ -111,7 +111,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
-    "keep *_HLTPassInfo_*_*",
+#    "keep *_HLTPassInfo_*_*",
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
@@ -142,7 +142,7 @@ if applyFilter:
     process.analysisPath += process.badEventFilter
 
 process.analysisSequence = cms.Sequence(
-    process.HLTPassInfo+
+#    process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
     process.rhoDumper+
