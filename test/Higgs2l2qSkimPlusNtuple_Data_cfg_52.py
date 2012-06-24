@@ -23,9 +23,10 @@ else:#Data
 process.options.wantSummary = True
 process.maxEvents.input = 500
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
-########### gloabl tag ############################
-from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
-process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+########### global tag ############################
+#from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
+#process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+process.GlobalTag.globaltag = 'GR_R_52_V9B::All'
 process.GlobalTag.toGet = cms.VPSet(
     cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
              tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
