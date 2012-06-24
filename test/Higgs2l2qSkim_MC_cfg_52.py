@@ -23,9 +23,10 @@ else:#Data
 process.options.wantSummary = True
 process.maxEvents.input = 200
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
-########### gloabl tag ############################
-from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
-process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+########### global tag ############################
+#from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
+#process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
+process.GlobalTag.globaltag = 'START52_V11B::All'
 ##################################################
 
 ############ PRINTOUT ###################
