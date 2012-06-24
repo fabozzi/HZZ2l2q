@@ -298,43 +298,11 @@ process.stdLeptonSequence = cms.Sequence(
     process.stdElectronSeq 
     )
 
-##### PAT TRIGGER ####
-process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-process.patTrigger.processName = cms.string('*')
-
-# patMuonsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
-# patElectronsWithTrigger is produced: to be added in input to userdata!
-process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
-
-process.muonMatchHLTL3.src = "selectedPatMuons"
-process.muonMatchHLTL3T.src = "selectedPatMuons"
-process.patMuonsWithTrigger.src = "selectedPatMuons"
-
-process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
-process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
-process.patElectronsWithTrigger.src = "selectedPatElectrons"
-
-process.patTriggerSequence = cms.Sequence(
-    process.patTrigger *
-    process.patMuonsWithTriggerSequence * 
-    process.patElectronsWithTriggerSequence *
-    process.patTriggerEvent
-    )
-
 # Classic Electrons with UserData
 
 process.userDataSelectedElectrons = cms.EDProducer(
     "Higgs2l2bElectronUserData",
-    src = cms.InputTag("patElectronsWithTrigger"),
+    src = cms.InputTag("selectedPatElectrons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -358,7 +326,7 @@ process.selectedIsoElectrons = cms.EDFilter(
 # Classic Muons with UserData
 process.userDataSelectedMuons = cms.EDProducer(
     "Higgs2l2bMuonUserData",
-    src = cms.InputTag("patMuonsWithTrigger"),
+    src = cms.InputTag("selectedPatMuons"),
     rho = cms.InputTag("kt6PFJetsForIso:rho"),
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
@@ -522,7 +490,7 @@ process.postPathCounter = cms.EDProducer("EventCountProducer")
 
 process.p = cms.Path( process.prePathCounter )
 
-process.p += process.kt6PFJets
+#process.p += process.kt6PFJets
 
 # PFBRECO+PAT ---
 
@@ -539,7 +507,7 @@ process.p += process.customPFJetsCentral
 
 process.p += process.stdLeptonSequence
 
-process.p += process.patTriggerSequence
+#process.p += process.patTriggerSequence
 
 process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsIsoLept
@@ -751,7 +719,7 @@ else:
 # PFBRECO+PAT ---
 
 # Add PFBRECO output to the created file
-from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
+#from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
 
 
 process.out = cms.OutputModule(
@@ -769,10 +737,10 @@ process.out = cms.OutputModule(
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
-# add trigger information to the pat-tuple
-#process.out.outputCommands += patEventContentNoCleaning
-process.out.outputCommands += patTriggerEventContent
-process.out.outputCommands += patTriggerStandAloneEventContent
+## add trigger information to the pat-tuple
+##process.out.outputCommands += patEventContentNoCleaning
+#process.out.outputCommands += patTriggerEventContent
+#process.out.outputCommands += patTriggerStandAloneEventContent
 
 process.out.outputCommands.extend([
     'keep *_selectedPatElectronsAK5_*_PAT',
@@ -785,6 +753,7 @@ process.out.outputCommands.extend([
     # rho variables
     'keep *_*_rho_PAT',
     'keep *_kt6PFJetsCentralNeutral_rho_*',
+    'keep *_kt6PFJets*_rho_*',
     # PU jetID maps
     "keep *_puJetId*_*_*", # input variables
     "keep *_puJetMva*_*_*", # final MVAs and working point flags
@@ -844,50 +813,50 @@ process.PUInfoNtuple = cms.EDProducer(
     isData = cms.bool(False)
 )
 
-process.HLTPassInfo = cms.EDProducer(
-    "HLTPassInfoProducer",
-    triggerEvent = cms.InputTag("patTriggerEvent"),
-    # here the 1st run with a new trigger table
-    # leave empty for MC
-    runLimits = cms.vint32(),
-    # here insert the HLT path (without _v[n] suffix) you want to check
-    # MC path
-    triggerNamesSingleMu_MC = cms.vstring(),
-    triggerNamesDoubleMu_MC = cms.vstring(),
-    triggerNamesSingleEl_MC = cms.vstring(),
-    triggerNamesDoubleEl_MC = cms.vstring(),
-    # Data: here all the paths making the PDs are listed
-    # 5e32 paths
-    triggerNamesSingleMu_5e32 = cms.vstring(),
-    triggerNamesDoubleMu_5e32 = cms.vstring(),
-    triggerNamesSingleEl_5e32 = cms.vstring(),
-    triggerNamesDoubleEl_5e32 = cms.vstring(),
-    # 1e33 paths
-    triggerNamesSingleMu_1e33 = cms.vstring(),
-    triggerNamesDoubleMu_1e33 = cms.vstring(),
-    triggerNamesSingleEl_1e33 = cms.vstring(),
-    triggerNamesDoubleEl_1e33 = cms.vstring(),
-##### 1.4e33 paths
-    triggerNamesSingleMu_1p4e33 = cms.vstring(),
-    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
-    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
-##### 2e33 paths
-    triggerNamesSingleMu_2e33 = cms.vstring(),
-    triggerNamesDoubleMu_2e33 = cms.vstring(),
-    triggerNamesSingleEl_2e33 = cms.vstring(),
-    triggerNamesDoubleEl_2e33 = cms.vstring(),
-##### 3e33 paths
-    triggerNamesSingleMu_3e33 = cms.vstring(),
-    triggerNamesDoubleMu_3e33 = cms.vstring(),
-    triggerNamesSingleEl_3e33 = cms.vstring(),
-    triggerNamesDoubleEl_3e33 = cms.vstring(),
-##### 5e33 paths
-    triggerNamesSingleMu_5e33 = cms.vstring(),
-    triggerNamesDoubleMu_5e33 = cms.vstring(),
-    triggerNamesSingleEl_5e33 = cms.vstring(),
-    triggerNamesDoubleEl_5e33 = cms.vstring()
-    )
+#process.HLTPassInfo = cms.EDProducer(
+#    "HLTPassInfoProducer",
+#    triggerEvent = cms.InputTag("patTriggerEvent"),
+#    # here the 1st run with a new trigger table
+#    # leave empty for MC
+#    runLimits = cms.vint32(),
+#    # here insert the HLT path (without _v[n] suffix) you want to check
+#    # MC path
+#    triggerNamesSingleMu_MC = cms.vstring(),
+#    triggerNamesDoubleMu_MC = cms.vstring(),
+#    triggerNamesSingleEl_MC = cms.vstring(),
+#    triggerNamesDoubleEl_MC = cms.vstring(),
+#    # Data: here all the paths making the PDs are listed
+#    # 5e32 paths
+#    triggerNamesSingleMu_5e32 = cms.vstring(),
+#    triggerNamesDoubleMu_5e32 = cms.vstring(),
+#    triggerNamesSingleEl_5e32 = cms.vstring(),
+#    triggerNamesDoubleEl_5e32 = cms.vstring(),
+#    # 1e33 paths
+#    triggerNamesSingleMu_1e33 = cms.vstring(),
+#    triggerNamesDoubleMu_1e33 = cms.vstring(),
+#    triggerNamesSingleEl_1e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1e33 = cms.vstring(),
+###### 1.4e33 paths
+#    triggerNamesSingleMu_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
+#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
+#    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
+###### 2e33 paths
+#    triggerNamesSingleMu_2e33 = cms.vstring(),
+#    triggerNamesDoubleMu_2e33 = cms.vstring(),
+#    triggerNamesSingleEl_2e33 = cms.vstring(),
+#    triggerNamesDoubleEl_2e33 = cms.vstring(),
+###### 3e33 paths
+#    triggerNamesSingleMu_3e33 = cms.vstring(),
+#    triggerNamesDoubleMu_3e33 = cms.vstring(),
+#    triggerNamesSingleEl_3e33 = cms.vstring(),
+#    triggerNamesDoubleEl_3e33 = cms.vstring(),
+###### 5e33 paths
+#    triggerNamesSingleMu_5e33 = cms.vstring(),
+#    triggerNamesDoubleMu_5e33 = cms.vstring(),
+#    triggerNamesSingleEl_5e33 = cms.vstring(),
+#    triggerNamesDoubleEl_5e33 = cms.vstring()
+#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",
@@ -903,7 +872,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     )
 
 process.analysisPath = cms.Sequence(
-    process.HLTPassInfo+
+#    process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
     process.rhoDumper+
@@ -921,7 +890,7 @@ process.edmNtuplesOut = cms.OutputModule(
     fileName = cms.untracked.string('h2l2q_ntuple.root'),
     outputCommands = cms.untracked.vstring(
       "drop *",
-      "keep *_HLTPassInfo_*_*",
+#      "keep *_HLTPassInfo_*_*",
       "keep *_eventVtxInfoNtuple_*_*",
       "keep *_PUInfoNtuple_*_*",
       "keep *_rhoDumper_*_*",
