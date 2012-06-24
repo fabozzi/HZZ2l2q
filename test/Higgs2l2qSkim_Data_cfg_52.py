@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 1000
+process.maxEvents.input = 500
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### gloabl tag ############################
 from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -308,38 +308,6 @@ process.stdLeptonSequence = cms.Sequence(
     process.eidSequence +
     process.stdElectronSeq 
     )
-
-##### PAT TRIGGER ####
-#process.load("PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff")
-#process.patTrigger.processName = cms.string('*')
-
-## patMuonsWithTrigger is produced: to be added in input to userdata!
-#process.load("CMGTools.Common.PAT.patMuonsWithTrigger_cff")
-## patElectronsWithTrigger is produced: to be added in input to userdata!
-#process.load("CMGTools.Common.PAT.patElectronsWithTrigger_cff")
-
-#process.muonMatchHLTL3.src = "selectedPatMuons"
-#process.muonMatchHLTL3T.src = "selectedPatMuons"
-#process.patMuonsWithTrigger.src = "selectedPatMuons"
-
-#process.eleTriggerMatchHLT1.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT2.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT3.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT4.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT5.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT6.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT7.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT8.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT9.src = "selectedPatElectrons"
-#process.eleTriggerMatchHLT10.src = "selectedPatElectrons"
-#process.patElectronsWithTrigger.src = "selectedPatElectrons"
-
-#process.patTriggerSequence = cms.Sequence(
-#    process.patTrigger *
-#    process.patMuonsWithTriggerSequence * 
-#    process.patElectronsWithTriggerSequence *
-#    process.patTriggerEvent
-#    )
 
 # Classic Electrons with UserData
 
@@ -751,19 +719,26 @@ process.fullPath = cms.Schedule(
     process.EcalDeadCellBoundaryEnergyFilterPath,
     process.simpleDRfilterPath,
 ############# ->
-#    process.EcalDeadCellTriggerPrimitiveFilterPath,
-#    process.greedyMuonPFCandidateFilterPath,
+    process.EcalDeadCellTriggerPrimitiveFilterPath,
+    process.greedyMuonPFCandidateFilterPath,
 ############# <-
     process.hcalLaserEventFilterPath,
     process.inconsistentMuonPFCandidateFilterPath,
     process.trackingFailureFilterPath,
 ############# ->
-#    process.CSCTightHaloFilterPath,
+    process.CSCTightHaloFilterPath,
 ############# <-
     process.HBHENoiseFilterPath,
     process.primaryVertexFilterPath,
     process.noscrapingFilterPath
     )
+
+from CMGTools.Common.Tools.cmsswRelease import cmsswIs52X
+if cmsswIs52X():
+    process.fullPath.append(process.hcalLaserFilterFromAODPath)
+else:
+    print 'NO hcalLaserFilterFromAOD available for releases < 5.2'
+
 #this is needed only for Madgraph MC:
 if runOnMC:
     process.fullPath.append(process.totalKinematicsFilterPath)
