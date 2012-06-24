@@ -23,7 +23,9 @@ process.badEventFilter = cms.EDFilter(
 #                           'EcalDeadCellTriggerPrimitiveFilterPath',
                            'EcalDeadCellBoundaryEnergyFilterPath',
                            'noscrapingFilterPath',          
-                           'hcalLaserEventFilterPath',
+#### Use hcalLaserFilterFromAODPath in 5_2 ##########
+#                           'hcalLaserEventFilterPath',
+                           'hcalLaserFilterFromAODPath',
                            'HBHENoiseFilterPath'#,
 #                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
