@@ -22,6 +22,7 @@ process.badEventFilter = cms.EDFilter(
                            'EcalDeadCellBoundaryEnergyFilterPath',
                            'noscrapingFilterPath',          
 #                           'hcalLaserEventFilterPath', ###it should not affect the datasample 
+#                           'hcalLaserFilterFromAODPath', # available for 5_2
                            'HBHENoiseFilterPath'#,
 #                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
