@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 500
+process.maxEvents.input = 600
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -348,11 +348,11 @@ process.selectedIDMuons = cms.EDFilter(
     "PATMuonSelector",
     src = cms.InputTag("userDataSelectedMuons"),
     cut = cms.string(
-            "pt > 10 && isGlobalMuon && isTrackerMuon && globalTrack().normalizedChi2 < 10 &&" +
-            "globalTrack().hitPattern().numberOfValidTrackerHits > 10 && "                      +
-            "globalTrack().hitPattern().numberOfValidPixelHits > 0 && "                         +
-            "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "                         +
-            "dB < 0.2 && numberOfMatches > 1 && abs(eta) < 2.4" )
+            "isGlobalMuon && isTrackerMuon && isPFMuon && globalTrack().normalizedChi2 < 10 && " +
+            "globalTrack().hitPattern().numberOfValidMuonHits > 0 && "              +
+            "numberOfMatchedStations > 1 && abs( userFloat('dzVtx') ) < 0.5 && "    +
+            "innerTrack().hitPattern().numberOfValidPixelHits > 0 && "              +
+            "track().hitPattern().trackerLayersWithMeasurement > 5 && abs(dB) < 0.2" )
 )
 
 # Isolated muons: standard isolation
