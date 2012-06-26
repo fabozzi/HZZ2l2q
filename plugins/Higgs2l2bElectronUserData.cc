@@ -9,6 +9,7 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "FWCore/Utilities/interface/EDMException.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
 
 #include <vector>
 #include <TMath.h>
@@ -89,10 +90,82 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
     el.addUserFloat("dxy", dxyVtx);
     el.addUserFloat("mHits", missHits);
 
-    // conversion rejection match (not yet working)
+    // conversion rejection match
     bool hasMatchConv = ConversionTools::hasMatchedConversion(el, conversions, beamspot.position());
     el.addUserFloat("hasMatchConv", float(hasMatchConv));
 
+    // check electron ID
+    // kinematic variables
+    bool isEBEle           = el.isEB() ? true : false;
+    float ptEle            = el.pt();
+    float etaEle           = el.superCluster()->eta();
+    // id variables
+    float dEtaInEle        = el.deltaEtaSuperClusterTrackAtVtx();
+    float dPhiInEle        = el.deltaPhiSuperClusterTrackAtVtx();
+    float sigmaIEtaIEtaEle = el.sigmaIetaIeta();
+    float hoeEle           = el.hadronicOverEm();
+    float ooemoopEle       = (1.0/el.ecalEnergy() - el.eSuperClusterOverP()/el.ecalEnergy());
+
+    // pf isolation variables
+    float iso_chEle = el.chargedHadronIso();
+    float iso_nhEle = el.neutralHadronIso();
+    float iso_emEle = el.photonIso();
+
+    // detector isolation variables
+    float trackIsoEle = el.dr03TkSumPt();
+    float ecalIsoEle = el.dr03EcalRecHitSumEt();
+    float hcalIsoEle = el.dr03HcalTowerSumEt();
+
+    bool passVetoID = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::VETO, isEBEle, ptEle, etaEle,
+						  dEtaInEle, dPhiInEle, sigmaIEtaIEtaEle, hoeEle,
+						  ooemoopEle, dxyVtx, dzVtx, iso_chEle, iso_emEle, iso_nhEle, 
+						  hasMatchConv, missHits, rho);
+    
+    bool passLooseID = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::LOOSE, isEBEle, ptEle, etaEle,
+						  dEtaInEle, dPhiInEle, sigmaIEtaIEtaEle, hoeEle,
+						  ooemoopEle, dxyVtx, dzVtx, iso_chEle, iso_emEle, iso_nhEle, 
+						  hasMatchConv, missHits, rho);
+    
+    bool passMediumID = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::MEDIUM, isEBEle, ptEle, etaEle,
+						  dEtaInEle, dPhiInEle, sigmaIEtaIEtaEle, hoeEle,
+						  ooemoopEle, dxyVtx, dzVtx, iso_chEle, iso_emEle, iso_nhEle, 
+						  hasMatchConv, missHits, rho);
+    
+    bool passTightID = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::TIGHT, isEBEle, ptEle, etaEle,
+						  dEtaInEle, dPhiInEle, sigmaIEtaIEtaEle, hoeEle,
+						  ooemoopEle, dxyVtx, dzVtx, iso_chEle, iso_emEle, iso_nhEle, 
+						  hasMatchConv, missHits, rho);
+
+    bool passTriggerTight = EgammaCutBasedEleId::PassTriggerCuts(EgammaCutBasedEleId::TRIGGERTIGHT, 
+								 isEBEle, ptEle, dEtaInEle, dPhiInEle, 
+								 sigmaIEtaIEtaEle, hoeEle,
+								 trackIsoEle, ecalIsoEle, hcalIsoEle);
+
+    cout << "passveto = " << passVetoID <<  " passloose = " << passLooseID << " passmedium = " << passMediumID
+	 << " passtight = " << passTightID << " passtriggertight = " << passTriggerTight << endl;
+
+    // embed maximum passed criterion in a code     
+    int cutIDCode(0);    
+    if(passTightID)
+      cutIDCode = 4;
+    else {
+      if(passMediumID)
+	cutIDCode = 3;
+      else {
+	if(passLooseID)
+	  cutIDCode = 2;
+	else {
+	  if(passVetoID)
+	    cutIDCode = 1;
+	}
+      }
+    }
+
+    cout << "CUT ID CODE = " << cutIDCode << endl;
+    
+    el.addUserFloat("passTriggerTight", float(passTriggerTight));
+    el.addUserFloat("cutIDCode", float(cutIDCode));
+    
   }
 
   evt.put(electronColl);

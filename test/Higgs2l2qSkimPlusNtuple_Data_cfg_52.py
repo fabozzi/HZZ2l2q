@@ -21,7 +21,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 500
+process.maxEvents.input = 600
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -57,7 +57,8 @@ print sep_line
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
+#    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
+    'file:/data3/scratch/cms/data/Run2012B/DoubleEl/193898/28BBEEC7-A99C-E111-BB85-003048D2BEA8.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########

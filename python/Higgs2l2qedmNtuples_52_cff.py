@@ -543,7 +543,7 @@ zll = (
     )
 
 zee =(
-
+####### 2011 cut-based eleID
     cms.PSet(
     tag = cms.untracked.string("EleDau1VBTF80CombID"),
     quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.electronID(\"eidVBTFCom80\")")
@@ -559,6 +559,23 @@ zee =(
     cms.PSet(
     tag = cms.untracked.string("EleDau2VBTF95CombID"),
     quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.electronID(\"eidVBTFCom95\")")
+    ),
+####### 2012 cut-based eleID
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1CutIDCode"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('cutIDCode')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2CutIDCode"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('cutIDCode')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau1PassTriggerTight"),
+    quantity = cms.untracked.string("daughter(0).daughter(0).masterClone.userFloat('passTriggerTight')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("EleDau2PassTriggerTight"),
+    quantity = cms.untracked.string("daughter(0).daughter(1).masterClone.userFloat('passTriggerTight')")
     ),
 ####### mva eleID
     cms.PSet(
