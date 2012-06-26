@@ -317,20 +317,22 @@ process.userDataSelectedElectrons = cms.EDProducer(
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
 
-# ID-selected electrons (only ID and conversion, no isolation)
-process.selectedIDElectrons = cms.EDFilter(
-    "PATElectronSelector",
-    src = cms.InputTag("userDataSelectedElectrons"),
-    cut = cms.string("(electronID('eidVBTFCom95') == 7) ||"               +
-                     " (electronID('eidVBTFCom95') == 5) "
-                     )
-)
+## ID-selected electrons (only ID and conversion, no isolation)
+#process.selectedIDElectrons = cms.EDFilter(
+#    "PATElectronSelector",
+#    src = cms.InputTag("userDataSelectedElectrons"),
+#    cut = cms.string("(electronID('eidVBTFCom95') == 7) ||"               +
+#                     " (electronID('eidVBTFCom95') == 5) "
+#                     )
+#)
 
-# Isolated electrons: standard isolation
+# ID+Isolated electrons: select electrons passing VETO
 process.selectedIsoElectrons = cms.EDFilter(
     "PATElectronSelector",
-    src = cms.InputTag("selectedIDElectrons"),
-    cut = cms.string("electronID('eidVBTFCom95') == 7")
+    src = cms.InputTag("userDataSelectedElectrons"),
+    cut = cms.string("(userFloat('cutIDCode') > 0) && (userFloat('passTriggerTight') > 0)")
+#    src = cms.InputTag("selectedIDElectrons"),
+#    cut = cms.string("electronID('eidVBTFCom95') == 7")
 )
 
 # Classic Muons with UserData
@@ -357,14 +359,16 @@ process.selectedIDMuons = cms.EDFilter(
 process.selectedIsoMuons = cms.EDFilter(
     "PATMuonSelector",
     src = cms.InputTag("selectedIDMuons"),
-    cut = cms.string("trackIso + caloIso < 0.15 * pt")
+#    cut = cms.string("trackIso + caloIso < 0.15 * pt")
+# using DeltaBeta correction
+    cut = cms.string("( max(0., (neutralHadronIso + photonIso - 0.5*puChargedHadronIso) ) + chargedHadronIso) < 0.12 * pt")
 )
 
 process.userDataStandardLeptonSequence = cms.Sequence(
     process.userDataSelectedMuons *
     process.userDataSelectedElectrons *
     process.selectedIDMuons *
-    process.selectedIDElectrons *
+#    process.selectedIDElectrons *
     process.selectedIsoMuons *
     process.selectedIsoElectrons 
     )

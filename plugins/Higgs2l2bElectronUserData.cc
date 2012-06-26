@@ -141,8 +141,7 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
 								 sigmaIEtaIEtaEle, hoeEle,
 								 trackIsoEle, ecalIsoEle, hcalIsoEle);
 
-    cout << "passveto = " << passVetoID <<  " passloose = " << passLooseID << " passmedium = " << passMediumID
-	 << " passtight = " << passTightID << " passtriggertight = " << passTriggerTight << endl;
+    //    cout << "passveto = " << passVetoID <<  " passloose = " << passLooseID << " passmedium = " << passMediumID << " passtight = " << passTightID << " passtriggertight = " << passTriggerTight << endl;
 
     // embed maximum passed criterion in a code     
     int cutIDCode(0);    
@@ -161,7 +160,7 @@ void Higgs2l2bElectronUserData::produce( Event & evt, const EventSetup & ) {
       }
     }
 
-    cout << "CUT ID CODE = " << cutIDCode << endl;
+    //    cout << "CUT ID CODE = " << cutIDCode << endl;
     
     el.addUserFloat("passTriggerTight", float(passTriggerTight));
     el.addUserFloat("cutIDCode", float(cutIDCode));
