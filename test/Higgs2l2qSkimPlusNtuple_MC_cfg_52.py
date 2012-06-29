@@ -178,9 +178,19 @@ getattr(process,"patJets"+postfixAK5).embedPFCandidates = True
 
 ##############################################################
 #add user variables to PAT-jets 
+process.qglAK5PFCHS   = cms.EDProducer(
+    "QuarkGluonTagger",
+    jets     = cms.InputTag("selectedPatJetsAK5"),
+    rho      = cms.InputTag("kt6PFJetsForIso:rho"),
+    jec      = cms.string('ak5PFL1FastL2L3'),
+    isPatJet = cms.bool(True),
+    )
+
 process.customPFJets = cms.EDProducer(
     'PFJetUserData',
     JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5"),
+    is2012Data=cms.untracked.bool(True),
+    qgMap=cms.untracked.InputTag("qglAK5PFCHS"),
     Verbosity=cms.untracked.bool(False)
     )
 
@@ -456,9 +466,19 @@ if runAK5NoPUSub:
 
     print 'Done'
 
+    process.qglAK5PF   = cms.EDProducer(
+        "QuarkGluonTagger",
+        jets     = cms.InputTag("selectedPatJetsAK5NoPUSub"),
+        rho      = cms.InputTag("kt6PFJetsForIso:rho"),
+        jec      = cms.string('ak5PFL1FastL2L3'),
+        isPatJet = cms.bool(True),
+        )
+
     process.customPFJetsNoPUSub = cms.EDProducer(
         'PFJetUserData',
         JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5NoPUSub"),
+        is2012Data=cms.untracked.bool(True),
+        qgMap=cms.untracked.InputTag("qglAK5PF"),
         Verbosity=cms.untracked.bool(False)
         )
 
@@ -529,6 +549,7 @@ process.p += process.kt6PFJetsForIso
 process.p += process.kt6PFJetsCHSForIso
 
 
+process.p += process.qglAK5PFCHS
 process.p += process.customPFJets
 process.p += process.puJetIdSequenceAK5
 process.p += process.customPFJetsCentral
@@ -544,6 +565,7 @@ process.p += process.cleanPatJetsIsoLept
 
 if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
+    process.p += process.qglAK5PF 
     process.p += process.customPFJetsNoPUSub
     process.p += process.puJetIdSequenceAK5NoPUSub
     process.p += process.customPFJetsNoPUSubCentral

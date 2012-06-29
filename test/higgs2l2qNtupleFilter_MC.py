@@ -10,9 +10,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource")
 
-process.source.fileNames=cms.untracked.vstring(
-    'file:h2l2q_ntuple.root'
-)
+process.source.fileNames=cms.untracked.vstring('file:h2l2q_ntuple.root')
 
 #### Event cleaning 
 process.badEventFilter = cms.EDFilter(
