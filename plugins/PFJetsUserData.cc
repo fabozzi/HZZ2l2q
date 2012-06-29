@@ -58,6 +58,8 @@ private:
 
   //data members
   edm::InputTag   jetLabel_;
+  bool is2012Data_;
+  edm::InputTag   qgMap_;
 
   //Z variable of the reconstructed vertices.
   std::vector<float> _verticesZ;  
@@ -74,6 +76,8 @@ private:
 
 PFJetUserData::PFJetUserData(const edm::ParameterSet &pSet){
   jetLabel_ =pSet.getUntrackedParameter<edm::InputTag>("JetInputCollection");
+  is2012Data_ =pSet.getUntrackedParameter<bool>("is2012Data");
+  qgMap_ =pSet.getUntrackedParameter<edm::InputTag>("qgMap");
   verbose_=pSet.getUntrackedParameter<bool>("Verbosity");
 
   // for beta/beta* 
@@ -114,6 +118,10 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     }
   */
 
+  Handle< ValueMap<float> > qglMap;
+  if(is2012Data_){
+    iEvt.getByLabel(qgMap_,qglMap);
+  }
 
   int nTotInJets=0;
   nTotInJets += jetColl->size();
@@ -136,9 +144,10 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
   // read the vertices! 
   readVertices(iEvt);
 
-  
-  for(PFJetCollectionAB::iterator ijet=outputPFJets->begin(); ijet!=outputPFJets->end();++ijet ){
+  uint njetInColl(0);
 
+  for(PFJetCollectionAB::iterator ijet=outputPFJets->begin(); ijet!=outputPFJets->end();++ijet ){
+    
 
     // computing beta/beta* variables
     //    pat::Jet *jjet = &(*ijet);
@@ -150,7 +159,16 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     computeBeta(patjjet,&beta,&betastar);
       
 
+    edm::RefToBase<pat::Jet> jetRef(edm::Ref<PFJetCollectionAB>(jetColl,njetInColl));
+    //    edm::RefToBase<reco::Jet> jetRef = (*jetColl)[njetInColl];
 
+    //    edm::RefToBase<reco::Jet> jetRef = patjjet.originalObjectRef()
+
+    float qgl = -100.0;
+    if(is2012Data_)
+      qgl = (*qglMap)[jetRef];
+
+    //    cout << "(eta, qgl) for jet " << njetInColl << " = " << ijet->eta() << ", " << qgl << endl;
     
     if(verbose_){
       std::cout<<"From PFJetUserData::produce: PF Jet substructure (q/g separation) -> "<<
@@ -196,6 +214,8 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     // beta/beta* variables
     ijet->addUserFloat("puBeta",beta);
     ijet->addUserFloat("puBetaStar",betastar);
+    // QG discriminant
+    ijet->addUserFloat("qgLike",qgl);
     //
     ijet->addUserFloat("nChrgdHadrMult", float(ijet->chargedHadronMultiplicity()));
     ijet->addUserFloat("nNeutrHadrMult", float(ijet->neutralHadronMultiplicity()));
@@ -213,7 +233,8 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     ijet->addUserFloat("ptDJet", ptDJet);
     ijet->addUserFloat("RMSJet", rmsCandJet);
 
-    
+    njetInColl++;
+
   }//end loop on jets
   
   //  for(std::vector<pat::Muon>::const_iterator imu=muColl->begin(); imu!=muColl->end();++imu ){

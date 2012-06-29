@@ -180,9 +180,19 @@ getattr(process,"patJets"+postfixAK5).embedPFCandidates = True
 
 ##############################################################
 #add user variables to PAT-jets 
+process.qglAK5PFCHS   = cms.EDProducer(
+    "QuarkGluonTagger",
+    jets     = cms.InputTag("selectedPatJetsAK5"),
+    rho      = cms.InputTag("kt6PFJetsForIso:rho"),
+    jec      = cms.string('ak5PFL1FastL2L3'),
+    isPatJet = cms.bool(True),
+    )
+
 process.customPFJets = cms.EDProducer(
     'PFJetUserData',
     JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5"),
+    is2012Data=cms.untracked.bool(True),
+    qgMap=cms.untracked.InputTag("qglAK5PFCHS"),
     Verbosity=cms.untracked.bool(False)
     )
 
@@ -458,9 +468,19 @@ if runAK5NoPUSub:
 
     print 'Done'
 
+    process.qglAK5PF   = cms.EDProducer(
+        "QuarkGluonTagger",
+        jets     = cms.InputTag("selectedPatJetsAK5NoPUSub"),
+        rho      = cms.InputTag("kt6PFJetsForIso:rho"),
+        jec      = cms.string('ak5PFL1FastL2L3'),
+        isPatJet = cms.bool(True),
+        )
+
     process.customPFJetsNoPUSub = cms.EDProducer(
         'PFJetUserData',
         JetInputCollection=cms.untracked.InputTag("selectedPatJetsAK5NoPUSub"),
+        is2012Data=cms.untracked.bool(True),
+        qgMap=cms.untracked.InputTag("qglAK5PF"),
         Verbosity=cms.untracked.bool(False)
         )
 
@@ -531,6 +551,7 @@ process.p += process.kt6PFJetsForIso
 process.p += process.kt6PFJetsCHSForIso
 
 
+process.p += process.qglAK5PFCHS
 process.p += process.customPFJets
 process.p += process.puJetIdSequenceAK5
 process.p += process.customPFJetsCentral
@@ -546,6 +567,7 @@ process.p += process.cleanPatJetsIsoLept
 
 if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
+    process.p += process.qglAK5PF 
     process.p += process.customPFJetsNoPUSub
     process.p += process.puJetIdSequenceAK5NoPUSub
     process.p += process.customPFJetsNoPUSubCentral
@@ -638,27 +660,6 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      dzCut = cms.double(0.1)
                                      )
 
-####### saving also Z candidates from PF leptons
-
-process.zeePF = cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatElectronsAK5@+ selectedPatElectronsAK5@-")
-                             )
-
-process.zmmPF= cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatMuonsAK5@+ selectedPatMuonsAK5@-")
-                             )
-
-process.zemPF = cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatElectronsAK5@+ selectedPatMuonsAK5@-")
-                             )
-
-
 process.combinatorialSequence = cms.Sequence(
     process.zee +
     process.zmm +
@@ -669,10 +670,7 @@ process.combinatorialSequence = cms.Sequence(
     process.hzzemjjBaseColl +
     process.hzzeejj +
     process.hzzmmjj +
-    process.hzzemjj + 
-    process.zeePF +
-    process.zmmPF +
-    process.zemPF 
+    process.hzzemjj
 )
 
 process.p += process.combinatorialSequence
@@ -800,10 +798,6 @@ process.out.outputCommands.extend([
     'keep *_hzzeejj_*_PAT',
     'keep *_hzzmmjj_*_PAT',
     'keep *_hzzemjj_*_PAT',
-    # also Z with PFleptons
-    'keep *_zeePF_*_PAT',
-    'keep *_zmmPF_*_PAT',
-    'keep *_zemPF_*_PAT',
     ####
     'keep *_offlineBeamSpot_*_*',
     'keep *_offlinePrimaryVertices_*_*',
@@ -847,57 +841,6 @@ process.PUInfoNtuple = cms.EDProducer(
     "GenPUNtupleDump",
     isData = cms.bool(True)
 )
-
-#process.HLTPassInfo = cms.EDProducer(
-#    "HLTPassInfoProducer",
-#    triggerEvent = cms.InputTag("patTriggerEvent"),
-#    # here the 1st run with a new trigger table
-#    # leave empty for MC
-#    runLimits = cms.vint32(160410,#5e32
-#                           165121,#1e33
-#                           167039, #1.4e33
-#                           170249, #2e33
-#                           173236, #3e33
-#                           178421  #5e33
-#                           ),
-#    # here insert the HLT path (without _v[n] suffix) you want to check
-#    # Summer11 MC path
-#    triggerNamesSingleMu_MC = cms.vstring(),
-#    triggerNamesDoubleMu_MC = cms.vstring(),
-#    triggerNamesSingleEl_MC = cms.vstring(),
-#    triggerNamesDoubleEl_MC = cms.vstring(),
-#    # Data: requested path(s) in the PD
-#    # 5e32 paths
-#    triggerNamesSingleMu_5e32 = cms.vstring('HLT_IsoMu17'),
-#    triggerNamesDoubleMu_5e32 = cms.vstring('HLT_DoubleMu7'),
-#    triggerNamesSingleEl_5e32 = cms.vstring(),
-#    triggerNamesDoubleEl_5e32 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-#    # 1e33 paths
-#    triggerNamesSingleMu_1e33 = cms.vstring('HLT_IsoMu17'),
-#    triggerNamesDoubleMu_1e33 = cms.vstring('HLT_Mu13_Mu8'),
-#    triggerNamesSingleEl_1e33 = cms.vstring(),
-#    triggerNamesDoubleEl_1e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-###### 1.4e33 paths
-#    triggerNamesSingleMu_1p4e33 = cms.vstring('HLT_IsoMu17'),
-#    triggerNamesDoubleMu_1p4e33 = cms.vstring('HLT_Mu13_Mu8'),
-#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-#    triggerNamesDoubleEl_1p4e33 = cms.vstring('HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL'),
-###### 2e33 paths
-#    triggerNamesSingleMu_2e33 = cms.vstring('HLT_IsoMu17'),
-#    triggerNamesDoubleMu_2e33 = cms.vstring('HLT_Mu13_Mu8'),
-#    triggerNamesSingleEl_2e33 = cms.vstring(),
-#    triggerNamesDoubleEl_2e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-###### 3e33 paths
-#    triggerNamesSingleMu_3e33 = cms.vstring('HLT_IsoMu20'),
-#    triggerNamesDoubleMu_3e33 = cms.vstring('HLT_Mu13_Mu8'),
-#    triggerNamesSingleEl_3e33 = cms.vstring(),
-#    triggerNamesDoubleEl_3e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL'),
-###### 5e33 paths
-#    triggerNamesSingleMu_5e33 = cms.vstring('HLT_IsoMu24_eta2p1'),
-#    triggerNamesDoubleMu_5e33 = cms.vstring('HLT_Mu17_Mu8'),
-#    triggerNamesSingleEl_5e33 = cms.vstring(),
-#    triggerNamesDoubleEl_5e33 = cms.vstring('HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL')
-#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",

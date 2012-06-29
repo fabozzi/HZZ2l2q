@@ -1073,6 +1073,14 @@ zjj = (
     tag = cms.untracked.string("JetDau2RMSJet"),
     quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userFloat('RMSJet')")
     ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1QGLike"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('qgLike')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2QGLike"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userFloat('qgLike')")
+    ),
     ### MC parton flavour ###
     cms.PSet(
     tag = cms.untracked.string("JetDau1PartonFlavour"),

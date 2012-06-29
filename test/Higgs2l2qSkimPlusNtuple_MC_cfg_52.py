@@ -658,27 +658,6 @@ process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      dzCut = cms.double(0.1)
                                      )
 
-####### saving also Z candidates from PF leptons
-
-process.zeePF = cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatElectronsAK5@+ selectedPatElectronsAK5@-")
-                             )
-
-process.zmmPF= cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatMuonsAK5@+ selectedPatMuonsAK5@-")
-                             )
-
-process.zemPF = cms.EDProducer("CandViewShallowCloneCombiner",
-                                 checkCharge = cms.bool(False),
-                                 cut = cms.string('mass > 20 '),
-                                 decay = cms.string("selectedPatElectronsAK5@+ selectedPatMuonsAK5@-")
-                             )
-
-
 process.combinatorialSequence = cms.Sequence(
     process.zee +
     process.zmm +
@@ -689,10 +668,7 @@ process.combinatorialSequence = cms.Sequence(
     process.hzzemjjBaseColl +
     process.hzzeejj +
     process.hzzmmjj +
-    process.hzzemjj + 
-    process.zeePF +
-    process.zmmPF +
-    process.zemPF 
+    process.hzzemjj
 )
 
 process.p += process.combinatorialSequence
@@ -821,10 +797,6 @@ process.out.outputCommands.extend([
     'keep *_hzzeejj_*_PAT',
     'keep *_hzzmmjj_*_PAT',
     'keep *_hzzemjj_*_PAT',
-    # also Z with PFleptons
-    'keep *_zeePF_*_PAT',
-    'keep *_zmmPF_*_PAT',
-    'keep *_zemPF_*_PAT',
     ####
     'keep *_offlineBeamSpot_*_*',
     'keep *_offlinePrimaryVertices_*_*',
@@ -868,51 +840,6 @@ process.PUInfoNtuple = cms.EDProducer(
     "GenPUNtupleDump",
     isData = cms.bool(False)
 )
-
-#process.HLTPassInfo = cms.EDProducer(
-#    "HLTPassInfoProducer",
-#    triggerEvent = cms.InputTag("patTriggerEvent"),
-#    # here the 1st run with a new trigger table
-#    # leave empty for MC
-#    runLimits = cms.vint32(),
-#    # here insert the HLT path (without _v[n] suffix) you want to check
-#    # MC path
-#    triggerNamesSingleMu_MC = cms.vstring(),
-#    triggerNamesDoubleMu_MC = cms.vstring(),
-#    triggerNamesSingleEl_MC = cms.vstring(),
-#    triggerNamesDoubleEl_MC = cms.vstring(),
-#    # Data: here all the paths making the PDs are listed
-#    # 5e32 paths
-#    triggerNamesSingleMu_5e32 = cms.vstring(),
-#    triggerNamesDoubleMu_5e32 = cms.vstring(),
-#    triggerNamesSingleEl_5e32 = cms.vstring(),
-#    triggerNamesDoubleEl_5e32 = cms.vstring(),
-#    # 1e33 paths
-#    triggerNamesSingleMu_1e33 = cms.vstring(),
-#    triggerNamesDoubleMu_1e33 = cms.vstring(),
-#    triggerNamesSingleEl_1e33 = cms.vstring(),
-#    triggerNamesDoubleEl_1e33 = cms.vstring(),
-###### 1.4e33 paths
-#    triggerNamesSingleMu_1p4e33 = cms.vstring(),
-#    triggerNamesDoubleMu_1p4e33 = cms.vstring(),
-#    triggerNamesSingleEl_1p4e33 = cms.vstring(),
-#    triggerNamesDoubleEl_1p4e33 = cms.vstring(),
-###### 2e33 paths
-#    triggerNamesSingleMu_2e33 = cms.vstring(),
-#    triggerNamesDoubleMu_2e33 = cms.vstring(),
-#    triggerNamesSingleEl_2e33 = cms.vstring(),
-#    triggerNamesDoubleEl_2e33 = cms.vstring(),
-###### 3e33 paths
-#    triggerNamesSingleMu_3e33 = cms.vstring(),
-#    triggerNamesDoubleMu_3e33 = cms.vstring(),
-#    triggerNamesSingleEl_3e33 = cms.vstring(),
-#    triggerNamesDoubleEl_3e33 = cms.vstring(),
-###### 5e33 paths
-#    triggerNamesSingleMu_5e33 = cms.vstring(),
-#    triggerNamesDoubleMu_5e33 = cms.vstring(),
-#    triggerNamesSingleEl_5e33 = cms.vstring(),
-#    triggerNamesDoubleEl_5e33 = cms.vstring()
-#    )
 
 # Event rho dumper
 process.rhoDumper = cms.EDProducer("EventRhoDumper",
