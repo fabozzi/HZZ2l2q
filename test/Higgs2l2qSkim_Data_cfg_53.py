@@ -2,7 +2,7 @@
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 # turn on when running on MC
-runOnMC = True
+runOnMC = False
 
 # AK5 sequence with pileup substraction is the default
 # the other sequences can be turned off with the following flags.
@@ -21,12 +21,22 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 400
+process.maxEvents.input = 600
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
-process.GlobalTag.globaltag = 'START52_V11B::All'
+process.GlobalTag.globaltag = 'GR_R_52_V9B::All'
+
+process.GlobalTag.toGet = cms.VPSet(
+    cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
+             tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
+             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
+    cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+             tag = cms.string("TrackProbabilityCalibration_3D_2012DataTOT_v1_offline"),
+             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
+    )
+
 ##################################################
 
 ############ PRINTOUT ###################
@@ -45,11 +55,11 @@ print 'Global tag       : ', process.GlobalTag.globaltag
 print sep_line
 
 ######################################################
-    
+
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/mc/Summer12/PU_S7_START52_V5-v2/DYJetsToLL_M-50/FE123555-F27A-E111-8E40-003048D46046.root'
+    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
@@ -90,7 +100,8 @@ process.kt6PFJetsCHSForIso = process.kt6PFJets.clone(
 postfixAK5 ="AK5"
 jetAlgoAK5 ="AK5"
 
-usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5, jetCorrections=('AK5PFchs', jetCorrections))
+usePF2PAT(process,runPF2PAT=True, jetAlgo=jetAlgoAK5, runOnMC=runOnMC, postfix=postfixAK5,
+          jetCorrections=('AK5PFchs', jetCorrections))
 
 removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 
@@ -549,6 +560,7 @@ process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsIsoLept
 
 
+
 if runAK5NoPUSub:
     process.p += getattr(process,"patPF2PATSequence"+postfixAK5NoPUSub)
     process.p += process.qglAK5PF 
@@ -572,8 +584,6 @@ process.selectedPatElectrons.cut = (
     "pt > 10.0 && abs(eta) < 2.5"
     )
 # Select jets
-#process.selectedPatJetsAK5.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
-#process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0 && abs(eta) < 2.4')
 process.selectedPatJetsAK5.cut = cms.string('pt > 25.0')
 process.selectedPatJetsAK5NoPUSub.cut = cms.string('pt > 25.0')
 
@@ -622,7 +632,7 @@ process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
                                              decay = cms.string("zem zjj")
                                          )
 
-process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
+process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      higgs = cms.InputTag("hzzeejjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -630,7 +640,7 @@ process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
                                      dzCut = cms.double(0.1)
                                  )
 
-process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
+process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      higgs = cms.InputTag("hzzmmjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -638,7 +648,7 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
                                      dzCut = cms.double(0.1)
                                      )
 
-process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      higgs = cms.InputTag("hzzemjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -695,7 +705,6 @@ process.filterPath2= cms.Path(
     process.jetFilterNoPUSub
 )
 
-
 # event cleaning (in tagging mode, no event rejected)
 process.load('CMGTools.Common.PAT.addFilterPaths_cff')
 ### if you have a tag which contains rev >=1.3 of addFilterPaths_cff.py,
@@ -726,7 +735,7 @@ if cmsswIs52X():
     process.fullPath.append(process.hcalLaserFilterFromAODPath)
 else:
     print 'NO hcalLaserFilterFromAOD available for releases < 5.2'
-    
+
 #this is needed only for Madgraph MC:
 if runOnMC:
     process.fullPath.append(process.totalKinematicsFilterPath)
