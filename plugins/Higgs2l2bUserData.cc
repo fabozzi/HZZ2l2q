@@ -106,7 +106,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   float jminid, jmaxid;
   float j0LooseID, j1LooseID;
   bool  jminbmatch, jmincmatch, jmaxbmatch, jmaxcmatch;
-  float  lminpt, lmineta, lminphi, lmaxpt, lmaxeta, lmaxphi, jminpt, jmineta, jminphi, jmaxpt,  jmaxeta,  jmaxphi;
+  //  float  lminpt, lmineta, lminphi, lmaxpt, lmaxeta, lmaxphi, jminpt, jmineta, jminphi, jmaxpt,  jmaxeta,  jmaxphi;
+  float  jmineta, jminphi, jmaxeta, jmaxphi;
   float j1RefitPt, j2RefitPt;
   float j1RefitEta, j2RefitEta;
   float j1RefitPhi, j2RefitPhi;
@@ -197,38 +198,38 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     }
 
     // gen info    
-    if (zDauRefl0->pt() < zDauRefl1->pt()) {
-      lminpt  = zDauRefl0->pt();
-      lmineta = zDauRefl0->eta();
-      lminphi = zDauRefl0->phi();
-      lmaxpt  = zDauRefl1->pt();
-      lmaxeta = zDauRefl1->eta();
-      lmaxphi = zDauRefl1->phi();
-    }
-    
-    else {
-      lminpt  = zDauRefl1->pt();
-      lmineta = zDauRefl1->eta();
-      lminphi = zDauRefl1->phi();
-      lmaxpt  = zDauRefl0->pt();
-      lmaxeta = zDauRefl0->eta();
-      lmaxphi = zDauRefl0->phi();
-    }
+    //    if (zDauRefl0->pt() < zDauRefl1->pt()) {
+    //      lminpt  = zDauRefl0->pt();
+    //      lmineta = zDauRefl0->eta();
+    //      lminphi = zDauRefl0->phi();
+    //      lmaxpt  = zDauRefl1->pt();
+    //      lmaxeta = zDauRefl1->eta();
+    //      lmaxphi = zDauRefl1->phi();
+    //    }
+    //    
+    //    else {
+    //      lminpt  = zDauRefl1->pt();
+    //      lmineta = zDauRefl1->eta();
+    //      lminphi = zDauRefl1->phi();
+    //      lmaxpt  = zDauRefl0->pt();
+    //      lmaxeta = zDauRefl0->eta();
+    //      lmaxphi = zDauRefl0->phi();
+    //    }
     
     if (zDauRefj0->pt() < zDauRefj1->pt()) {
-      jminpt  = zDauRefj0->pt();
+      //      jminpt  = zDauRefj0->pt();
       jmineta = zDauRefj0->eta();
       jminphi = zDauRefj0->phi();
-      jmaxpt  = zDauRefj1->pt();
+      //      jmaxpt  = zDauRefj1->pt();
       jmaxeta = zDauRefj1->eta();
       jmaxphi = zDauRefj1->phi();
     }
     
     else {
-      jminpt  = zDauRefj1->pt();
+      //      jminpt  = zDauRefj1->pt();
       jmineta = zDauRefj1->eta();
       jminphi = zDauRefj1->phi();
-      jmaxpt  = zDauRefj0->pt();
+      //      jmaxpt  = zDauRefj0->pt();
       jmaxeta = zDauRefj0->eta();
       jmaxphi = zDauRefj0->phi();
     }
@@ -321,8 +322,8 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     bool is0El(true), is1El(true);
     const pat::Electron * lept0el = dynamic_cast<const pat::Electron *>(zDauRefl0->masterClone().get());
     const pat::Electron * lept1el = dynamic_cast<const pat::Electron *>(zDauRefl1->masterClone().get());
-    const pat::Muon * lept0mu = dynamic_cast<const pat::Muon *>(zDauRefl0->masterClone().get());
-    const pat::Muon * lept1mu = dynamic_cast<const pat::Muon *>(zDauRefl1->masterClone().get());
+    //    const pat::Muon * lept0mu = dynamic_cast<const pat::Muon *>(zDauRefl0->masterClone().get());
+    //    const pat::Muon * lept1mu = dynamic_cast<const pat::Muon *>(zDauRefl1->masterClone().get());
 
     if(lept0el==NULL)
       is0El = false;
