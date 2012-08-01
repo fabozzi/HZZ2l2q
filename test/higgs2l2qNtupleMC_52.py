@@ -62,6 +62,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
+    "keep *_powWeightProducer_*_*",
     "keep *_eventVtxInfoNtuple_*_*",
     "keep *_PUInfoNtuple_*_*",
     "keep *_rhoDumper_*_*",
