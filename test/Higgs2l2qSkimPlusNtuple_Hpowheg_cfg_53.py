@@ -6,7 +6,7 @@ runOnMC = True
 
 # turn on when running on powheg signal MC (-> to produce line-shape weights)
 isPowhegSignal = True
-hMassHyp = "500"
+hMassHyp = "700"
 comEn = "8TeV"
 fileWeight = "MMozer/powhegweight/data/mZZ_Higgs"+hMassHyp+"_"+comEn+"_W.txt_I.txt"
 
@@ -59,7 +59,7 @@ process.powWeightProducer = tongguangweights600.clone(
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/mc/Summer12/GluGluToHToZZTo2L2Q_M-525_8TeV/F663890D-FBB7-E111-9602-20CF305B051B.root'
+    'file:/data3/scratch/cms/mc/Summer12/GluGluToHToZZTo2L2Q_M-700_8TeV/FE073BF1-CDB7-E111-8866-E0CB4E4408BE.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
