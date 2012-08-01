@@ -27,7 +27,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 400
+process.maxEvents.input = 200
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -48,8 +48,8 @@ if runAK5NoPUSub: print '\tAK5NoPUSub'
 print 'run on MC        : ', runOnMC
 print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
-print sep_line
 if isPowhegSignal: print 'using ', fileWeight
+print sep_line
 ######################################################
 
 from MMozer.powhegweight.tongguang600 import *
@@ -610,7 +610,7 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
-if isPowhegSignal:
+if runOnMC and isPowhegSignal:
     process.p += process.powWeightProducer
 
 process.p += getattr(process,"postPathCounter") 

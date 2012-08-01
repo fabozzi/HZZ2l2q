@@ -4,6 +4,12 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 # turn on when running on MC
 runOnMC = False
 
+# turn on when running on powheg signal MC (-> to produce line-shape weights)
+isPowhegSignal = False
+hMassHyp = "700"
+comEn = "8TeV"
+fileWeight = "MMozer/powhegweight/data/mZZ_Higgs"+hMassHyp+"_"+comEn+"_W.txt_I.txt"
+
 # AK5 sequence with pileup substraction is the default
 # the other sequences can be turned off with the following flags.
 ## True -> run also sequence without PU subtraction
@@ -50,9 +56,14 @@ if runAK5NoPUSub: print '\tAK5NoPUSub'
 print 'run on MC        : ', runOnMC
 print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
+if isPowhegSignal: print 'using ', fileWeight
 print sep_line
 
 ######################################################
+
+from MMozer.powhegweight.tongguang600 import *
+process.powWeightProducer = tongguangweights600.clone(
+    filename = cms.FileInPath(fileWeight) )
 
 ### INPUT COLLECTIONS ##########
 
@@ -609,6 +620,9 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
+if runOnMC and isPowhegSignal:
+    process.p += process.powWeightProducer
+
 process.p += getattr(process,"postPathCounter") 
 
 
@@ -747,6 +761,7 @@ process.out.outputCommands.extend([
     'keep *_genParticles_*_*',
     'keep recoGenJets_ak5GenJets_*_*',
     'keep recoGenJets_kt6GenJets_*_*',
+    'keep *_powWeightProducer_*_*',
     # gen Info
     'keep PileupSummaryInfos_*_*_*',
     'keep GenEventInfoProduct_*_*_*',
@@ -807,6 +822,7 @@ process.edmNtuplesOut = cms.OutputModule(
     outputCommands = cms.untracked.vstring(
       "drop *",
 #      "keep *_HLTPassInfo_*_*",
+      "keep *_powWeightProducer_*_*",
       "keep *_eventVtxInfoNtuple_*_*",
       "keep *_PUInfoNtuple_*_*",
       "keep *_rhoDumper_*_*",
