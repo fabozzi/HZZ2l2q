@@ -656,38 +656,23 @@ process.filterPath2= cms.Path(
     process.jetFilterNoPUSub
 )
 
-
 # event cleaning (in tagging mode, no event rejected)
 process.load('CMGTools.Common.PAT.addFilterPaths_cff')
-### if you have a tag which contains rev >=1.3 of addFilterPaths_cff.py,
-### you can use the paths currently commented
+
 process.fullPath = cms.Schedule(
     process.p,
     process.filterPath1,
     process.filterPath2,
-    process.EcalDeadCellBoundaryEnergyFilterPath,
-    process.simpleDRfilterPath,
-############# ->
     process.EcalDeadCellTriggerPrimitiveFilterPath,
-    process.greedyMuonPFCandidateFilterPath,
-############# <-
     process.hcalLaserEventFilterPath,
-    process.inconsistentMuonPFCandidateFilterPath,
     process.trackingFailureFilterPath,
-############# ->
     process.CSCTightHaloFilterPath,
-############# <-
     process.HBHENoiseFilterPath,
+    process.eeBadScFilterPath,
     process.primaryVertexFilterPath,
     process.noscrapingFilterPath
     )
 
-from CMGTools.Common.Tools.cmsswRelease import cmsswIs52X
-if cmsswIs52X():
-    process.fullPath.append(process.hcalLaserFilterFromAODPath)
-else:
-    print 'NO hcalLaserFilterFromAOD available for releases < 5.2'
-    
 #this is needed only for Madgraph MC:
 if runOnMC:
     process.fullPath.append(process.totalKinematicsFilterPath)
