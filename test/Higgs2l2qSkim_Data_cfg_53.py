@@ -34,21 +34,23 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
 # OLD 
 #process.GlobalTag.globaltag = 'GR_R_52_V9B::All'
+
 # global tag for 2012A / B prompt reco (5_2)
 #process.GlobalTag.globaltag = 'GR_P_V39_AN1::All'
-# global tag for 2012 re-reco data(5_3)
+# global tag for 2012 re-reco data (5_3)
 #process.GlobalTag.globaltag = 'FT_53_V6_AN1::All'
 # global tag for 2012C prompt reco (5_3)
 process.GlobalTag.globaltag = 'GR_P_V40_AN1::All'
-process.GlobalTag.toGet = cms.VPSet(
-    cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
-             tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
-             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
-    cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
-             tag = cms.string("TrackProbabilityCalibration_3D_2012DataTOT_v1_offline"),
-             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
-    )
 
+# UNCOMMENT IF YOU ARE RUNNING ON 2012A/B PROMPT RECO
+#process.GlobalTag.toGet = cms.VPSet(
+#    cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
+#             tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
+#             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
+#    cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+#             tag = cms.string("TrackProbabilityCalibration_3D_2012DataTOT_v1_offline"),
+#             connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
+#    )
 ##################################################
 
 ############ PRINTOUT ###################
