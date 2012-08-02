@@ -32,7 +32,14 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
-process.GlobalTag.globaltag = 'GR_R_52_V9B::All'
+# OLD 
+#process.GlobalTag.globaltag = 'GR_R_52_V9B::All'
+# global tag for 2012A / B prompt reco (5_2)
+#process.GlobalTag.globaltag = 'GR_P_V39_AN1::All'
+# global tag for 2012 re-reco data(5_3)
+#process.GlobalTag.globaltag = 'FT_53_V6_AN1::All'
+# global tag for 2012C prompt reco (5_3)
+process.GlobalTag.globaltag = 'GR_P_V40_AN1::All'
 process.GlobalTag.toGet = cms.VPSet(
     cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
              tag = cms.string("TrackProbabilityCalibration_2D_2012DataTOT_v1_offline"),
