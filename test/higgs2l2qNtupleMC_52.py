@@ -25,15 +25,13 @@ process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
     HLTPaths = cms.vstring('primaryVertexFilterPath',
-#                           'CSCTightHaloFilterPath',
-#                           'EcalDeadCellTriggerPrimitiveFilterPath',
-                           'EcalDeadCellBoundaryEnergyFilterPath',
+                           'CSCTightHaloFilterPath',
+                           'EcalDeadCellTriggerPrimitiveFilterPath',
                            'noscrapingFilterPath',          
-#                           'hcalLaserEventFilterPath',
-#### Use hcalLaserFilterFromAODPath in 5_2
-                           'hcalLaserFilterFromAODPath',
-                           'HBHENoiseFilterPath'#,
-#                           'totalKinematicsFilterPath' #only for Madgraph MC
+                           'hcalLaserEventFilterPath',
+                           'HBHENoiseFilterPath',
+                           'trackingFailureFilterPath',
+                           'eeBadScFilterPath'
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
