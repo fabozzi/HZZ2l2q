@@ -23,8 +23,21 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
-process.GlobalTag.globaltag = 'START52_V11B::All'
+process.GlobalTag.globaltag = 'START53_V7F::All'
 ##################################################
+
+#For 53x Data and MC, the default Jet Probability Calibration from the
+#GlobalTag is not optimal and needs to be replaced in the following way,
+#when using CRAB: 
+
+process.GlobalTag.toGet = cms.VPSet(
+  cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
+       tag = cms.string("TrackProbabilityCalibration_2D_MC53X_v2"),
+       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
+  cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+       tag = cms.string("TrackProbabilityCalibration_3D_MC53X_v2"),
+       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
+)
 
 ############ PRINTOUT ###################
 
@@ -47,14 +60,7 @@ process.powWeightProducer = tongguangweights600.clone(
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/mc/Summer12/PU_S7_START52_V5-v2/DYJetsToLL_M-50/FE123555-F27A-E111-8E40-003048D46046.root'
-#    'file:/data3/scratch/cms/mc/Summer12/TTJets_TuneZ2star_8TeV/FEDDBC6A-9290-E111-B7FD-0018F3D09628.root'
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root',
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA178E3B-CB7A-E111-88E9-003048D460B6.root',
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FA28D4A9-D37A-E111-B990-001A64789E00.root',
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FAB6476C-D37A-E111-81A2-0025B3E063EA.root',
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FC6345EE-D17A-E111-9656-001A64789D8C.root',
-#    '/store/mc/Summer12/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/AODSIM/PU_S7_START52_V5-v2/0000/FE123555-F27A-E111-8E40-003048D46046.root'
+    'file:/data3/scratch/cms/mc/Summer12_DR53X/DYJetsToLL_M-50/FEF4E41A-46D4-E111-9594-0025B3E06424.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
