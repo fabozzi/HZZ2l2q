@@ -115,6 +115,19 @@ getattr(process,"pfNoMuon"+postfixAK5).enable = False
 getattr(process,"pfNoElectron"+postfixAK5).enable = False 
 getattr(process,"pfNoTau"+postfixAK5).enable = False 
 getattr(process,"pfNoJet"+postfixAK5).enable = True
+
+# removing default cuts on muons 	 
+getattr(process,"pfMuonsFromVertexAK5").dzCut = 99 	 
+getattr(process,"pfMuonsFromVertexAK5").d0Cut = 99 	 
+getattr(process,"pfSelectedMuonsAK5").cut="pt()>3" 	 
+getattr(process,"pfIsolatedMuons"+postfixAK5).isolationCut = 999999 	 
+
+# removing default cuts on electrons 	 
+getattr(process,"pfElectronsFromVertexAK5").dzCut = 99 	 
+getattr(process,"pfElectronsFromVertexAK5").d0Cut = 99 	 
+getattr(process,"pfSelectedElectronsAK5").cut="pt()>5" 	 
+getattr(process,"pfIsolatedElectrons"+postfixAK5).isolationCut = 999999 	 
+
 ### we use "classic" muons and electrons (see below)
 removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Electrons'], postfix = "AK5")
