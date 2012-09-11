@@ -211,16 +211,24 @@ adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""), 'PFIso')
 
 
 # setup recommended 0.3 cone for electron PF isolation
-process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
-process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
-process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
+#process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
+#process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
+#process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
 process.patElectrons.isolationValues = cms.PSet(
-        pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
-        pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
-        pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
-        pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
-        pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
-        )
+    pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
+    pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
+    pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
+    pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
+    pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
+    )
+process.patElectrons.isolationValuesNoPFId = cms.PSet(
+    pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03NoPFIdPFIso"),
+    pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03NoPFIdPFIso"),
+    pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03NoPFIdPFIso"),
+    pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03NoPFIdPFIso"),
+    pfPhotons = cms.InputTag("elPFIsoValueGamma03NoPFIdPFIso")
+    )
+
 
 process.stdMuonSeq = cms.Sequence(
     process.pfParticleSelectionSequence +
@@ -605,7 +613,7 @@ process.out.outputCommands.extend([
     'keep *_impactParameterTagInfos*_*_*',
     'keep *_*_*tagInfo*_*',
     # additional collections from AOD   
-    'keep *_generalTracks_*_*',
+#    'keep *_generalTracks_*_*',
     'keep *_electronGsfTracks_*_*',
     'keep *_muons_*_*',
     'keep *_globalMuons_*_*',

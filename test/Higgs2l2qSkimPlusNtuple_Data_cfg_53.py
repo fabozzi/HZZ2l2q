@@ -29,13 +29,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 # global tag for 2012A / B prompt reco (5_2)
 #process.GlobalTag.globaltag = 'GR_P_V39_AN1::All'
 # global tag for 2012 A / B re-reco data (5_3) - July13
-#process.GlobalTag.globaltag = 'FT_53_V6_AN2::All'
+process.GlobalTag.globaltag = 'FT_53_V6_AN2::All'
 # global tag for 2012 A / B re-reco data (5_3) - Aug06
 #process.GlobalTag.globaltag = 'FT_53_V6C_AN2::All'
 # global tag for 2012 C re-reco data (5_3)
 #process.GlobalTag.globaltag = 'FT_53_V10_AN2::All'
 # global tag for 2012C prompt reco (5_3)
-process.GlobalTag.globaltag = 'GR_P_V41_AN2::All'
+#process.GlobalTag.globaltag = 'GR_P_V41_AN2::All'
 
 #For 53x Data and MC, the default Jet Probability Calibration from the
 #GlobalTag is not optimal and needs to be replaced in the following way,
@@ -74,7 +74,8 @@ process.powWeightProducer = tongguangweights600.clone(
 
 process.source.fileNames = [
 #    'file:/data3/scratch/cms/data/Run2012A/DoubleMu/190782/723EF864-8584-E111-A833-003048CFB40C.root'
-    'file:/data3/scratch/cms/data/Run2012B/DoubleEl/193898/28BBEEC7-A99C-E111-BB85-003048D2BEA8.root'
+#    'file:/data3/scratch/cms/data/Run2012B/DoubleEl/193898/28BBEEC7-A99C-E111-BB85-003048D2BEA8.root'
+    'file:/data3/scratch/cms/data/HZZ-13Jul2012-v3/DoubleMu/00165893-CED3-E111-9C00-00259073E4C4.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
@@ -223,16 +224,23 @@ adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""), 'PFIso')
 adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""), 'PFIso')
 
 # setup recommended 0.3 cone for electron PF isolation
-process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
-process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
-process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
+#process.pfIsolatedElectrons.isolationValueMapsCharged = cms.VInputTag(cms.InputTag("elPFIsoValueCharged03PFIdPFIso"))
+#process.pfIsolatedElectrons.deltaBetaIsolationValueMap = cms.InputTag("elPFIsoValuePU03PFIdPFIso")
+#process.pfIsolatedElectrons.isolationValueMapsNeutral = cms.VInputTag(cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"), cms.InputTag("elPFIsoValueGamma03PFIdPFIso"))
 process.patElectrons.isolationValues = cms.PSet(
-        pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
-        pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
-        pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
-        pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
-        pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
-        )
+    pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03PFIdPFIso"),
+    pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03PFIdPFIso"),
+    pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03PFIdPFIso"),
+    pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03PFIdPFIso"),
+    pfPhotons = cms.InputTag("elPFIsoValueGamma03PFIdPFIso")
+    )
+process.patElectrons.isolationValuesNoPFId = cms.PSet(
+    pfChargedHadrons = cms.InputTag("elPFIsoValueCharged03NoPFIdPFIso"),
+    pfChargedAll = cms.InputTag("elPFIsoValueChargedAll03NoPFIdPFIso"),
+    pfPUChargedHadrons = cms.InputTag("elPFIsoValuePU03NoPFIdPFIso"),
+    pfNeutralHadrons = cms.InputTag("elPFIsoValueNeutral03NoPFIdPFIso"),
+    pfPhotons = cms.InputTag("elPFIsoValueGamma03NoPFIdPFIso")
+    )
 
 process.stdMuonSeq = cms.Sequence(
     process.pfParticleSelectionSequence +
@@ -619,7 +627,7 @@ process.out.outputCommands.extend([
     'keep *_impactParameterTagInfos*_*_*',
     'keep *_*_*tagInfo*_*',
     # additional collections from AOD   
-    'keep *_generalTracks_*_*',
+#    'keep *_generalTracks_*_*',
     'keep *_electronGsfTracks_*_*',
     'keep *_muons_*_*',
     'keep *_globalMuons_*_*',
