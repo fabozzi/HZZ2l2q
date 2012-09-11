@@ -23,8 +23,21 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
-process.GlobalTag.globaltag = 'START52_V11B::All'
+process.GlobalTag.globaltag = 'START53_V7F::All'
 ##################################################
+
+#For 53x Data and MC, the default Jet Probability Calibration from the
+#GlobalTag is not optimal and needs to be replaced in the following way,
+#when using CRAB: 
+
+process.GlobalTag.toGet = cms.VPSet(
+  cms.PSet(record = cms.string("BTagTrackProbability2DRcd"),
+       tag = cms.string("TrackProbabilityCalibration_2D_MC53X_v2"),
+       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU")),
+  cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+       tag = cms.string("TrackProbabilityCalibration_3D_MC53X_v2"),
+       connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_BTAU"))
+)
 
 ############ PRINTOUT ###################
 
