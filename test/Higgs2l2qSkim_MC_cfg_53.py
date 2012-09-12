@@ -1,3 +1,4 @@
+
  ## import skeleton process
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
@@ -613,11 +614,11 @@ process.out.outputCommands.extend([
     'keep *_impactParameterTagInfos*_*_*',
     'keep *_*_*tagInfo*_*',
     # additional collections from AOD   
-#    'keep *_generalTracks_*_*',
+    'keep *_generalTracks_*_*',
     'keep *_electronGsfTracks_*_*',
-    'keep *_muons_*_*',
-    'keep *_globalMuons_*_*',
-    'keep *_standAloneMuons_*_*',
+#    'keep *_muons_*_*',
+#    'keep *_globalMuons_*_*',
+#    'keep *_standAloneMuons_*_*',
     'keep recoPFCandidates_particleFlow_*_*',
     # genParticles & genJets
     'keep *_genParticles_*_*',

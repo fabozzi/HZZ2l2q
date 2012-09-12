@@ -17,6 +17,12 @@
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
 
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "DataFormats/Math/interface/deltaR.h"
+#include "TrackingTools/IPTools/interface/IPTools.h"
+#include "DataFormats/GeometrySurface/interface/Line.h"
+
 #include "TLorentzVector.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
@@ -54,7 +60,13 @@ private:
   /// performed on what is a vertex.
   /// It also selects which is the main vertex of the analysis... taken to
   /// be the first that is valid and not fake (if it passes the cuts).
-  void readVertices (const edm::Event &iEvent);
+  //  void readVertices (const edm::Event &iEvent);
+  // changing the interface
+  void readVertices ( edm::Handle<reco::VertexCollection> recVtxs );
+  // check if the jet satisfies the taggeability criteria
+  bool isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
+		      const edm::ESHandle<TransientTrackBuilder> & builder,
+		      int & nChargedTracks, int & nChargedTracksSV, int & nTracks );
 
   //data members
   edm::InputTag   jetLabel_;
@@ -103,6 +115,16 @@ void PFJetUserData::endJob(){
 void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
   if(verbose_)std::cout<<"Processing run "<<iEvt.id().run()<<", event "<<iEvt.id().event()<<std::endl;
 
+  //TransientTrackBuilder
+  edm::ESHandle<TransientTrackBuilder> builder;
+  iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", builder);
+
+  // Reading the vertices
+  edm::Handle<reco::VertexCollection> recVtxs;
+  iEvt.getByLabel("offlinePrimaryVertices",recVtxs);
+  // primary vtx
+  const reco::Vertex & primVertex = (*recVtxs)[0];
+
  //pick from the event the input jet collection 
   Handle< PFJetCollectionAB > jetColl;
   iEvt.getByLabel(jetLabel_, jetColl);
@@ -142,7 +164,9 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
   _verticesZ.clear();
   _mainVertex=-1;
   // read the vertices! 
-  readVertices(iEvt);
+  //  readVertices(iEvt);
+  // changinf the interface: giving the vtx collection as input
+  readVertices(recVtxs);
 
   uint njetInColl(0);
 
@@ -158,7 +182,15 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     //    computeBeta(*jjet,&beta,&betastar);
     computeBeta(patjjet,&beta,&betastar);
       
-
+    // get taggeability
+    // auxiliary variables external for monitoring
+    int nChargedTracks_Aux = 0;
+    int nChargedTracksSV_Aux = 0;
+    int nTracks_Aux = 0;
+    
+    int isTaggable = int ( isTaggableJet( patjjet, primVertex, builder,
+					  nChargedTracks_Aux, nChargedTracksSV_Aux, nTracks_Aux ) );
+    
     edm::RefToBase<pat::Jet> jetRef(edm::Ref<PFJetCollectionAB>(jetColl,njetInColl));
     //    edm::RefToBase<reco::Jet> jetRef = (*jetColl)[njetInColl];
 
@@ -214,6 +246,8 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     // beta/beta* variables
     ijet->addUserFloat("puBeta",beta);
     ijet->addUserFloat("puBetaStar",betastar);
+    // taggability variables
+    ijet->addUserInt("isTaggable",isTaggable);
     // QG discriminant
     ijet->addUserFloat("qgLike",qgl);
     //
@@ -310,7 +344,8 @@ void PFJetUserData::computeBeta (const pat::Jet &jjet,float *beta,float *betasta
 }
 
 //-----------------------------------------------------------------------
-void PFJetUserData::readVertices (const edm::Event &iEvent)
+//void PFJetUserData::readVertices (const edm::Event &iEvent)
+void PFJetUserData::readVertices (edm::Handle<reco::VertexCollection> recVtxs)
 // Reads the vertices from the event record and process them to be used
 // for the calculation of beta and betastar. Note that some selection is
 // performed on what is a vertex.
@@ -318,9 +353,9 @@ void PFJetUserData::readVertices (const edm::Event &iEvent)
 // be the first that is valid and not fake (if it passes the cuts).
 {
   // Reading the vertices
-  edm::Handle<reco::VertexCollection> recVtxs;
-  iEvent.getByLabel("offlinePrimaryVertices",recVtxs);
-  
+  //  edm::Handle<reco::VertexCollection> recVtxs;
+  //  iEvent.getByLabel("offlinePrimaryVertices",recVtxs);
+
   // Processing the information
 
   int formain=0;
@@ -362,6 +397,134 @@ void PFJetUserData::readVertices (const edm::Event &iEvent)
   _nSelectedVertices += _verticesZ.size();
 
 }
+
+
+bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
+				   const edm::ESHandle<TransientTrackBuilder> & builder,
+				   int & nChargedTracks, int & nChargedTracksSV, int & nTracks ) 
+{
+  bool passBaseSel = false;
+  if ( jet.isPFJet() ) {
+    
+    passBaseSel = (
+		   jet.pt() > 10.0 &&
+		   TMath::Abs(jet.eta()) < 2.4 &&
+		   jet.neutralHadronEnergyFraction() < 0.99 &&
+		   jet.neutralEmEnergyFraction() < 0.99 &&
+		   jet.nConstituents() > 1 &&
+		   jet.chargedHadronEnergyFraction() > 0.0 &&
+		   jet.chargedMultiplicity() > 0.0 &&
+		   jet.chargedEmEnergyFraction() < 0.99
+		   );
+    
+  } else if( jet.isCaloJet() ) {
+    passBaseSel = false;
+  }
+  
+  nChargedTracks = 0;
+  nChargedTracksSV = 0;
+  nTracks = 0;
+  std::vector<Measurement1D> ipValErr;
+  std::vector<Measurement1D> aipValErr;
+
+  GlobalPoint Pv_point = GlobalPoint(primVertex.x(),
+				     primVertex.y(),
+				     primVertex.z());
+  math::XYZPointD pv (primVertex.x(), primVertex.y(), primVertex.z());
+  GlobalVector direction( jet.momentum().x(),
+			  jet.momentum().y(),
+			  jet.momentum().z() );
+
+  const reco::TrackRefVector & tracks = jet.associatedTracks();
+
+  reco::TrackRefVector::const_iterator lastTrack = tracks.end();
+  for (  reco::TrackRefVector::const_iterator trackRef = tracks.begin();
+	 trackRef != lastTrack; ++trackRef ) {
+    ++nTracks;
+
+    const reco::Track * track = trackRef->get();
+
+    reco::TrackBase::TrackQuality quality=reco::TrackBase::qualityByName("highPurity");
+
+    /// deltaR 0.5 -> 0.3
+    /// closestApproachToJet 0.07 -> 0.2
+    /// decayLen 0.5 ->highPurity
+    if( track->charge() &&
+	track->hitPattern().numberOfValidPixelHits() >= 2 &&
+	track->hitPattern().numberOfValidHits() >= 8 &&
+	//track->hitPattern().numberOfValidTrackerHits() >= 8 &&
+	track->pt() > 1.0 &&
+	track->normalizedChi2() < 5 &&
+	TMath::Abs( track->dxy(pv) ) < 0.2 && //?
+	TMath::Abs( track->dz(pv) ) < 17 
+	) {
+
+      /// just for charged
+      if ( reco::deltaR(jet.momentum(), track->momentum()) < 0.5 ) {
+
+	double distancetojet = 999.;
+	double decayLen =  999.;
+
+	if ( builder.isValid() ) {
+	  // have new track within jet (after all cuts but distancetojet )
+	  // now compute distancetojet 
+	  reco::TransientTrack transientTrack = builder->build( track );
+	  TrajectoryStateOnSurface stateAtOrigin = transientTrack.impactPointState(); 
+	  if ( stateAtOrigin.isValid() ) {
+
+	    // track axis
+	    Line::PositionType posTrack(stateAtOrigin.globalPosition());
+	    Line::DirectionType dirTrack((stateAtOrigin.globalMomentum()).unit());
+	    Line trackLine(posTrack, dirTrack);
+
+	    // jet axis
+	    GlobalVector jetVector = direction.unit();
+	    Line::DirectionType dirJet( jetVector );    
+	    Line::PositionType posJet( Pv_point );
+	    Line jetLine( posJet, dirJet );
+
+	    /// distace from track closest approach point to the jet axis
+	    distancetojet = ( jetLine.distance(trackLine) ).mag();
+
+
+	    //  dtojet -> Fill(distancetojet);
+	    TrajectoryStateOnSurface closest =
+	      IPTools::closestApproachToJet( stateAtOrigin,
+					     primVertex, direction,
+					     transientTrack.field() );
+	    if ( closest.isValid() ) {
+	      decayLen = (closest.globalPosition() - (Pv_point)).mag();
+	    }
+		
+	  }
+
+
+	  if ( distancetojet < 0.07 && decayLen < 5 ) {
+	    ++nChargedTracks;
+	  }
+	  if ( track->quality(quality) &&
+	       reco::deltaR(jet.momentum(), track->momentum()) < 0.3 && 
+	       distancetojet < 0.2 ) {
+	    ++nChargedTracksSV;
+	  }
+
+	  // if no valid builder
+	} else {
+	  ++nChargedTracks;
+	}
+      }
+    }
+  }
+
+  if ( passBaseSel &&
+       nChargedTracks >= 1 && nTracks >= 2  )
+    return true;
+  else
+    return false;
+ }
+
+
+
 
 
 // ========= MODULE DEF ==============

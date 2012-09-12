@@ -954,6 +954,14 @@ zjj = (
     quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userFloat('puBetaStar')")
     ),
     cms.PSet(
+    tag = cms.untracked.string("JetDau1isTaggable"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userInt('isTaggable')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2isTaggable"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userInt('isTaggable')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1ChHadMult"),
     quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('nChrgdHadrMult')")
     ),
