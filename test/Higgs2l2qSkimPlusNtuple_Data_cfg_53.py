@@ -315,11 +315,11 @@ process.userDataSelectedElectrons = cms.EDProducer(
     primaryVertices=cms.InputTag("offlinePrimaryVertices")
 )
 
-# ID+Isolated electrons: select electrons passing VETO
+# ID+Isolated electrons: select electrons passing LOOSE
 process.selectedIsoElectrons = cms.EDFilter(
     "PATElectronSelector",
     src = cms.InputTag("userDataSelectedElectrons"),
-    cut = cms.string("(userFloat('cutIDCode') > 0) && (userFloat('passTriggerTight') > 0)")
+    cut = cms.string("(userFloat('cutIDCode') > 1) && (userFloat('passTriggerTight') > 0)")
 #    src = cms.InputTag("selectedIDElectrons"),
 #    cut = cms.string("electronID('eidVBTFCom95') == 7")
 )
