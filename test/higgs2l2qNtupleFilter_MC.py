@@ -16,16 +16,14 @@ process.source.fileNames=cms.untracked.vstring('file:h2l2q_ntuple.root')
 process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
-    HLTPaths = cms.vstring('primaryVertexFilterPath',
-#                           'CSCTightHaloFilterPath',
-#                           'EcalDeadCellTriggerPrimitiveFilterPath',
-                           'EcalDeadCellBoundaryEnergyFilterPath',
-                           'noscrapingFilterPath',          
-#### Use hcalLaserFilterFromAODPath in 5_2 ##########
-#                           'hcalLaserEventFilterPath',
-#                           'hcalLaserFilterFromAODPath', # available for 5_2 
-                           'HBHENoiseFilterPath'#,
-#                           'totalKinematicsFilterPath' #only for Madgraph MC
+    HLTPaths = cms.vstring(#'primaryVertexFilterPath',
+                           'CSCTightHaloFilterPath',
+                           'EcalDeadCellTriggerPrimitiveFilterPath',
+#                           'noscrapingFilterPath',          
+                           'hcalLaserEventFilterPath',
+                           'HBHENoiseFilterPath',
+                           'trackingFailureFilterPath',
+                           'eeBadScFilterPath'
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
