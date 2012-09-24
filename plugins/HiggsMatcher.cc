@@ -67,87 +67,38 @@ void HiggsMatcher::produce( Event & evt, const EventSetup & ) {
 
   // looping on ElHiggs candidates
   for (unsigned int i = 0; i < elHSize;++i){
-    cout << "elH candidate = " << i << endl;
+    //    cout << "elH candidate = " << i << endl;
 
     const Candidate & H = (*elH)[i];
     // matching electrons
     bool isMatchedEl = verifyMatch(1, H, genL, 0.3, 11) ;
-    cout << "matchedEL??? = " << isMatchedEl << endl;
+    //    cout << "matchedEL??? = " << isMatchedEl << endl;
     // matching jets
     bool isMatchedJet = verifyMatch(0, H, genQ, 0.5) ;
-    cout << "ismatchedJet??? = " << isMatchedJet << endl;
-
-    /*
-
-    for(unsigned int lind = 0; lind<2; ++lind) {
-      const Candidate * zDauReflep = H.daughter(0)->daughter(lind);    
-      for (unsigned int j = 0; j < genL->size(); ++j){
-	const GenParticle & lept = (*genL)[j];
-	cout << "GEN LEPT " << j << endl; 
-	// check if H->ee
-	if(fabs(lept.pdgId()) != 11) 
-	  break;
-	float dr = deltaR(lept.eta(), lept.phi(), zDauReflep->eta(), zDauReflep->phi() );
-	if( dr < 0.3 ) {
-	  isMatchedLep = true;
-	  break;
-	} else {
-	  isMatchedLep = false;
-	} 
-      }
-
-      if( !isMatchedLep )
-	break;
-    }
-
-    // matching jets
-    bool isMatchedJet = true;
-    for(unsigned int jind = 0; jind<2; ++jind) {
-      const Candidate * zDauRefj = H.daughter(1)->daughter(jind);
-      for (unsigned int j = 0; j < genQ->size(); ++j){
-	const GenParticle & qdau = (*genQ)[j];
-	cout << "GEN QUARK " << j << endl; 
-	float dr = deltaR(qdau.eta(), qdau.phi(), zDauRefj->eta(), zDauRefj->phi() );
-	if( dr < 0.3 ) {
-	  isMatchedJet = true;
-	  break;
-	} else {
-	  isMatchedJet = false;
-	} 
-      }
-
-      if(isMatchedJet = false)
-	break;
-    }
-
-    */
-
+    //    cout << "ismatchedJet??? = " << isMatchedJet << endl;
 
     if(isMatchedEl && isMatchedJet)
       (*elHMatch).push_back(1);
     else
       (*elHMatch).push_back(0);
-
   }
 
   // looping on MuHiggs candidates
   for (unsigned int i = 0; i < muHSize;++i){
-
-    cout << "muH candidate = " << i << endl;
+    //    cout << "muH candidate = " << i << endl;
 
     const Candidate & H = (*muH)[i];
     // matching muons
     bool isMatchedMu = verifyMatch(1, H, genL, 0.3, 13) ;
-    cout << "matchedMu??? = " << isMatchedMu << endl;
+    //    cout << "matchedMu??? = " << isMatchedMu << endl;
     // matching jets
     bool isMatchedJet = verifyMatch(0, H, genQ, 0.5) ;
-    cout << "ismatchedJet??? = " << isMatchedJet << endl;
+    //    cout << "ismatchedJet??? = " << isMatchedJet << endl;
 
     if(isMatchedMu && isMatchedJet)
       (*muHMatch).push_back(1);
     else
-      (*muHMatch).push_back(0);
-    
+      (*muHMatch).push_back(0);    
   }
 
 
@@ -176,14 +127,14 @@ bool HiggsMatcher::verifyMatch( int matchType, const Candidate & H,
 	  break;
       } 
       float dr = deltaR(genLeg.eta(), genLeg.phi(), zDauRef->eta(), zDauRef->phi() );
-      cout << "dr  = " << dr << endl;
+      //      cout << "dr  = " << dr << endl;
       if( dr < drCut ) {
-	cout << "MATCHED " << endl;
+	//	cout << "MATCHED " << endl;
 	isMatchedCand = true;
 	break;
       } else {
 	isMatchedCand = false;
-	cout << "UNMATCHED " << endl;
+	//	cout << "UNMATCHED " << endl;
       } 
     }
     
