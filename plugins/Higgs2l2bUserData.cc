@@ -95,9 +95,9 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   evt.getByLabel(PFCandTag, pfCandidates);
 
   // get Primary vtx
-  Handle<reco::VertexCollection> primaryVertices;  // Collection of primary Vertices
-  evt.getByLabel(vtxTag, primaryVertices);
-  const reco::Vertex &pv = (*primaryVertices)[0];
+  //  Handle<reco::VertexCollection> primaryVertices;  // Collection of primary Vertices
+  //  evt.getByLabel(vtxTag, primaryVertices);
+  //  const reco::Vertex &pv = (*primaryVertices)[0];
 
   auto_ptr<vector<pat::CompositeCandidate> > higgsColl( new vector<pat::CompositeCandidate> () );
 
@@ -122,9 +122,9 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
   float ldSig, ldBkg;
   float helyLDRefit;
   float ldSigRefit, ldBkgRefit;
-  float trkMetX, trkMetY, trkMet, trkPlusNeuMet;
-  float neutralContributionX, neutralContributionY;
-  float trkCorrectedMetX, trkCorrectedMetY;
+  //  float trkMetX, trkMetY, trkMet, trkPlusNeuMet;
+  //  float neutralContributionX, neutralContributionY;
+  //  float trkCorrectedMetX, trkCorrectedMetY;
 
 
   for (unsigned int i = 0; i< higgsH->size();++i){
@@ -310,120 +310,6 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     }
 
 
-    // get trk-MET
-    trkMetX=0.; trkMetY=0.;
-    neutralContributionX=0.; neutralContributionY=0.;
-    trkCorrectedMetX = 0.; trkCorrectedMetY=0;
-    trkMet=-100.; trkPlusNeuMet=-100.;
-
-    trkMetX = -zDauRefl0->px() - zDauRefl1->px() ;
-    trkMetY = -zDauRefl0->py() - zDauRefl1->py() ;
-
-    bool is0El(true), is1El(true);
-    const pat::Electron * lept0el = dynamic_cast<const pat::Electron *>(zDauRefl0->masterClone().get());
-    const pat::Electron * lept1el = dynamic_cast<const pat::Electron *>(zDauRefl1->masterClone().get());
-    //    const pat::Muon * lept0mu = dynamic_cast<const pat::Muon *>(zDauRefl0->masterClone().get());
-    //    const pat::Muon * lept1mu = dynamic_cast<const pat::Muon *>(zDauRefl1->masterClone().get());
-
-    if(lept0el==NULL)
-      is0El = false;
-    
-    if(lept1el==NULL)
-      is1El = false;
-
-    for( unsigned kk=0; kk<pfCandidates->size(); kk++ ) {
-      //      const reco::PFCandidate & pfc = dynamic_cast<const reco::PFCandidate &> ((*pfCandidates)[kk]);
-      const reco::PFCandidate & pfc = (*pfCandidates)[kk];
-      reco::TrackRef pfCandTrkRef = pfc.trackRef();
-      reco::GsfTrackRef pfCandGsfTrkRef = pfc.gsfTrackRef();
-
-      float DRval0 = deltaR( pfc.p4(), zDauRefl0->p4() );
-      float DRval1 = deltaR( pfc.p4(), zDauRefl1->p4() );
-
-      // charged candidate
-      if( pfCandTrkRef.isNonnull() || pfCandGsfTrkRef.isNonnull() ){
-	//skip the PF candidate if it's one of the Higgs cand daughters
-	//compare DR in muon case
-	//compare DR in electron case
-	if(!is0El){
-	  // muon case 
-	  //	  if( pfCandTrkRef == lept0mu->innerTrack() ) {
-	  //	    cout << "-------> GOT MUON 0 BY TRKREF, SKIPPING" << endl;
-	  //	    continue;
-	  //	  }
-	  if( DRval0 <= 0.1 ) {
-	    //	    cout << "------->GOT MUON 0 BY DR, SKIPPING" << endl;
-	    continue;
-	  }
-	} else { // electron case
-	  //	  if( ( ((lept0el->track()).isNonnull()) && (pfCandTrkRef == lept0el->track()) ) || 
-	  //	      (((lept0el->gsfTrack()).isNonnull()) && (pfCandGsfTrkRef == lept0el->gsfTrack())) ) {
-	  //	    cout << "------->GOT ELECTRON 0 BY TRKREF, SKIPPING " << endl;
-	  //	    continue;
-	  //	  } 
-	  if( DRval0 <= 0.1 ) {
-	    //	    cout << "------->GOT ELECTRON 0 BY DR, SKIPPING" << endl;
-	    continue;
-	  }
-	}
-
-	if(!is1El){
-	  // muon case 
-	  //	  if( pfCandTrkRef == lept1mu->innerTrack() ){
-	  //	    cout << "-------> GOT MUON 1 BY TRKREF, SKIPPING" << endl;
-	  //	    continue;
-	  //	  }
-	  if( DRval1 <= 0.1 ) {
-	    //	    cout << "------->GOT MUON 1 BY DR, SKIPPING" << endl;
-	    continue;
-	  }
-	} else { // electron case
-	  //	  if( ( ((lept1el->track()).isNonnull()) && (pfCandTrkRef == lept1el->track()) ) || 
-	  //	      (((lept1el->gsfTrack()).isNonnull()) && (pfCandGsfTrkRef == lept1el->gsfTrack())) ) {
-	  //	    cout << "------->GOT ELECTRON 1 BY TRKREF, SKIPPING " << endl;
-	  //	    continue;
-	  //	  }
-	  if( DRval1 <= 0.1 ){
-	    //	    cout << "------->GOT ELECTRON 1 BY DR, SKIPPING" << endl;
-	    continue;
-	  }
-	}
-	
-	if ( ( (pfCandTrkRef.isNonnull()) && (fabs(pfCandTrkRef->dz( pv.position() )) < deltaZCut_) ) ||
-	     ((pfCandGsfTrkRef.isNonnull()) && (fabs(pfCandGsfTrkRef->dz( pv.position() )) < deltaZCut_)) ) {
-	  trkMetX -= pfc.px();
-	  trkMetY -= pfc.py();
-	}
-
-      } // end if (pfCandTrkRef.isNonnull() || pfCandGsfTrkRef.isNonnull() )
-
-      // neutral candidate
-      if( (PFCandidate::ParticleType((pfc).particleId())==PFCandidate::h0) ||
-	  (PFCandidate::ParticleType((pfc).particleId())==PFCandidate::gamma) ) {
-	if ( (pfc.pt()>8) && (fabs(pfc.eta()) < 3) ) {
-	  neutralContributionX -= pfc.px();
-	  neutralContributionY -= pfc.py();
-	}
-      }
-
-    } // end of loop on PFCands
-
-    // get trkMet variable
-    trkMet = sqrt(trkMetX*trkMetX + trkMetY*trkMetY);
-    // get trk+neutral Met variable
-    trkCorrectedMetX = trkMetX+neutralContributionX; 
-    trkCorrectedMetY = trkMetY+neutralContributionY;
-    trkPlusNeuMet = sqrt(trkCorrectedMetX*trkCorrectedMetX + trkCorrectedMetY*trkCorrectedMetY);
-
-    //    cout << "trkMet_X = " << trkMetX << endl;
-    //    cout << "trkMet_Y = " << trkMetY << endl;
-    //    cout << "trkMet = " << trkMet << endl;
-
-    //    cout << "trkCorrectedMet_X = " << trkCorrectedMetX << endl;
-    //    cout << "trkCorrectedMet_Y = " << trkCorrectedMetY << endl;
-    //    cout << "trkPluNeuMet = " << trkPlusNeuMet << endl;
-
-
     h.addUserFloat("zzdPhi", zzdPhi);
     h.addUserFloat("zzdEta", zzdEta);
     h.addUserFloat("zzdr", zzdr);
@@ -470,12 +356,12 @@ void Higgs2l2bUserData::produce( Event & evt, const EventSetup & ) {
     h.addUserFloat("ldSigRefit", ldSigRefit);
     h.addUserFloat("ldBkgRefit", ldBkgRefit);
     // new met variables
-    h.addUserFloat("trkMetX", trkMetX);
-    h.addUserFloat("trkMetY", trkMetY);
-    h.addUserFloat("trkCorrectedMetX", trkCorrectedMetX);
-    h.addUserFloat("trkCorrectedMetY", trkCorrectedMetY);
-    h.addUserFloat("trkMet", trkMet);
-    h.addUserFloat("trkPlusNeuMet", trkPlusNeuMet);
+    //    h.addUserFloat("trkMetX", trkMetX);
+    //    h.addUserFloat("trkMetY", trkMetY);
+    //    h.addUserFloat("trkCorrectedMetX", trkCorrectedMetX);
+    //    h.addUserFloat("trkCorrectedMetY", trkCorrectedMetY);
+    //    h.addUserFloat("trkMet", trkMet);
+    //    h.addUserFloat("trkPlusNeuMet", trkPlusNeuMet);
 
     higgsColl->push_back(h);
   }
