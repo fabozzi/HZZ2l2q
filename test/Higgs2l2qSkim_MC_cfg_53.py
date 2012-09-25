@@ -7,9 +7,6 @@ runOnMC = True
 
 # turn on when running on powheg signal MC (-> to produce line-shape weights)
 isPowhegSignal = False
-hMassHyp = "700"
-comEn = "8TeV"
-fileWeight = "MMozer/powhegweight/data/mZZ_Higgs"+hMassHyp+"_"+comEn+"_W.txt_I.txt"
 
 #add the L2L3Residual corrections only for data
 if runOnMC:#MC
@@ -49,15 +46,10 @@ print '\tAK5'
 print 'run on MC        : ', runOnMC
 print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
-if isPowhegSignal: print 'using ', fileWeight
 print sep_line
 
 ######################################################
     
-from MMozer.powhegweight.tongguang600 import *
-process.powWeightProducer = tongguangweights600.clone(
-    filename = cms.FileInPath(fileWeight) )
-
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
@@ -178,14 +170,14 @@ process.customPFJetsNoPUSub = cms.EDProducer(
     Verbosity=cms.untracked.bool(False)
     )
 
-from  CMGTools.External.pujetidsequence_cff import puJetId, puJetMva
-process.puJetIdAK5 = puJetId.clone( jets = 'customPFJetsNoPUSub')
-process.puJetMvaAK5= puJetMva.clone(
-    jetids = cms.InputTag("puJetIdAK5"),
-    jets = 'customPFJetsNoPUSub',
-    )
-
-process.puJetIdSequenceAK5 = cms.Sequence(process.puJetIdAK5*process.puJetMvaAK5)
+#from  CMGTools.External.pujetidsequence_cff import puJetId, puJetMva
+#process.puJetIdAK5 = puJetId.clone( jets = 'customPFJetsNoPUSub')
+#process.puJetMvaAK5= puJetMva.clone(
+#    jetids = cms.InputTag("puJetIdAK5"),
+#    jets = 'customPFJetsNoPUSub',
+#    )
+#
+#process.puJetIdSequenceAK5 = cms.Sequence(process.puJetIdAK5*process.puJetMvaAK5)
 
 # central jets for filtering and Z->jj candidates
 
@@ -407,7 +399,7 @@ process.p += process.kt6PFJetsForIso
 
 process.p += process.qglAK5PF 
 process.p += process.customPFJetsNoPUSub
-process.p += process.puJetIdSequenceAK5
+#process.p += process.puJetIdSequenceAK5
 process.p += process.customPFJetsNoPUSubCentral
 
 process.p += process.stdLeptonSequence
@@ -510,8 +502,8 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
-if runOnMC and isPowhegSignal:
-    process.p += process.powWeightProducer
+#if runOnMC and isPowhegSignal:
+#    process.p += process.powWeightProducer
 
 process.p += getattr(process,"postPathCounter") 
  
@@ -581,11 +573,6 @@ process.out = cms.OutputModule("PoolOutputModule",
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
-# add trigger information to the pat-tuple
-##process.out.outputCommands += patEventContentNoCleaning
-#process.out.outputCommands += patTriggerEventContent
-#process.out.outputCommands += patTriggerStandAloneEventContent
-
 process.out.outputCommands.extend([
     'keep *_userDataSelectedElectrons_*_PAT',
     'keep *_userDataSelectedMuons_*_PAT',
@@ -597,8 +584,8 @@ process.out.outputCommands.extend([
     'keep *_kt6PFJetsCentralNeutral_rho_*',
     'keep *_kt6PFJets*_rho_*',
     # PU jetID maps
-    "keep *_puJetId*_*_*", # input variables
-    "keep *_puJetMva*_*_*", # final MVAs and working point flags
+#    "keep *_puJetId*_*_*", # input variables
+#    "keep *_puJetMva*_*_*", # final MVAs and working point flags
     # ll, jj, lljj candidates
     'keep *_zee_*_PAT',
     'keep *_zmm_*_PAT',
@@ -610,12 +597,12 @@ process.out.outputCommands.extend([
     ####
     'keep *_offlineBeamSpot_*_*',
     'keep *_offlinePrimaryVertices_*_*',
-    'keep *_secondaryVertexTagInfos*_*_*',
-    'keep *_impactParameterTagInfos*_*_*',
-    'keep *_*_*tagInfo*_*',
+#    'keep *_secondaryVertexTagInfos*_*_*',
+#    'keep *_impactParameterTagInfos*_*_*',
+#    'keep *_*_*tagInfo*_*',
     # additional collections from AOD   
-    'keep *_generalTracks_*_*',
-    'keep *_electronGsfTracks_*_*',
+#    'keep *_generalTracks_*_*',
+#    'keep *_electronGsfTracks_*_*',
 #    'keep *_muons_*_*',
 #    'keep *_globalMuons_*_*',
 #    'keep *_standAloneMuons_*_*',
@@ -623,8 +610,8 @@ process.out.outputCommands.extend([
     # genParticles & genJets
     'keep *_genParticles_*_*',
     'keep recoGenJets_ak5GenJets_*_*',
-    'keep recoGenJets_kt6GenJets_*_*',
-    'keep *_powWeightProducer_*_*',
+#    'keep recoGenJets_kt6GenJets_*_*',
+#    'keep *_powWeightProducer_*_*',
     # gen Info
     'keep PileupSummaryInfos_*_*_*',
     'keep GenEventInfoProduct_*_*_*',
