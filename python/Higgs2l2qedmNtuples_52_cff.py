@@ -208,31 +208,31 @@ higgs =  cms.EDProducer(
     tag = cms.untracked.string("ldBkgRefit"),
     quantity = cms.untracked.string("userFloat('ldBkgRefit')")
     ),
-# new met variables
-    cms.PSet(
-    tag = cms.untracked.string("trkMetX"),
-    quantity = cms.untracked.string("userFloat('trkMetX')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("trkMetY"),
-    quantity = cms.untracked.string("userFloat('trkMetY')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("trkCorrectedMetX"),
-    quantity = cms.untracked.string("userFloat('trkCorrectedMetX')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("trkCorrectedMetY"),
-    quantity = cms.untracked.string("userFloat('trkCorrectedMetY')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("trkMet"),
-    quantity = cms.untracked.string("userFloat('trkMet')")
-    ),
-    cms.PSet(
-    tag = cms.untracked.string("trkPlusNeuMet"),
-    quantity = cms.untracked.string("userFloat('trkPlusNeuMet')")
-    ),
+## new met variables
+#    cms.PSet(
+#    tag = cms.untracked.string("trkMetX"),
+#    quantity = cms.untracked.string("userFloat('trkMetX')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("trkMetY"),
+#    quantity = cms.untracked.string("userFloat('trkMetY')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("trkCorrectedMetX"),
+#    quantity = cms.untracked.string("userFloat('trkCorrectedMetX')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("trkCorrectedMetY"),
+#    quantity = cms.untracked.string("userFloat('trkCorrectedMetY')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("trkMet"),
+#    quantity = cms.untracked.string("userFloat('trkMet')")
+#    ),
+#    cms.PSet(
+#    tag = cms.untracked.string("trkPlusNeuMet"),
+#    quantity = cms.untracked.string("userFloat('trkPlusNeuMet')")
+#    ),
     )
     )
 
