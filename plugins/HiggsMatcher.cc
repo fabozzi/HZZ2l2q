@@ -110,7 +110,7 @@ void HiggsMatcher::produce( Event & evt, const EventSetup & ) {
 // match type (0->jet, 1->lept)
 bool HiggsMatcher::verifyMatch( int matchType, const Candidate & H, 
 				Handle<GenParticleCollection> genColl, float drCut, int absId ) {
-  bool isMatchedCand(true);
+  bool isMatchedCand(false);
 
   for(unsigned int lind = 0; lind<2; ++lind) {
     const Candidate * zDauRef;
@@ -123,6 +123,7 @@ bool HiggsMatcher::verifyMatch( int matchType, const Candidate & H,
       const GenParticle & genLeg = (*genColl)[j];
       if(matchType == 1){
 	// for leptons check if electron or muon
+	//	cout << "genLEP = " << fabs(genLeg.pdgId()) << endl;
 	if(fabs(genLeg.pdgId()) != absId) 
 	  break;
       } 
