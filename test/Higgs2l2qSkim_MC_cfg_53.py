@@ -6,7 +6,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 runOnMC = True
 
 # turn on when running on powheg signal MC (-> to produce line-shape weights)
-isPowhegSignal = False
+#isPowhegSignal = False
 
 #add the L2L3Residual corrections only for data
 if runOnMC:#MC
@@ -54,6 +54,8 @@ print sep_line
 
 process.source.fileNames = [
     'file:/data3/scratch/cms/mc/Summer12_DR53X/DYJetsToLL_M-50/FEF4E41A-46D4-E111-9594-0025B3E06424.root'
+#    'file:/data3/scratch/cms/mc/Summer12/GluGluToHToZZTo2L2Q_M-700_8TeV/FE073BF1-CDB7-E111-8866-E0CB4E4408BE.root'
+
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########

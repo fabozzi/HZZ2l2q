@@ -4,7 +4,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 # turn on when running on MC
 runOnMC = True
 
-# turn on when running on powheg signal MC (-> to produce line-shape weights)
+# turn on when running on powheg signal MC 
 isPowhegSignal = True
 
 #add the L2L3Residual corrections only for data
@@ -15,7 +15,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 10
+process.maxEvents.input = 400
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -678,7 +678,6 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
                                     )
 
 process.analysisPath = cms.Sequence(
-#    process.HLTPassInfo+
     process.eventVtxInfoNtuple+
     process.PUInfoNtuple+
     process.rhoDumper+

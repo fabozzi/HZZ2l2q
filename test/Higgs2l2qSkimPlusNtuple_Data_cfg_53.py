@@ -4,8 +4,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 # turn on when running on MC
 runOnMC = False
 
-# turn on when running on powheg signal MC (-> to produce line-shape weights)
-isPowhegSignal = False
+# turn on when running on powheg signal MC
+#isPowhegSignal = False
 
 #add the L2L3Residual corrections only for data
 if runOnMC:#MC
