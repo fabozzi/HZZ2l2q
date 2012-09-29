@@ -15,7 +15,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 400
+process.maxEvents.input = 1000
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -52,7 +52,7 @@ print sep_line
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/mc/Summer12/GluGluToHToZZTo2L2Q_M-700_8TeV/FE073BF1-CDB7-E111-8866-E0CB4E4408BE.root'
+    'file:/data3/scratch/cms/mc/Summer12_DR53X/GluGluToHToZZTo2L2Q_M-400/005A2EAA-99FA-E111-B81E-0018F3D095F8.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
@@ -105,6 +105,14 @@ getattr(process,"pfElectronsFromVertexAK5").d0Cut = 99
 getattr(process,"pfSelectedElectronsAK5").cut="pt()>5" 	 
 getattr(process,"pfIsolatedElectrons"+postfixAK5).isolationCut = 999999 	 
 	
+# remove pfTau and pfPhoton from the sequence
+process.PFBRECOAK5.remove( process.pfTauSequenceAK5 )
+process.PFBRECOAK5.remove( process.pfNoTauAK5 )
+process.PFBRECOAK5.remove( process.pfPhotonSequenceAK5 )
+
+# make sure about patJets input
+switchToPFJets(process, input=cms.InputTag('pfJetsAK5'), algo=jetAlgoAK5, postfix = postfixAK5, jetCorrections=('AK5PF', jetCorrections))
+
 ### we use "classic" muons and electrons (see below)
 removeSpecificPATObjects(process, ['Taus'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Electrons'], postfix = "AK5")
@@ -124,6 +132,12 @@ removeUseless( "pfCandMETcorr" )
 removeUseless( "pfchsMETcorr" )
 removeUseless( "pfType1CorrectedMet" )
 removeUseless( "pfType1p2CorrectedMet" )
+removeUseless( "patPFTauIsolation" )
+removeUseless( "tauMatch" )
+removeUseless( "tauGenJets" )
+removeUseless( "tauGenJetsSelectorAllHadrons" )
+removeUseless( "tauGenJetMatch" )
+removeUseless( "patHPSPFTauDiscrimination" )
 #########################################################
 
 # curing a weird bug in PAT..
@@ -149,6 +163,10 @@ getattr(process,"patJets"+postfixAK5).tagInfoSources  = cms.VInputTag(
 ### non default embedding of AOD items for default patJets
 getattr(process,"patJets"+postfixAK5).embedCaloTowers = False
 getattr(process,"patJets"+postfixAK5).embedPFCandidates = True
+
+### disable MC matching (will be done at analysis level)
+getattr(process,"patJets"+postfixAK5).addGenPartonMatch = False
+getattr(process,"patJets"+postfixAK5).addGenJetMatch = False
 
 ##############################################################
 #add user variables to PAT-jets 
