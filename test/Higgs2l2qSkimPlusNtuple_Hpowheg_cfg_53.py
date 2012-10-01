@@ -15,7 +15,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 1000
+process.maxEvents.input = 2000
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -249,11 +249,13 @@ process.stdElectronSeq = cms.Sequence(
     process.selectedPatElectrons
     )
 
-if not runOnMC:
-    process.stdMuonSeq.remove( process.muonMatch )
-    process.stdElectronSeq.remove( process.electronMatch )
-    process.patMuons.embedGenMatch = False
-    process.patElectrons.embedGenMatch = False
+#if not runOnMC:
+process.stdMuonSeq.remove( process.muonMatch )
+process.stdElectronSeq.remove( process.electronMatch )
+process.patMuons.addGenMatch = False
+process.patElectrons.addGenMatch = False
+process.patMuons.embedGenMatch = False
+process.patElectrons.embedGenMatch = False
 
 # Modules for Electron ID
 # MVA Electron ID

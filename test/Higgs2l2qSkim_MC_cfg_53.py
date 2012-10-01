@@ -256,11 +256,13 @@ process.stdElectronSeq = cms.Sequence(
     process.selectedPatElectrons
     )
 
-if not runOnMC:
-    process.stdMuonSeq.remove( process.muonMatch )
-    process.stdElectronSeq.remove( process.electronMatch )
-    process.patMuons.embedGenMatch = False
-    process.patElectrons.embedGenMatch = False
+#if not runOnMC:
+process.stdMuonSeq.remove( process.muonMatch )
+process.stdElectronSeq.remove( process.electronMatch )
+process.patMuons.addGenMatch = False
+process.patElectrons.addGenMatch = False
+process.patMuons.embedGenMatch = False
+process.patElectrons.embedGenMatch = False
 
 # Modules for Electron ID
 # MVA Electron ID
