@@ -64,10 +64,13 @@ private:
   // changing the interface
   void readVertices ( edm::Handle<reco::VertexCollection> recVtxs );
   // check if the jet satisfies the taggeability criteria
-  bool isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
-		      const edm::ESHandle<TransientTrackBuilder> & builder,
-		      int & nChargedTracks, int & nChargedTracksSV, int & nTracks );
 
+  void isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
+		      const edm::ESHandle<TransientTrackBuilder> & builder,
+		      int & nTracks,
+		      int & nChargedTracks, int & nChargedTracksSV,
+		      bool & isTaggable, bool & isTaggableSV ); 
+    
   //data members
   edm::InputTag   jetLabel_;
   bool is2012Data_;
@@ -188,9 +191,12 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     int nChargedTracksSV_Aux = 0;
     int nTracks_Aux = 0;
     
-    int isTaggable = int ( isTaggableJet( patjjet, primVertex, builder,
-					  nChargedTracks_Aux, nChargedTracksSV_Aux, nTracks_Aux ) );
+    bool isTaggable(false), isTaggableSV(false);
+    isTaggableJet( patjjet, primVertex, builder, nTracks_Aux,
+		   nChargedTracks_Aux, nChargedTracksSV_Aux,
+		   isTaggable, isTaggableSV );
     
+
     edm::RefToBase<pat::Jet> jetRef(edm::Ref<PFJetCollectionAB>(jetColl,njetInColl));
     //    edm::RefToBase<reco::Jet> jetRef = (*jetColl)[njetInColl];
 
@@ -247,7 +253,8 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     ijet->addUserFloat("puBeta",beta);
     ijet->addUserFloat("puBetaStar",betastar);
     // taggability variables
-    ijet->addUserInt("isTaggable",isTaggable);
+    ijet->addUserInt("isTaggable",int(isTaggable));
+    ijet->addUserInt("isTaggableSV",int(isTaggableSV));
     // QG discriminant
     ijet->addUserFloat("qgLike",qgl);
     //
@@ -399,13 +406,16 @@ void PFJetUserData::readVertices (edm::Handle<reco::VertexCollection> recVtxs)
 }
 
 
-bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
+void PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & primVertex,
 				   const edm::ESHandle<TransientTrackBuilder> & builder,
-				   int & nChargedTracks, int & nChargedTracksSV, int & nTracks ) 
+				   int & nTracks,
+				   int & nChargedTracks, int & nChargedTracksSV,
+				   bool & isTaggable, bool & isTaggableSV ) 
 {
+
   bool passBaseSel = false;
   if ( jet.isPFJet() ) {
-    
+
     passBaseSel = (
 		   jet.pt() > 10.0 &&
 		   TMath::Abs(jet.eta()) < 2.4 &&
@@ -416,16 +426,17 @@ bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & pr
 		   jet.chargedMultiplicity() > 0.0 &&
 		   jet.chargedEmEnergyFraction() < 0.99
 		   );
-    
+
   } else if( jet.isCaloJet() ) {
     passBaseSel = false;
   }
-  
+
   nChargedTracks = 0;
   nChargedTracksSV = 0;
   nTracks = 0;
   std::vector<Measurement1D> ipValErr;
   std::vector<Measurement1D> aipValErr;
+  reco::TrackBase::TrackQuality quality=reco::TrackBase::qualityByName("highPurity");
 
   GlobalPoint Pv_point = GlobalPoint(primVertex.x(),
 				     primVertex.y(),
@@ -444,11 +455,7 @@ bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & pr
 
     const reco::Track * track = trackRef->get();
 
-    reco::TrackBase::TrackQuality quality=reco::TrackBase::qualityByName("highPurity");
 
-    /// deltaR 0.5 -> 0.3
-    /// closestApproachToJet 0.07 -> 0.2
-    /// decayLen 0.5 ->highPurity
     if( track->charge() &&
 	track->hitPattern().numberOfValidPixelHits() >= 2 &&
 	track->hitPattern().numberOfValidHits() >= 8 &&
@@ -459,8 +466,9 @@ bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & pr
 	TMath::Abs( track->dz(pv) ) < 17 
 	) {
 
+
       /// just for charged
-      if ( reco::deltaR(jet.momentum(), track->momentum()) < 0.5 ) {
+      if ( reco::deltaR(jet, *track) < 0.5 ) {
 
 	double distancetojet = 999.;
 	double decayLen =  999.;
@@ -489,43 +497,36 @@ bool PFJetUserData::isTaggableJet( const pat::Jet & jet, const reco::Vertex & pr
 
 	    //  dtojet -> Fill(distancetojet);
 	    TrajectoryStateOnSurface closest =
-	      IPTools::closestApproachToJet( stateAtOrigin,
-					     primVertex, direction,
-					     transientTrack.field() );
+	      IPTools::closestApproachToJet(stateAtOrigin,
+					    primVertex, direction,
+					    transientTrack.field());
 	    if ( closest.isValid() ) {
 	      decayLen = (closest.globalPosition() - (Pv_point)).mag();
 	    }
 		
 	  }
-
-
 	  if ( distancetojet < 0.07 && decayLen < 5 ) {
 	    ++nChargedTracks;
+	    ipValErr.push_back( IPTools::signedImpactParameter3D(transientTrack, direction, primVertex ).second );
+	    aipValErr.push_back( IPTools::signedImpactParameter3D(transientTrack, direction, primVertex ).second );
 	  }
 	  if ( track->quality(quality) &&
 	       reco::deltaR(jet.momentum(), track->momentum()) < 0.3 && 
 	       distancetojet < 0.2 ) {
 	    ++nChargedTracksSV;
 	  }
-
 	  // if no valid builder
 	} else {
 	  ++nChargedTracks;
+	  ++nChargedTracksSV;
 	}
       }
     }
   }
-
-  if ( passBaseSel &&
-       nChargedTracks >= 1 && nTracks >= 2  )
-    return true;
-  else
-    return false;
- }
-
-
-
-
+  ///
+  isTaggable = ( passBaseSel && nChargedTracks >= 1 && nTracks >= 2  );
+  isTaggableSV = ( passBaseSel && nChargedTracksSV >= 1 && nTracks >= 2  );
+}
 
 // ========= MODULE DEF ==============
 #include "FWCore/PluginManager/interface/ModuleDef.h"
