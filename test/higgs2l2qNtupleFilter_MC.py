@@ -16,14 +16,14 @@ process.source.fileNames=cms.untracked.vstring('file:h2l2q_ntuple.root')
 process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
-    HLTPaths = cms.vstring(#'primaryVertexFilterPath',
-                           'CSCTightHaloFilterPath',
-                           'EcalDeadCellTriggerPrimitiveFilterPath',
-#                           'noscrapingFilterPath',          
-                           'hcalLaserEventFilterPath',
-                           'HBHENoiseFilterPath',
-                           'trackingFailureFilterPath',
-                           'eeBadScFilterPath'
+    HLTPaths = cms.vstring('primaryVertexFilterPath',
+#                           'CSCTightHaloFilterPath',
+#                           'EcalDeadCellTriggerPrimitiveFilterPath',
+                           'EcalDeadCellBoundaryEnergyFilterPath',
+                           'noscrapingFilterPath',          
+#                           'hcalLaserEventFilterPath', ###it should not affect the datasample 
+                           'HBHENoiseFilterPath'#,
+#                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
@@ -32,9 +32,13 @@ process.badEventFilter = cms.EDFilter(
     throw = cms.bool(True)  # throw exception on unknown path names
     )
 
-process.cleaningPath = cms.Path(
-    process.badEventFilter
-    )
+
+### To comment in case of MC samples
+
+
+
+
+
 
 process.edmNtuplesOut = cms.OutputModule(
     "PoolOutputModule",
@@ -47,7 +51,7 @@ process.edmNtuplesOut = cms.OutputModule(
     )
 
 process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring('cleaningPath')
+    SelectEvents = cms.vstring()
     )
 
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')

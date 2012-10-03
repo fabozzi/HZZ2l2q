@@ -16,14 +16,14 @@ process.source.fileNames=cms.untracked.vstring('file:h2l2q_ntuple.root')
 process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
-    HLTPaths = cms.vstring(#'primaryVertexFilterPath',
-                           'CSCTightHaloFilterPath',
-                           'EcalDeadCellTriggerPrimitiveFilterPath',
-#                           'noscrapingFilterPath',          
-                           'hcalLaserEventFilterPath',
-                           'HBHENoiseFilterPath',
-                           'trackingFailureFilterPath',
-                           'eeBadScFilterPath'
+    HLTPaths = cms.vstring('primaryVertexFilterPath',
+#                           'CSCTightHaloFilterPath',
+#                           'EcalDeadCellTriggerPrimitiveFilterPath',
+                           'EcalDeadCellBoundaryEnergyFilterPath',
+                           'noscrapingFilterPath',          
+#                           'hcalLaserEventFilterPath', ###it should not affect the datasample 
+                           'HBHENoiseFilterPath'#,
+#                           'totalKinematicsFilterPath' #only for Madgraph MC
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
@@ -37,29 +37,19 @@ process.badEventFilter = cms.EDFilter(
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 process.HLTFilter = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-process.HLTFilter_2 = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
 
-process.HLTFilter.HLTPaths  = ["HLT_Mu17_Mu8_v16",  "HLT_Mu17_TkMu8_v9" ]
-process.HLTFilter_2.HLTPaths  = [ "HLT_Mu17_Mu8_v17", "HLT_Mu17_TkMu8_v10"]
-process.HLTFilter.throw = cms.bool(False) 
-process.HLTFilter_2.throw = cms.bool(False)
+process.HLTFilter.HLTPaths  = ["HLT_Mu17_Mu8_v*",  "HLT_Mu17_TkMu8_v*" ]
+#process.HLTFilter.throw = cms.bool(False) 
+#import HLTrigger.HLTCore.hltEventAnalyzerAOD_cfi
+#process.hltana = hltEventAnalyzerAOD
 
-
-process.runFilter = cms.EDFilter(
-        "FilterByRun",
-        run = cms.int32(193834),
-        selMode = cms.string("ge"),
-        )
-
+#process.cleaningPath = cms.Path(
+#    process.badEventFilter * ~process.runFilter*process.HLTFilter 
+#    )
 
 
 process.cleaningPath = cms.Path(
-    process.badEventFilter * ~process.runFilter*process.HLTFilter 
-    )
-
-
-process.cleaningPath_2 = cms.Path(
-    process.badEventFilter * process.runFilter*process.HLTFilter_2
+    process.hltana + process.HLTFilter 
     )
 
 
@@ -74,7 +64,7 @@ process.edmNtuplesOut = cms.OutputModule(
     )
 
 process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
-    SelectEvents = cms.vstring('cleaningPath','cleaningPath_2')
+    SelectEvents = cms.vstring('cleaningPath')
     )
 
 process.edmNtuplesOut.dropMetaData = cms.untracked.string('ALL')
