@@ -15,7 +15,7 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 2000
+process.maxEvents.input = 400
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
@@ -594,6 +594,7 @@ process.out.outputCommands.extend([
     'keep *_userDataSelectedElectrons_*_PAT',
     'keep *_userDataSelectedMuons_*_PAT',
 #    'keep *_customPFJets_*_PAT',
+    'keep *_selectedPatJetsAK5_pfCandidates_PAT',
     'keep *_customPFJetsNoPUSub_*_PAT',
     'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables

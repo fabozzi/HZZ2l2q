@@ -611,6 +611,7 @@ process.out.outputCommands.extend([
     'keep *_userDataSelectedElectrons_*_PAT',
     'keep *_userDataSelectedMuons_*_PAT',
 #    'keep *_customPFJets_*_PAT',
+    'keep *_selectedPatJetsAK5_pfCandidates_PAT',
     'keep *_customPFJetsNoPUSub_*_PAT',
     'keep *_cleanPatJetsNoPUIsoLept_*_PAT',
     # rho variables
