@@ -93,6 +93,7 @@ getattr(process,"pfElectronsFromVertexAK5").dzCut = 99
 getattr(process,"pfElectronsFromVertexAK5").d0Cut = 99 	 
 getattr(process,"pfSelectedElectronsAK5").cut="pt()>5" 	 
 getattr(process,"pfIsolatedElectrons"+postfixAK5).isolationCut = 999999 	 
+
 # remove pfTau and pfPhoton from the sequence
 process.PFBRECOAK5.remove( process.pfTauSequenceAK5 )
 process.PFBRECOAK5.remove( process.pfNoTauAK5 )
@@ -107,7 +108,7 @@ removeSpecificPATObjects(process, ['Electrons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Muons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Photons'], postfix = "AK5")
 
-############### remove useless modules (not for 4_4) ###
+############### remove useless modules #############
 def removeUseless( modName ):
     getattr(process,"patDefaultSequence"+postfixAK5).remove(
         getattr(process, modName+postfixAK5)

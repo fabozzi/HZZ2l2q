@@ -2,8 +2,12 @@
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 # turn on when running on MC
-runOnMC = False
+runOnMC = True
 
+# turn on when running on powheg signal MC 
+isPowhegSignal = True
+
+#add the L2L3Residual corrections only for data
 if runOnMC:#MC
     jetCorrections=['L1FastJet','L2Relative','L3Absolute']
 else:#Data
@@ -11,12 +15,12 @@ else:#Data
 
 ############ general options ####################
 process.options.wantSummary = True
-process.maxEvents.input = 500
+process.maxEvents.input = 400
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ########### global tag ############################
 #from CMGTools.Common.Tools.getGlobalTag import getGlobalTag
 #process.GlobalTag.globaltag = cms.string(getGlobalTag(runOnMC))
-process.GlobalTag.globaltag = 'GR_R_44_V14::All'
+process.GlobalTag.globaltag = 'START44_V9C::All'
 ##################################################
 
 ############ PRINTOUT ###################
@@ -31,11 +35,11 @@ print 'Global tag       : ', process.GlobalTag.globaltag
 print sep_line
 
 ######################################################
-    
+
 ### INPUT COLLECTIONS ##########
 
 process.source.fileNames = [
-    'file:/data3/scratch/cms/data/Run2011_44/HZZ_skim/Run2011B/DoubleMu/HZZ-19Nov2011/00B1EE1E-091E-E111-8416-0026189438EF.root'
+    'file:/data3/scratch/cms/mc/Fall11_44x/GluGluToHToZZTo2L2Q_M-400_PU_S6_START44_V9B/F8647FF8-C82E-E111-A2B1-00215E21D62A.root'
 ]
 
 ### DEFINITION OF THE PFBRECO+PAT SEQUENCES ##########
@@ -104,7 +108,7 @@ removeSpecificPATObjects(process, ['Electrons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Muons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Photons'], postfix = "AK5")
 
-############### remove useless modules ############
+############### remove useless modules #############
 def removeUseless( modName ):
     getattr(process,"patDefaultSequence"+postfixAK5).remove(
         getattr(process, modName+postfixAK5)
@@ -395,7 +399,6 @@ process.p += process.stdLeptonSequence
 process.p += process.userDataStandardLeptonSequence
 process.p += process.cleanPatJetsNoPUIsoLept
 
-
 # Select leptons
 process.selectedPatMuons.cut = (
     "pt > 10 && abs(eta) < 2.4"
@@ -452,7 +455,7 @@ process.hzzemjjBaseColl = cms.EDProducer("CandViewCombiner",
                                              decay = cms.string("zem zjj")
                                          )
 
-process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzeejj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzeejjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -460,7 +463,7 @@ process.hzzeejj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      dzCut = cms.double(0.1)
                                  )
 
-process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzmmjj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzmmjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -468,7 +471,7 @@ process.hzzmmjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
                                      dzCut = cms.double(0.1)
                                      )
 
-process.hzzemjj = cms.EDProducer("Higgs2l2bUserDataNoMC",
+process.hzzemjj = cms.EDProducer("Higgs2l2bUserData",
                                      higgs = cms.InputTag("hzzemjjBaseColl"),
                                      gensTag = cms.InputTag("genParticles"),
                                      PFCandidates = cms.InputTag("particleFlow"),
@@ -492,7 +495,8 @@ process.combinatorialSequence = cms.Sequence(
 process.p += process.combinatorialSequence
 
 process.p += getattr(process,"postPathCounter") 
- 
+
+
 # Setup for a basic filtering
 process.zll = cms.EDProducer("CandViewMerger",
                              src = cms.VInputTag("zee", "zmm", "zem")
@@ -508,12 +512,11 @@ process.jetFilterNoPUSub = cms.EDFilter("CandViewCountFilter",
                                  minNumber = cms.uint32(2),
 )
 
-process.filterPath1 = cms.Path(
+process.filterPath1= cms.Path(
     process.zll *
     process.zllFilter *
     process.jetFilterNoPUSub
 )
-
 
 # event cleaning (in tagging mode, no event rejected)
 process.load('CMGTools.Common.PAT.addFilterPaths_cff')
@@ -546,17 +549,18 @@ else:
 #from PhysicsTools.PatAlgos.patEventContent_cff import patEventContentNoCleaning, patTriggerEventContent, patTriggerStandAloneEventContent
 
 
-process.out = cms.OutputModule("PoolOutputModule",
-                 fileName = cms.untracked.string('h2l2qSkimData.root'),
-                 SelectEvents = cms.untracked.PSet(
-                    SelectEvents = cms.vstring(
-                        'filterPath1')#,
-#                        'filterPath2')
-                 ),
-                 outputCommands =  cms.untracked.vstring(
-                  'drop *_*_*_*',
-                  ),
-)
+process.out = cms.OutputModule(
+    "PoolOutputModule",
+    fileName = cms.untracked.string('h2l2qSkimData.root'),
+    SelectEvents = cms.untracked.PSet(
+      SelectEvents = cms.vstring(
+        'filterPath1')#,
+#        'filterPath2')
+      ),
+    outputCommands =  cms.untracked.vstring(
+      'drop *_*_*_*',
+      ),
+    )
 
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
@@ -615,5 +619,105 @@ process.out.outputCommands.extend([
 
 process.out.outputCommands.extend(['keep edmMergeableCounter_*_*_*'])
 
-process.outPath = cms.EndPath(process.out)
+### Ntuplization ###
+process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2qedmNtuples_52_cff")
+
+process.genInfoNtuple = cms.EDProducer(
+    "GenInfoNtupleDump",
+    src = cms.InputTag("genParticles")
+    )
+
+# select lepton daughters from the Higgs
+process.genSelectorZDaughterLeptons = cms.EDFilter(
+    "GenParticleSelector",
+    src = cms.InputTag("genParticles"),
+    cut = cms.string(' ((abs(pdgId)==11 ) || (abs(pdgId)==13 )) && abs(mother.pdgId)==23 ')
+    )
+
+# select quark daughters from the Higgs
+process.genSelectorZDaughterQuarks = cms.EDFilter(
+    "GenParticleSelector",
+    src = cms.InputTag("genParticles"),
+    cut = cms.string(' ((abs(pdgId)>=1 ) && (abs(pdgId)<=6 )) && abs(mother.pdgId)==23 ')
+    )
+
+# perform MC matching
+process.hCandMatch = cms.EDProducer(
+    "HiggsMatcher",
+    elhiggs = cms.InputTag("hzzeejj:h"),
+    muhiggs = cms.InputTag("hzzmmjj:h"),
+    genLept = cms.InputTag("genSelectorZDaughterLeptons"),
+    genQuarks = cms.InputTag("genSelectorZDaughterQuarks")
+    )
+
+process.PUInfoNtuple = cms.EDProducer(
+    "GenPUNtupleDump",
+    isData = cms.bool(False)
+)
+
+# Event rho dumper
+process.rhoDumper = cms.EDProducer("EventRhoDumper",
+                                    rho = cms.InputTag("kt6PFJets:rho"),
+                                    restrictedRho = cms.InputTag("kt6PFJetsForIso:rho")
+                                    )
+
+
+# Met variables producer
+process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
+                                    metTag = cms.InputTag("patMETsAK5"),
+                                    t1CorrMetTag = cms.InputTag("patType1CorrectedPFMetAK5")
+                                    )
+
+process.analysisPath = cms.Sequence(
+    process.eventVtxInfoNtuple+
+    process.PUInfoNtuple+
+    process.rhoDumper+
+    process.metInfoProducer+
+    process.Higgs2e2bEdmNtuple+
+    process.Higgs2mu2bEdmNtuple+
+    process.Higgsemu2bEdmNtuple+
+    process.jetinfos
+)
+
+if runOnMC and isPowhegSignal:
+    process.analysisPath += process.genInfoNtuple
+    process.analysisPath += process.genSelectorZDaughterLeptons
+    process.analysisPath += process.genSelectorZDaughterQuarks
+    process.analysisPath += process.hCandMatch
+
+process.p += process.analysisPath
+
+process.edmNtuplesOut = cms.OutputModule(
+    "PoolOutputModule",
+    fileName = cms.untracked.string('h2l2q_ntuple.root'),
+    outputCommands = cms.untracked.vstring(
+      "drop *",
+      "keep *_hCandMatch_*_*",
+      "keep *_genInfoNtuple_*_*",
+      "keep *_eventVtxInfoNtuple_*_*",
+      "keep *_PUInfoNtuple_*_*",
+      "keep *_rhoDumper_*_*",
+      "keep *_metInfoProducer_*_*",
+      'keep *_kt6PFJetsCentralNeutral_rho_*',
+      "keep *_Higgs2e2bEdmNtuple_*_*",
+      "keep *_Higgs2mu2bEdmNtuple_*_*",
+      "keep *_Higgsemu2bEdmNtuple_*_*",
+      "keep *_jetinfos_*_*"
+      ),
+    dropMetaData = cms.untracked.string('ALL'),
+    SelectEvents = cms.untracked.PSet(
+      SelectEvents = cms.vstring(
+        'filterPath1')#,
+#        'filterPath2')
+      ),
+    )
+
+process.edmNtuplesOut.outputCommands.extend([
+    'keep edmTriggerResults_TriggerResults_*_HLT',
+    'keep *_TriggerResults_*_PAT',
+    ])
+
+
+process.endPath = cms.EndPath(process.edmNtuplesOut)
+ 
 

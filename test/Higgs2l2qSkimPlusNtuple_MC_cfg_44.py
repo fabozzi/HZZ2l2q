@@ -93,6 +93,7 @@ getattr(process,"pfElectronsFromVertexAK5").dzCut = 99
 getattr(process,"pfElectronsFromVertexAK5").d0Cut = 99 	 
 getattr(process,"pfSelectedElectronsAK5").cut="pt()>5" 	 
 getattr(process,"pfIsolatedElectrons"+postfixAK5).isolationCut = 999999 	 
+
 # remove pfTau and pfPhoton from the sequence
 process.PFBRECOAK5.remove( process.pfTauSequenceAK5 )
 process.PFBRECOAK5.remove( process.pfNoTauAK5 )
@@ -107,7 +108,7 @@ removeSpecificPATObjects(process, ['Electrons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Muons'], postfix = "AK5")
 removeSpecificPATObjects(process, ['Photons'], postfix = "AK5")
 
-############### remove useless modules (not for 4_4) ###
+############### remove useless modules #############
 def removeUseless( modName ):
     getattr(process,"patDefaultSequence"+postfixAK5).remove(
         getattr(process, modName+postfixAK5)
@@ -222,11 +223,12 @@ process.stdElectronSeq = cms.Sequence(
     process.selectedPatElectrons
     )
 
-if not runOnMC:
-    process.stdMuonSeq.remove( process.muonMatch )
-    process.stdElectronSeq.remove( process.electronMatch )
-    process.patMuons.embedGenMatch = False
-    process.patElectrons.embedGenMatch = False
+process.stdMuonSeq.remove( process.muonMatch )
+process.stdElectronSeq.remove( process.electronMatch )
+process.patMuons.addGenMatch = False
+process.patElectrons.addGenMatch = False
+process.patMuons.embedGenMatch = False
+process.patElectrons.embedGenMatch = False
 
 # Modules for Electron ID
 # MVA Electron ID
@@ -503,11 +505,6 @@ process.zll = cms.EDProducer("CandViewMerger",
 process.zllFilter = cms.EDFilter("CandViewCountFilter",
                                  src = cms.InputTag("zll"),
                                  minNumber = cms.uint32(1),
-)
-
-process.jetFilter = cms.EDFilter("CandViewCountFilter",
-                                 src = cms.InputTag("customPFJetsCentral"),
-                                 minNumber = cms.uint32(2),
 )
 
 process.jetFilterNoPUSub = cms.EDFilter("CandViewCountFilter",
