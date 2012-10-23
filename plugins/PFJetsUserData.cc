@@ -186,7 +186,7 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     computeBeta(patjjet,&beta,&betastar);
       
     // get taggeability
-    // auxiliary variables external for monitoring
+    // auxiliary variables, made external for monitoring
     int nChargedTracks_Aux = 0;
     int nChargedTracksSV_Aux = 0;
     int nTracks_Aux = 0;
@@ -255,6 +255,9 @@ void PFJetUserData::produce(edm::Event &iEvt,  const edm::EventSetup &iSetup){
     // taggability variables
     ijet->addUserInt("isTaggable",int(isTaggable));
     ijet->addUserInt("isTaggableSV",int(isTaggableSV));
+    ijet->addUserInt("nChTks",nChargedTracks_Aux);
+    ijet->addUserInt("nChTksSV",nChargedTracksSV_Aux);
+    ijet->addUserInt("nTks",nTracks_Aux);
     // QG discriminant
     ijet->addUserFloat("qgLike",qgl);
     //

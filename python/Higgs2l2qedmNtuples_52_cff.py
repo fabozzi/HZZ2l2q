@@ -970,6 +970,30 @@ zjj = (
     quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userInt('isTaggableSV')")
     ),
     cms.PSet(
+    tag = cms.untracked.string("JetDau1nChTks"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userInt('nChTks')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2nChTks"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userInt('nChTks')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1nChTksSV"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userInt('nChTksSV')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2nChTksSV"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userInt('nChTksSV')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau1nTks"),
+    quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userInt('nTks')")
+    ),
+    cms.PSet(
+    tag = cms.untracked.string("JetDau2nTks"),
+    quantity = cms.untracked.string("daughter(1).daughter(1).masterClone.userInt('nTks')")
+    ),
+    cms.PSet(
     tag = cms.untracked.string("JetDau1ChHadMult"),
     quantity = cms.untracked.string("daughter(1).daughter(0).masterClone.userFloat('nChrgdHadrMult')")
     ),
