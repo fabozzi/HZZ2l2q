@@ -16,22 +16,22 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource")
 
 process.source.fileNames=cms.untracked.vstring(
-    'file:dy_h2l2qSkimData.root'
+    'file:h2l2qSkimData.root'
 )
 
 
-#### Event cleaning 
+##### Event cleaning
 process.badEventFilter = cms.EDFilter(
     "HLTHighLevel",
     TriggerResultsTag = cms.InputTag("TriggerResults","","PAT"),
     HLTPaths = cms.vstring('primaryVertexFilterPath',
-#                           'CSCTightHaloFilterPath',
-#                           'EcalDeadCellTriggerPrimitiveFilterPath',
-                           'EcalDeadCellBoundaryEnergyFilterPath',
-                           'noscrapingFilterPath',          
+                           'CSCTightHaloFilterPath',
+                           'EcalDeadCellTriggerPrimitiveFilterPath',
+                           'noscrapingFilterPath',
                            'hcalLaserEventFilterPath',
-                           'HBHENoiseFilterPath'#,
-#                           'totalKinematicsFilterPath' #only for Madgraph MC
+                           'HBHENoiseFilterPath',
+                           'trackingFailureFilterPath',
+                           'eeBadScFilterPath'
                            ),
     eventSetupPathsKey = cms.string(''),
     # how to deal with multiple triggers: True (OR) accept if ANY is true, False
