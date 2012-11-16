@@ -4,8 +4,11 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 # turn on when running on MC
 runOnMC = True
 
-# turn on when running on powheg signal MC 
+# turn on when running on powheg signal MC (-> to produce line-shape weights)
 isPowhegSignal = True
+hMassHyp = "400"
+comEn = "8TeV"
+fileWeight = "MMozer/powhegweight/data/mZZ_Higgs"+hMassHyp+"_"+comEn+"_Lineshape+Interference.txt"
 
 #add the L2L3Residual corrections only for data
 if runOnMC:#MC
@@ -45,9 +48,14 @@ print '\tAK5'
 print 'run on MC        : ', runOnMC
 print sep_line
 print 'Global tag       : ', process.GlobalTag.globaltag
+if isPowhegSignal: print 'Lineshape Rew. using ', fileWeight
 print sep_line
 
 ######################################################
+
+from MMozer.powhegweight.tongguang600 import *
+process.powWeightProducer = tongguangweights600.clone(
+    filename = cms.FileInPath(fileWeight) )
 
 ### INPUT COLLECTIONS ##########
 
@@ -519,8 +527,8 @@ process.combinatorialSequence = cms.Sequence(
 
 process.p += process.combinatorialSequence
 
-#if runOnMC and isPowhegSignal:
-#    process.p += process.powWeightProducer
+if runOnMC and isPowhegSignal:
+    process.p += process.powWeightProducer
 
 process.p += getattr(process,"postPathCounter") 
 
@@ -638,6 +646,7 @@ process.out.outputCommands.extend([
     'keep GenRunInfoProduct_*_*_*',
     'keep LHEEventProduct_*_*_*',
     'keep *_genEventScale_*_*',
+    'keep *_powWeightProducer_*_*',
     ###### MET products
     'keep *_patMETs*_*_*',
 #    'keep *_patType1CorrectedPFMet_*_*', # NOT included for the moment
@@ -724,6 +733,7 @@ process.edmNtuplesOut = cms.OutputModule(
     fileName = cms.untracked.string('h2l2q_ntuple.root'),
     outputCommands = cms.untracked.vstring(
       "drop *",
+      "keep *_powWeightProducer_*_*",
       "keep *_hCandMatch_*_*",
       "keep *_genInfoNtuple_*_*",
       "keep *_eventVtxInfoNtuple_*_*",
