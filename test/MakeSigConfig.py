@@ -3,7 +3,7 @@ import string
 
 comEnergy = '8TeV'
 
-hmasses = ['400', '500', '600', '700', '800', '900', '1000' ]
+hmasses = ['400', '425', '450', '475', '500', '525', '550', '575', '600', '650', '700', '750', '800', '850', '900', '950', '1000']
 
 templatecfg = "Higgs2l2qSkimPlusNtuple_Hpowheg_cfg_53.py" 
 
@@ -19,7 +19,7 @@ for masshyp in hmasses:
             break;
         if line.startswith("hMassHyp"):
             print line
-            newLine = newLine.replace("700",masshyp)
+            newLine = newLine.replace("400",masshyp)
             print newLine
         newfile.write(newLine)
 
