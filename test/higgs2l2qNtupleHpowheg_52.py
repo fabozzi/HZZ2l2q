@@ -6,19 +6,12 @@ applyFilter = False
 
 # turn on when running on powheg signal MC (-> to get generated Higgs mass)
 isPowhegSignal = True
-#hMassHyp = "700"
-#comEn = "8TeV"
-#fileWeight = "MMozer/powhegweight/data/mZZ_Higgs"+hMassHyp+"_"+comEn+"_W.txt_I.txt"
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-#from MMozer.powhegweight.tongguang600 import *
-#process.powWeightProducer = tongguangweights600.clone(
-#    filename = cms.FileInPath(fileWeight) )
-
 process.load("HiggsAnalysis.Higgs2l2b.Higgs2l2qedmNtuples_52_cff")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.MessageLogger.cerr.threshold = ''
 #process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
@@ -97,6 +90,7 @@ process.metInfoProducer = cms.EDProducer("MetVariablesProducer",
 process.edmNtuplesOut.fileName = cms.untracked.string('h2l2q_ntuple.root')
 process.edmNtuplesOut.outputCommands = cms.untracked.vstring(
     "drop *",
+    "keep *_powWeightProducer_*_*",
     "keep *_hCandMatch_*_*",
     "keep *_genInfoNtuple_*_*",
     "keep *_eventVtxInfoNtuple_*_*",
